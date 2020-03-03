@@ -1,0 +1,5 @@
+{
+  "app.containers.DetailPage.header": "This is the DetailPage container!",
+  "app.containers.HomePage.header": "This is the HomePage container!",
+  "app.containers.NotFoundPage.header": "This is the NotFoundPage container!"
+}
