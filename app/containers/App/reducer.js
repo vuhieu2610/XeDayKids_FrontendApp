@@ -5,17 +5,19 @@ import {
   CHANGE_BREADCUMBS_STATE,
   ADD_TO_CART,
   EXCLUDE_ITEM,
+  SCREEN_RESIZE
 } from './constants';
 
 export const initalState = {
   location: 'Phường Phúc Xá, Quận Ba Đình, Thành phố Hà Nội',
   breadcrumbs: {
     displayable: false,
-    items: [],
+    items: []
   },
+  screenWidth: typeof window === 'object' ? window.innerWidth : null,
   cart: {
-    cartItems: [],
-  },
+    cartItems: []
+  }
 };
 
 const appReducer = (state = initalState, action) =>
@@ -29,6 +31,9 @@ const appReducer = (state = initalState, action) =>
         break;
       case EXCLUDE_ITEM:
         _.remove(draft, item => _.eq(item.Id, action.payload.Id));
+        break;
+      case SCREEN_RESIZE:
+        draft.screenWidth = action.payload;
         break;
       default:
         break;

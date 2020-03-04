@@ -4,30 +4,42 @@ const { Header } = Layout;
 
 export const StyledHeader = styled(Header)`
   background: #fff;
-  position: fixed;
+  position: ${props => (props.mobile ? 'static' : 'fixed')};
   z-index: 10;
   width: 100%;
   height: 108px;
   line-height: normal;
-  box-shadow: 0 -2px 6px 0 rgba(0, 0, 0, 0.16);
+  box-shadow: ${props =>
+    props.mobile ? 'unset' : '0 -2px 6px 0 rgba(0, 0, 0, 0.16)'};
   padding: 0;
+  & .ant-row {
+    width: 100%;
+    height: 100%;
+  }
   & > .panel {
-    box-shadow: 0 -2px 6px 0 rgba(0, 0, 0, 0.16);
+    border-bottom: 1px solid rgba(0,0,0,0.16);
     height: 32px;
     line-height: 32px;
-    padding: 0 50px;
+    /* padding: 0 ${props => (props.mobile ? '10px' : '50px')}; */
   }
   & > .content {
     height: calc(108px - 32px);
-    padding: 0 50px;
+    /* padding: 0 ${props => (props.mobile ? '10px' : '50px')}; */
+    background-color: ${props => (props.mobile ? '#f0f2f5' : '#fff')};
     & > div {
       height: 100%;
     }
     & .ant-col {
-      display: flex;
-      align-items: center;
+      & > .flexbox {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+      }
       &.rightSide {
-        justify-content: flex-end;
+        & > .flexbox {
+          justify-content: flex-end;
+        }
         & .ant-badge-count {
           top: 5px;
           background: #333;
@@ -58,6 +70,15 @@ export const Search = styled(Input.Search)`
   height: 40px;
   border-radius: 20px !important;
   padding: 4px 20px !important;
+`;
+
+export const MobileSearch = styled(Input.Search)`
+  height: 50px;
+  width: 100% !important;
+  border-color: transparent !important;
+  border-radius: 4px !important;
+  background-color: #fff !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
 `;
 
 export const UserLink = styled.ul`
@@ -140,12 +161,16 @@ export const LocaltionHeader = styled.div`
     padding-left: 5px;
     position: relative;
     font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  & > span:not(.anticon, .location-main) {
+  & > span:not(.anticon):not(.location-main) {
     margin-right: 3px;
     cursor: text;
     color: #999;
     font-weight: 300;
+    white-space: nowrap;
   }
 `;
 
@@ -173,7 +198,7 @@ export const HotLine = styled.ul`
   }
 `;
 export const Notification = styled.div`
-  width: 125px;
+  width: 130px;
   padding-left: 25px;
   margin-right: 25px;
   & > a {

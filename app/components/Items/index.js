@@ -43,26 +43,25 @@ export default function Items({ title, data }) {
         extra={<Link to="/">Xem thêm</Link>}
       >
         <CustomCarousel
-          slidesToShow={5.5}
+          slidesToShow={4.5}
           speed={300}
           draggable
           dots={false}
           swipeToSlide
           infinite={false}
-          lazyLoad="ondemand"
           responsive={[
             {
               breakpoint: 1024,
               settings: {
                 slidesToShow: 4.5,
-                slidesToScroll: 4,
+                // slidesToScroll: 4,
               },
             },
             {
               breakpoint: 920,
               settings: {
                 slidesToShow: 3.5,
-                slidesToScroll: 3,
+                // slidesToScroll: 3,
               },
             },
           ]}

@@ -3,29 +3,39 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import propTypes from 'prop-types';
-import { CustomItem, CustomRate } from './selections';
+import {
+  CustomItem,
+  CustomRate,
+  CustomBar,
+  CountDownWrapper
+} from './selections';
 const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
 export default function Item({ data, isDragging }) {
   return (
     <CustomItem
-      bordered={false}
       cover={
         <Link to={isDragging ? 'javascript:void(0)' : `/${data.slug}`}>
           <img
             alt="example"
-            src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+            src="https://salt.tikicdn.com/cache/280x280/ts/product/5a/07/aa/695ffed9d2b0c3cbed32cf329746b4d2.jpg"
           />
         </Link>
       }
     >
       <div className="item-details">
+        <span className="percent deal">-40%</span>
         <span className="item-name">
           <Link to={isDragging ? 'javascript:void(0)' : `/${data.slug}`}>
-            Demo item name
+            Ly Giữ Nhiệt Bằng Thép Không Gỉ Lock&Lock Clip Tumbler LHC4151BLK
+            (540ml) - Đen
           </Link>
         </span>
         <div className="price-box">
           <span>150.000 ₫</span>
+        </div>
+        <div className="progress">
+          <CustomBar percent={80} format={e => 'Đã bán 80'} />
+          <CountDownWrapper>0 ngày 06:18:56</CountDownWrapper>
         </div>
         <div className="item-reviews">
           {data.rating && (
@@ -49,5 +59,5 @@ export default function Item({ data, isDragging }) {
 
 Item.propTypes = {
   data: propTypes.object,
-  isDragging: propTypes.bool,
+  isDragging: propTypes.bool
 };

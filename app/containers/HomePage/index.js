@@ -20,14 +20,14 @@ function HomePage({ changeBreadcrumbs }) {
   useEffect(() => {
     changeBreadcrumbs({
       displayable: false,
-      items: [],
+      items: []
     });
   }, []);
 
   return (
     <MainContent>
       <Row>
-        <Col span={5}>
+        <Col lg={5} xs={0}>
           <CustomMenu mode="vertical">
             <SubMenu
               key="sub1"
@@ -76,7 +76,7 @@ function HomePage({ changeBreadcrumbs }) {
             </SubMenu>
           </CustomMenu>
         </Col>
-        <Col span={19}>
+        <Col lg={19} xs={24}>
           <CustomCarosel autoplay draggable>
             <div>
               <h3>1</h3>
@@ -101,34 +101,36 @@ function HomePage({ changeBreadcrumbs }) {
             data={[
               {
                 slug: 1,
+                rating: 3.5,
+                ratingCount: 10
               },
               {
-                slug: 2,
+                slug: 2
               },
               {
-                slug: 3,
+                slug: 3
               },
               {
-                slug: 4,
+                slug: 4
               },
               {
-                slug: 5,
+                slug: 5
               },
               {
-                slug: 6,
+                slug: 6
               },
               {
-                slug: 7,
+                slug: 7
               },
               {
-                slug: 8,
+                slug: 8
               },
               {
-                slug: 9,
+                slug: 9
               },
               {
-                slug: 10,
-              },
+                slug: 10
+              }
             ]}
           />
         </Col>
@@ -138,15 +140,15 @@ function HomePage({ changeBreadcrumbs }) {
 }
 
 HomePage.propTypes = {
-  changeBreadcrumbs: propTypes.func,
+  changeBreadcrumbs: propTypes.func
 };
 
 const mapStateToProp = createStructuredSelector({});
 const mapDispatchToProp = dispatch => ({
-  changeBreadcrumbs: obj => dispatch(setBreadcrumbs(obj)),
+  changeBreadcrumbs: obj => dispatch(setBreadcrumbs(obj))
 });
 
 export default connect(
   mapStateToProp,
-  mapDispatchToProp,
+  mapDispatchToProp
 )(HomePage);

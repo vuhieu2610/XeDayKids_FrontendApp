@@ -5,7 +5,7 @@ const selectRouter = state => state.router;
 const makeSelectLocation = () =>
   createSelector(
     selectRouter,
-    routerState => routerState.location,
+    routerState => routerState.location
   );
 
 const selectApp = state => state.app;
@@ -13,13 +13,24 @@ const selectApp = state => state.app;
 const makeSelectBreadcrumb = () =>
   createSelector(
     selectApp,
-    state => state.breadcrumbs,
+    state => state.breadcrumbs
   );
 
 const makeSelectUserLocation = () =>
   createSelector(
     selectApp,
-    state => state.location,
+    state => state.location
   );
 
-export { makeSelectLocation, makeSelectBreadcrumb, makeSelectUserLocation };
+const makeSelectScreenSize = () =>
+  createSelector(
+    selectApp,
+    state => state.screenWidth
+  );
+
+export {
+  makeSelectLocation,
+  makeSelectBreadcrumb,
+  makeSelectUserLocation,
+  makeSelectScreenSize
+};

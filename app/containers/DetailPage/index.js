@@ -5,7 +5,7 @@
  *
  */
 
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -15,37 +15,45 @@ import { compose } from 'redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { useParams } from 'react-router-dom';
-import { InputNumber, Button, Card, Table } from 'antd';
+import {
+  InputNumber,
+  Button,
+  Card,
+  Table,
+  Row,
+  Col,
+  Carousel,
+  Progress
+} from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import makeSelectDetailPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import { setBreadcrumbs } from '../App/actions';
 import { Main } from './selections';
+import { getScreenSize } from '../../utils/responsive';
+import { makeSelectScreenSize } from '../App/selectors';
+import FlashSale from '../../components/FlashSale';
+import clock from '!file-loader?name=[name].[ext]!../../images/timer-fs.png';
 
-function DetailPage({ changeBreadcrumbs }) {
+function DetailPage({ changeBreadcrumbs, screenSize, detailPage }) {
   useInjectReducer({ key: 'detailPage', reducer });
   useInjectSaga({ key: 'detailPage', saga });
+  const [slickWidth, setSlickWidth] = useState(0);
+
+  const slick = useRef(null);
+
+  useEffect(() => {
+    if (slick.current) {
+      setSlickWidth(slick.current.offsetWidth);
+      window.onresize = () => setSlickWidth(slick.current.offsetWidth);
+    }
+  }, []);
 
   const { slug } = useParams();
 
   console.log(slug);
-
-  useEffect(() => {
-    changeBreadcrumbs({
-      displayable: true,
-      items: [
-        {
-          href: '/',
-          name: 'Trang chủ',
-        },
-        {
-          name: 'Trang Chi tiết',
-        },
-      ],
-    });
-  }, []);
-
+  const isMobile = getScreenSize('xl') >= screenSize;
   return (
     <div>
       <Helmet>
@@ -53,178 +61,190 @@ function DetailPage({ changeBreadcrumbs }) {
         <meta name="description" content="Description of DetailPage" />
       </Helmet>
 
-      <Main>
-        <div className="row-main">
-          <div className="item">
-            <div className="control">
-              <div className="thumb" selected>
-                <img
-                  src="https://bibomart.com.vn/media/catalog/product/cache/c687aa7517cf01e65c009f6943c2b1e9/g/h/ghe-an-bot-sai-gon-xanh-120129.jpg"
-                  alt="demo"
-                />
+      <Main mobile={_.toString(isMobile)}>
+        <Row gutter={[10, 10]}>
+          <Col xl={9} xs={24} md={24}>
+            <div className="product-inf">
+              <div className="control" ref={slick}>
+                <Carousel
+                  dots={false}
+                  slidesToShow={slickWidth == 0 ? 4.75 : slickWidth / 80 - 0.5}
+                  draggable
+                  slidesToScroll={3}
+                  speed={700}
+                  infinite={false}
+                >
+                  {detailPage.Images.map(image => (
+                    <div className="thumb">
+                      <img src={image.src} alt={image.src} />
+                    </div>
+                  ))}
+                </Carousel>
               </div>
-              <div className="thumb">
-                <img
-                  src="https://bibomart.com.vn/media/catalog/product/cache/c687aa7517cf01e65c009f6943c2b1e9/g/h/ghe-an-bot-sai-gon-xanh-120129.jpg"
-                  alt="demo"
-                />
-              </div>
-              <div className="thumb">
-                <img
-                  src="https://bibomart.com.vn/media/catalog/product/cache/c687aa7517cf01e65c009f6943c2b1e9/g/h/ghe-an-bot-sai-gon-xanh-120129.jpg"
-                  alt="demo"
-                />
-              </div>
-              <div className="thumb">
-                <img
-                  src="https://bibomart.com.vn/media/catalog/product/cache/c687aa7517cf01e65c009f6943c2b1e9/g/h/ghe-an-bot-sai-gon-xanh-120129.jpg"
-                  alt="demo"
-                />
-              </div>
-              <div className="thumb">
-                <img
-                  src="https://bibomart.com.vn/media/catalog/product/cache/c687aa7517cf01e65c009f6943c2b1e9/g/h/ghe-an-bot-sai-gon-xanh-120129.jpg"
-                  alt="demo"
-                />
-              </div>
-              <div className="thumb">
+              <div className="preview">
                 <img
                   src="https://bibomart.com.vn/media/catalog/product/cache/c687aa7517cf01e65c009f6943c2b1e9/g/h/ghe-an-bot-sai-gon-xanh-120129.jpg"
                   alt="demo"
                 />
               </div>
             </div>
-            <div className="preview">
-              <img
-                src="https://bibomart.com.vn/media/catalog/product/cache/c687aa7517cf01e65c009f6943c2b1e9/g/h/ghe-an-bot-sai-gon-xanh-120129.jpg"
-                alt="demo"
+          </Col>
+          <Col xl={9} xs={24} md={24}>
+            <div className="item-info-main">
+              <div className="page-title-wrapper">
+                <h1 className="page-title">
+                  Chuyển đến phần đầu của thư viện hình ảnh Ghế ăn bột Sài Gòn
+                  màu xanh
+                </h1>
+              </div>
+              <div className="product-brand-container">
+                <p className="branch-name">
+                  <span className="label">Mã sản phầm: </span>
+                  <span>123456</span>
+                </p>
+              </div>
+              <div className="attributes">
+                <ul>
+                  <li>
+                    Thực phẩm bổ sung: sản phẩm dinh dưỡng Icreo Follow up Milk
+                    (Icreo số 1)
+                  </li>
+                  <li>Giúp hệ tiêu hóa khỏe, trí não tinh anh</li>
+                  <li>
+                    Bổ sung dinh dưỡng khó hấp thu từ bữa ăn: Sắt - vitamin C,
+                    vitamin D - photpho, canxi,…
+                  </li>
+                </ul>
+              </div>
+              <div className="product-info-price">
+                <p className="special-price-item">
+                  <span className="price-label">Giá: </span>
+                  <span className="span-price">1.090.000 ₫</span>
+                </p>
+                <p className="saleoff-price-item">
+                  <span className="price-label">Tiết kiệm:</span>
+                  <span className="discount-percent"> 45% </span>({' '}
+                  <span className="span-saving-price">900.000đ</span> )
+                </p>
+                <p className="old-price-item">
+                  <span className="price-label">Giá thị trường:</span>
+                  <span className="span-list-price">1.990.000đ</span>
+                </p>
+
+                <div className="deal-process">
+                  <div className="deal-process-wrapper">
+                    <div className="deal-time">
+                      <span className="icon-timer" />
+                      khuyến mãi kết thúc sau:
+                      <span>02 ngày 00:00:00</span>
+                    </div>
+                    <div className="deal-info">
+                      Đã bán 10 <Progress percent={70} status="exception" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <Row className="actions" gutter={[10, 10]}>
+                <Col lg={24} md={8} xs={24} className="number">
+                  <label>
+                    <span>Số lượng</span>
+                    <div className="number-control">
+                      <Button>-</Button>
+                      <InputNumber min={0} width={300} defaultValue={0} />
+                      <Button>+</Button>
+                    </div>
+                  </label>
+                </Col>
+                <Col lg={24} md={16} xs={24} className="order-actions">
+                  <Button className="order-now" type="danger" size="large">
+                    Mua ngay
+                  </Button>
+                  <Button
+                    className="add-to-card"
+                    size="large"
+                    icon={<ShoppingCartOutlined />}
+                  >
+                    Thêm vào giỏ hàng
+                  </Button>
+                </Col>
+              </Row>
+            </div>
+          </Col>
+          <Col xl={6} xs={0} md={0}>
+            <div className="sidebar-right">
+              <Card title="Liên hệ">
+                <ul>
+                  <li>Hotline: 1800 6886</li>
+                  <li>Email: cskh@bibomart.com.vn</li>
+                </ul>
+              </Card>
+              <Card>
+                <ul>
+                  <li> Miễn phí giao hàng</li>
+                  <li>365 ngày đổi trả</li>
+                  <li>100% tích điểm thưởng</li>
+                </ul>
+              </Card>
+              <div style={{ position: 'absolute', width: '100%' }}>
+                <FlashSale
+                  endDate="27-03-2020 08:30:00"
+                  offsetTop={115}
+                  price="80.000 ₫"
+                />
+              </div>
+            </div>
+          </Col>
+        </Row>
+        <Row gutter={[10, 10]}>
+          <Col xl={18} md={24} xs={24}>
+            <div className="product info detailed">
+              <div className="data item title">Thông tin chi tiết</div>
+              <div className="data item content">
+                <Table
+                  showHeader={false}
+                  bordered
+                  pagination={false}
+                  dataSource={[
+                    {
+                      key: 'Thương hiệu',
+                      value: 'Demo brand'
+                    },
+                    {
+                      key: 'Xuất xứ thương hiệu',
+                      value: 'Nhật Bản'
+                    },
+                    {
+                      key: 'Nơi sản xuất',
+                      value: 'Nhật Bản'
+                    },
+                    {
+                      key: 'Độ tuổi sử dụng',
+                      value: '1 - 3 tuổi'
+                    }
+                  ]}
+                >
+                  <Table.Column
+                    className="label"
+                    title="key"
+                    dataIndex="key"
+                    width={180}
+                  />
+                  <Table.Column title="value" dataIndex="value" />
+                </Table>
+              </div>
+              <div className="data item title">Mô tả sản phẩm</div>
+              <div
+                className="data item"
+                dangerouslySetInnerHTML={{
+                  __html: detailPage.Description
+                }}
               />
             </div>
-          </div>
-          <div className="item-info-main">
-            <div className="page-title-wrapper">
-              <h1 className="page-title">
-                Chuyển đến phần đầu của thư viện hình ảnh Ghế ăn bột Sài Gòn màu
-                xanh
-              </h1>
-            </div>
-            <div className="product-brand-container">
-              <p className="branch-name">
-                <span className="label">Mã sản phầm: </span>
-                <span>123456</span>
-              </p>
-            </div>
-            <div className="attributes">
-              <ul>
-                <li>
-                  Thực phẩm bổ sung: sản phẩm dinh dưỡng Icreo Follow up Milk
-                  (Icreo số 1)
-                </li>
-                <li>Giúp hệ tiêu hóa khỏe, trí não tinh anh</li>
-                <li>
-                  Bổ sung dinh dưỡng khó hấp thu từ bữa ăn: Sắt - vitamin C,
-                  vitamin D - photpho, canxi,…
-                </li>
-              </ul>
-            </div>
-            <div className="product-info-price">
-              <strong>100.000 ₫</strong>
-            </div>
-            <div className="actions">
-              <div className="number">
-                <label>
-                  <span>Số lượng</span>
-                  <div className="number-control">
-                    <Button>-</Button>
-                    <InputNumber min={0} width={300} defaultValue={0} />
-                    <Button>+</Button>
-                  </div>
-                </label>
-              </div>
-              <div className="order-actions">
-                <Button className="order-now" type="danger" size="large">
-                  Mua ngay
-                </Button>
-                <Button
-                  className="add-to-card"
-                  size="large"
-                  icon={<ShoppingCartOutlined />}
-                >
-                  Thêm vào giỏ hàng
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="sidebar-right">
-            <Card title="Liên hệ">
-              <ul>
-                <li>Hotline: 1800 6886</li>
-                <li>Email: cskh@bibomart.com.vn</li>
-              </ul>
-            </Card>
-            <Card>
-              <ul>
-                <li> Miễn phí giao hàng</li>
-                <li>365 ngày đổi trả</li>
-                <li>100% tích điểm thưởng</li>
-              </ul>
-            </Card>
-          </div>
-        </div>
-        <div className="row-detail">
-          <div className="product info detailed">
-            <div className="data item title">Thông tin chi tiết</div>
-            <div className="data item content">
-              <Table
-                showHeader={false}
-                bordered
-                pagination={false}
-                dataSource={[
-                  {
-                    key: 'Thương hiệu',
-                    value: 'Demo brand',
-                  },
-                  {
-                    key: 'Xuất xứ thương hiệu',
-                    value: 'Nhật Bản',
-                  },
-                  {
-                    key: 'Nơi sản xuất',
-                    value: 'Nhật Bản',
-                  },
-                  {
-                    key: 'Độ tuổi sử dụng',
-                    value: '1 - 3 tuổi',
-                  },
-                ]}
-              >
-                <Table.Column
-                  className="label"
-                  title="key"
-                  dataIndex="key"
-                  width={180}
-                />
-                <Table.Column title="value" dataIndex="value" />
-              </Table>
-            </div>
-            <div className="data item title">Mô tả sản phẩm</div>
-            <div className="data item">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem
-              delectus ullam voluptatum est distinctio quasi enim culpa
-              asperiores quis, corrupti facilis vel officiis magni quibusdam
-              suscipit. Quaerat aliquam magni impedit. <br />
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem
-              delectus ullam voluptatum est distinctio quasi enim culpa
-              asperiores quis, corrupti facilis vel officiis magni quibusdam
-              suscipit. Quaerat aliquam magni impedit. <br />
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem
-              delectus ullam voluptatum est distinctio quasi enim culpa
-              asperiores quis, corrupti facilis vel officiis magni quibusdam
-              suscipit. Quaerat aliquam magni impedit.
-            </div>
-          </div>
-          <div className="sidebar-right" />
-        </div>
+          </Col>
+          <Col xl={6}>
+            <div className="sidebar-right" />
+          </Col>
+        </Row>
       </Main>
     </div>
   );
@@ -233,25 +253,27 @@ function DetailPage({ changeBreadcrumbs }) {
 DetailPage.propTypes = {
   // dispatch: PropTypes.func.isRequired,
   changeBreadcrumbs: PropTypes.func.isRequired,
+  screenSize: PropTypes.number
 };
 
 const mapStateToProps = createStructuredSelector({
   detailPage: makeSelectDetailPage(),
+  screenSize: makeSelectScreenSize()
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
-    changeBreadcrumbs: obj => dispatch(setBreadcrumbs(obj)),
+    changeBreadcrumbs: obj => dispatch(setBreadcrumbs(obj))
   };
 }
 
 const withConnect = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 );
 
 export default compose(
   withConnect,
-  memo,
+  memo
 )(DetailPage);
