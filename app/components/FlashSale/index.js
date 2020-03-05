@@ -18,7 +18,6 @@ function FlashSale({ endDate = '', offsetTop, offsetBottom, price }) {
   const then = moment(endDate, timeFormat).unix();
   const now = moment().unix();
   const diffTime = then - now;
-  window.moment = moment;
   let duration = moment.duration(diffTime * 1000, 'milliseconds');
   const interval = 1000;
 
@@ -90,7 +89,7 @@ FlashSale.propTypes = {
   endDate: PropTypes.string.isRequired,
   offsetTop: PropTypes.number,
   offsetBottom: PropTypes.number,
-  price: PropTypes.number
+  price: PropTypes.string
 };
 
 export default FlashSale;

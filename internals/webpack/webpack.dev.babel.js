@@ -50,6 +50,9 @@ module.exports = require('./webpack.base.babel')({
     hints: false,
   },
   babelQuery: {
-    plugins: [['import', { libraryName: 'antd', style: 'css' }]],
+    plugins: [
+      ['import', { libraryName: 'antd', style: 'css' }, 'antd'],
+      ["import", { "libraryName": "antd-mobile", "style": "css" }, 'antd-mobile']
+    ],
   },
 });

@@ -55,6 +55,8 @@ export const Main = styled.div`
   & .preview {
     overflow: hidden;
     max-height: 80%;
+    height: 100%;
+    margin: 15px 0;
     width: calc(100% - 75px);
   }
 

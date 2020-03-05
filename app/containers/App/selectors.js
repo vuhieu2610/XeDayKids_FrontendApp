@@ -28,9 +28,16 @@ const makeSelectScreenSize = () =>
     state => state.screenWidth
   );
 
+const makeSelectLogo = () =>
+  createSelector(
+    selectApp,
+    state => state.logo
+  );
+
 export {
   makeSelectLocation,
   makeSelectBreadcrumb,
   makeSelectUserLocation,
-  makeSelectScreenSize
+  makeSelectScreenSize,
+  makeSelectLogo
 };

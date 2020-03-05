@@ -9,7 +9,7 @@ import { DEFAULT_ACTION } from './constants';
 export const initialState = {
   ProductId: 0,
   ProductCode: '',
-  ShortName: '',
+  ShortName: 'Xe Đẩy Trẻ Em Gấp Gọn Baobaohao QZ1 - Xám',
   Price: '',
   BuyerCount: '',
   RatePerMinute: 0,

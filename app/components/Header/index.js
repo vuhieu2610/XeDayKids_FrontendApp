@@ -57,11 +57,7 @@ export default function Header(props) {
                 <Col span={5}>
                   <div className="flexbox">
                     <Link to="/">
-                      <img
-                        className="logo"
-                        src="https://bibomart.com.vn/media/logo/stores/1/logo-bbm.jpg"
-                        alt="logo"
-                      />
+                      <img className="logo" src={props.logo} alt="logo" />
                     </Link>
                   </div>
                 </Col>
@@ -121,5 +117,6 @@ export default function Header(props) {
 
 Header.propTypes = {
   location: propTypes.string,
-  mobile: propTypes.bool
+  mobile: propTypes.number,
+  logo: propTypes.string
 };

@@ -5,10 +5,12 @@ import {
   CHANGE_BREADCUMBS_STATE,
   ADD_TO_CART,
   EXCLUDE_ITEM,
-  SCREEN_RESIZE
+  SCREEN_RESIZE,
+  CATEGORIES_FETCHED
 } from './constants';
 
 export const initalState = {
+  logo: 'https://bibomart.com.vn/media/logo/stores/1/logo-bbm.jpg',
   location: 'Phường Phúc Xá, Quận Ba Đình, Thành phố Hà Nội',
   breadcrumbs: {
     displayable: false,
@@ -34,6 +36,8 @@ const appReducer = (state = initalState, action) =>
         break;
       case SCREEN_RESIZE:
         draft.screenWidth = action.payload;
+        break;
+      case CATEGORIES_FETCHED:
         break;
       default:
         break;

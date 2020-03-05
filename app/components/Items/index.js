@@ -40,7 +40,7 @@ export default function Items({ title, data }) {
       <CustomCard
         bordered={false}
         title={<h4>{title}</h4>}
-        extra={<Link to="/">Xem thêm</Link>}
+        extra={<Link to="/products">Xem thêm</Link>}
       >
         <CustomCarousel
           slidesToShow={4.5}
@@ -53,17 +53,42 @@ export default function Items({ title, data }) {
             {
               breakpoint: 1024,
               settings: {
-                slidesToShow: 4.5,
+                slidesToShow: 4.5
                 // slidesToScroll: 4,
-              },
+              }
             },
             {
-              breakpoint: 920,
+              breakpoint: 768,
               settings: {
-                slidesToShow: 3.5,
+                rows: 2,
+                slidesToShow: 3.5
                 // slidesToScroll: 3,
-              },
+              }
             },
+            {
+              breakpoint: 425,
+              settings: {
+                rows: 2,
+                slidesToShow: 2.5
+                // slidesToScroll: 3,
+              }
+            },
+            {
+              breakpoint: 375,
+              settings: {
+                rows: 2,
+                slidesToShow: 2.2
+                // slidesToScroll: 3,
+              }
+            },
+            {
+              breakpoint: 320,
+              settings: {
+                rows: 2,
+                slidesToShow: 2
+                // slidesToScroll: 3,
+              }
+            }
           ]}
         >
           {data.map((i, index) => (
@@ -76,6 +101,6 @@ export default function Items({ title, data }) {
 }
 
 Items.propTypes = {
-  title: propTypes.string.isRequired,
-  data: propTypes.array,
+  title: propTypes.oneOfType([propTypes.string, propTypes.node]),
+  data: propTypes.array
 };

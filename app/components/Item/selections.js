@@ -6,8 +6,8 @@ export const CustomBar = styled(Progress)`
   height: 25px;
   & > .ant-progress-outer {
     height: ${barHeight};
-    margin: 0;
-    padding: 0;
+    margin-right: 0 !important;
+    padding-right: 0 !important;
     & > .ant-progress-inner {
       background-color: rgb(253, 218, 200);
       height: ${barHeight} !important;
@@ -131,6 +131,15 @@ export const CustomItem = styled(Card)`
       & ${CountDownWrapper} {
         width: 90px;
         margin-left: 10px;
+      }
+      @media (max-width: 768px) {
+        & ${CustomBar} {
+          width: 100%;
+        }
+        & ${CountDownWrapper} {
+          display: none;
+          margin-left: 0;
+        }
       }
     }
     & .item-reviews {

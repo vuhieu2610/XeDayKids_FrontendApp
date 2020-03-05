@@ -34,12 +34,13 @@ import { Main } from './selections';
 import { getScreenSize } from '../../utils/responsive';
 import { makeSelectScreenSize } from '../App/selectors';
 import FlashSale from '../../components/FlashSale';
-import clock from '!file-loader?name=[name].[ext]!../../images/timer-fs.png';
+import _ from 'lodash';
 
 function DetailPage({ changeBreadcrumbs, screenSize, detailPage }) {
   useInjectReducer({ key: 'detailPage', reducer });
   useInjectSaga({ key: 'detailPage', saga });
   const [slickWidth, setSlickWidth] = useState(0);
+  const [previewUrl, setPreviewUrl] = useState(detailPage.Images[0].src);
 
   const slick = useRef(null);
 
@@ -55,10 +56,10 @@ function DetailPage({ changeBreadcrumbs, screenSize, detailPage }) {
   console.log(slug);
   const isMobile = getScreenSize('xl') >= screenSize;
   return (
-    <div>
+    <React.Fragment>
       <Helmet>
-        <title>DetailPage</title>
-        <meta name="description" content="Description of DetailPage" />
+        <title>{detailPage.ShortName}</title>
+        <meta name="description" content={detailPage.Metatitle} />
       </Helmet>
 
       <Main mobile={_.toString(isMobile)}>
@@ -75,27 +76,25 @@ function DetailPage({ changeBreadcrumbs, screenSize, detailPage }) {
                   infinite={false}
                 >
                   {detailPage.Images.map(image => (
-                    <div className="thumb">
+                    <div
+                      className="thumb "
+                      onClick={() => setPreviewUrl(image.src)}
+                      key={_.uniqueId()}
+                    >
                       <img src={image.src} alt={image.src} />
                     </div>
                   ))}
                 </Carousel>
               </div>
               <div className="preview">
-                <img
-                  src="https://bibomart.com.vn/media/catalog/product/cache/c687aa7517cf01e65c009f6943c2b1e9/g/h/ghe-an-bot-sai-gon-xanh-120129.jpg"
-                  alt="demo"
-                />
+                <img src={previewUrl} alt="demo" />
               </div>
             </div>
           </Col>
           <Col xl={9} xs={24} md={24}>
             <div className="item-info-main">
               <div className="page-title-wrapper">
-                <h1 className="page-title">
-                  Chuyển đến phần đầu của thư viện hình ảnh Ghế ăn bột Sài Gòn
-                  màu xanh
-                </h1>
+                <h1 className="page-title">{detailPage.ShortName}</h1>
               </div>
               <div className="product-brand-container">
                 <p className="branch-name">
@@ -246,7 +245,7 @@ function DetailPage({ changeBreadcrumbs, screenSize, detailPage }) {
           </Col>
         </Row>
       </Main>
-    </div>
+    </React.Fragment>
   );
 }
 

@@ -22,6 +22,19 @@ export const CustomCard = styled(Card)`
       line-height: 1.2;
       vertical-align: middle;
       white-space: nowrap;
+      position: relative;
+      padding-left: 54px;
+      & img {
+        display: block;
+        max-width: 34px;
+        max-height: 34px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: calc(100% - 54px);
+        margin: auto;
+      }
     }
   }
 

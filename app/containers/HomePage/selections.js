@@ -6,15 +6,23 @@ export const MainContent = styled.main`
 `;
 
 export const CustomCarosel = styled(Carousel)`
-  min-height: 422px;
-  border-radius: 0 4px 4px 0;
+  height: 100%;
+  border-radius: 0;
   overflow: hidden;
   & .slick-slide {
     text-align: center;
-    background: #364d79;
     overflow: hidden;
-    line-height: 400px;
-    height: 422px !important;
+
+    & a {
+      display: block;
+      height: 422px;
+      & > img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: left;
+      }
+    }
   }
 
   & .slick-slide h3 {
@@ -24,7 +32,7 @@ export const CustomCarosel = styled(Carousel)`
 
 export const CustomMenu = styled(Menu)`
   width: 100%;
-  border-radius: 4px 0 0 4px;
+  border-radius: 0;
   border: 1px solid #ebecf0;
-  min-height: 422px;
+  height: 422px;
 `;

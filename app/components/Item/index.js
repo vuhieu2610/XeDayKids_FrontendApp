@@ -58,6 +58,12 @@ export default function Item({ data, isDragging }) {
 }
 
 Item.propTypes = {
-  data: propTypes.object,
+  data: propTypes.shape({
+    slug: propTypes.string,
+    id: propTypes.number,
+    title: propTypes.string,
+    rating: propTypes.number,
+    ratingCount: propTypes.number,
+  }),
   isDragging: propTypes.bool
 };

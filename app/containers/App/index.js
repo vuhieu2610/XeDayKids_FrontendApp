@@ -9,14 +9,12 @@
 
 import React, { useEffect } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
-import { Layout, Breadcrumb, Menu, Affix } from 'antd';
-import { HomeOutlined } from '@ant-design/icons';
+import { Layout, Breadcrumb } from 'antd';
 
-import HomePage from 'containers/HomePage/Loadable';
+import { useInjectSaga } from 'utils/injectSaga';
+
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import DetailPage from 'containers/DetailPage/Loadable';
-import CheckoutPage from 'containers/CheckoutPage';
-
+import route, { breadcrumbRoutes } from '../../route';
 import propTypes from 'prop-types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -26,86 +24,67 @@ import {
   StyledContent,
   StyledFooter,
   BreadcrumbBox,
-  CustomBottomNav,
   PageWrapper
 } from './selections';
 import Header from '../../components/Header';
+import Drawer from '../../components/Drawer';
 import {
   makeSelectBreadcrumb,
   makeSelectUserLocation,
   makeSelectScreenSize,
-  makeSelectLocation
+  makeSelectLocation,
+  makeSelectLogo
 } from './selectors';
 import { SCREEN_RESIZE } from './constants';
 import { getScreenSize } from '../../utils/responsive';
 
-export const pageUrls = [
-  {
-    name: 'Trang chủ',
-    component: HomePage,
-    isNavigation: true,
-    url: '/'
-  },
-  {
-    name: 'Giỏ hàng',
-    component: CheckoutPage,
-    isNavigation: true,
-    url: '/checkout/cart'
-  },
-  {
-    name: 'Trang chi tiết',
-    isNavigation: false,
-    component: DetailPage,
-    url: '/:slug'
-  }
-];
+import saga from './saga';
+import { getCategories } from './actions';
 
-function App({
-  breadcrumbs,
-  location,
-  setScreenSize,
-  screenSize,
-  routeLocation
-}) {
+function App({ location, setScreenSize, screenSize, logo, getCates }) {
+  useInjectSaga({ key: 'app', saga });
   useEffect(() => {
     const changeScreenSize = () => {
       setScreenSize(window.innerWidth);
     };
     window.addEventListener('resize', changeScreenSize);
-
+    getCates();
     return () => {
       window.removeEventListener('resize', changeScreenSize);
     };
   }, []);
 
   const isMobile = getScreenSize('xl') >= screenSize;
+
+  function itemRender(route, params, routes, paths) {
+    const last = routes.indexOf(route) === routes.length - 1;
+    return last ? (
+      <span>{route.breadcrumbName}</span>
+    ) : (
+      <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+    );
+  }
+
   return (
     <Layout>
-      <Header location={location} mobile={isMobile} />
-      <StyledContent mobile={isMobile}>
-        {/* {breadcrumbs.displayable && (
-          <BreadcrumbBox>
-            <div>
-              <Breadcrumb separator=">">
-                {breadcrumbs.items.map(item => (
-                  <Breadcrumb.Item key={_.uniqueId()} href={item.href}>
-                    {item.name}
-                  </Breadcrumb.Item>
-                ))}
-              </Breadcrumb>
-            </div>
-          </BreadcrumbBox>
-        )}
-        <div>
-          
-        </div> */}
+      <Header location={location} logo={logo} mobile={isMobile ? 1 : 0} />
+      <StyledContent mobile={isMobile ? 1 : 0}>
+        <BreadcrumbBox>
+          <PageWrapper>
+            <Breadcrumb
+              itemRender={itemRender}
+              separator=">"
+              routes={breadcrumbRoutes}
+            />
+          </PageWrapper>
+        </BreadcrumbBox>
         <PageWrapper>
           <Switch>
-            {pageUrls.map(page => (
+            {route.map(page => (
               <Route
                 key={page.name}
-                exact
-                path={page.url}
+                exact={page.extract}
+                path={page.path}
                 component={page.component}
               />
             ))}
@@ -113,26 +92,12 @@ function App({
           </Switch>
         </PageWrapper>
       </StyledContent>
-      {!isMobile && (
+      {!isMobile ? (
         <StyledFooter style={{ textAlign: 'center' }}>
           Design by HieuVM
         </StyledFooter>
-      )}
-      {isMobile && (
-        <Affix offsetBottom={0}>
-          <CustomBottomNav
-            mode="horizontal"
-            selectedKeys={[routeLocation.pathname]}
-          >
-            {pageUrls
-              .filter(item => item.isNavigation)
-              .map(page => (
-                <Menu.Item key={page.url}>
-                  <Link to={page.url}>{page.name}</Link>
-                </Menu.Item>
-              ))}
-          </CustomBottomNav>
-        </Affix>
+      ) : (
+        <Drawer logo={logo} />
       )}
       <GlobalStyle />
     </Layout>
@@ -143,18 +108,21 @@ App.propTypes = {
   breadcrumbs: propTypes.object,
   location: propTypes.string,
   routeLocation: propTypes.object,
-  setScreenSize: propTypes.func
+  setScreenSize: propTypes.func,
+  getCates: propTypes.func
 };
 
 const mapStateToProps = createStructuredSelector({
   breadcrumbs: makeSelectBreadcrumb(),
   location: makeSelectUserLocation(),
   screenSize: makeSelectScreenSize(),
-  routeLocation: makeSelectLocation()
+  routeLocation: makeSelectLocation(),
+  logo: makeSelectLogo()
 });
 
 const mapDispatchToProps = dispatch => ({
-  setScreenSize: size => dispatch({ type: SCREEN_RESIZE, payload: size })
+  setScreenSize: size => dispatch({ type: SCREEN_RESIZE, payload: size }),
+  getCates: () => dispatch(getCategories())
 });
 
 export default connect(
