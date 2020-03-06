@@ -36,20 +36,10 @@ import { makeSelectScreenSize } from '../App/selectors';
 import FlashSale from '../../components/FlashSale';
 import _ from 'lodash';
 
-function DetailPage({ changeBreadcrumbs, screenSize, detailPage }) {
+function DetailPage({ screenSize, detailPage }) {
   useInjectReducer({ key: 'detailPage', reducer });
   useInjectSaga({ key: 'detailPage', saga });
-  const [slickWidth, setSlickWidth] = useState(0);
   const [previewUrl, setPreviewUrl] = useState(detailPage.Images[0].src);
-
-  const slick = useRef(null);
-
-  useEffect(() => {
-    if (slick.current) {
-      setSlickWidth(slick.current.offsetWidth);
-      window.onresize = () => setSlickWidth(slick.current.offsetWidth);
-    }
-  }, []);
 
   const { slug } = useParams();
 
@@ -66,14 +56,63 @@ function DetailPage({ changeBreadcrumbs, screenSize, detailPage }) {
         <Row gutter={[10, 10]}>
           <Col xl={9} xs={24} md={24}>
             <div className="product-inf">
-              <div className="control" ref={slick}>
+              <div className="control">
                 <Carousel
                   dots={false}
-                  slidesToShow={slickWidth == 0 ? 4.75 : slickWidth / 80 - 0.5}
                   draggable
                   slidesToScroll={3}
                   speed={700}
                   infinite={false}
+                  slidesToShow={4.5}
+                  responsive={[
+                    {
+                      breakpoint: 1440,
+                      settings: {
+                        slidesToShow: 4.5
+                        // slidesToScroll: 4,
+                      }
+                    },
+                    {
+                      breakpoint: 1350,
+                      settings: {
+                        slidesToShow: 5.5
+                        // slidesToScroll: 4,
+                      }
+                    },
+                    {
+                      breakpoint: 1024,
+                      settings: {
+                        slidesToShow: 11.5
+                        // slidesToScroll: 4,
+                      }
+                    },
+                    {
+                      breakpoint: 768,
+                      settings: {
+                        slidesToShow: 8.5
+                        // slidesToScroll: 4,
+                      }
+                    },
+                    {
+                      breakpoint: 425,
+                      settings: {
+                        slidesToShow: 4.5
+                        // slidesToScroll: 4,
+                      }
+                    },{
+                      breakpoint: 375,
+                      settings: {
+                        slidesToShow: 4.1
+                        // slidesToScroll: 4,
+                      }
+                    },{
+                      breakpoint: 320,
+                      settings: {
+                        slidesToShow: 3.5
+                        // slidesToScroll: 4,
+                      }
+                    }
+                  ]}
                 >
                   {detailPage.Images.map(image => (
                     <div

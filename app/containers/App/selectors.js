@@ -3,48 +3,55 @@ import { createSelector } from 'reselect';
 const selectRouter = state => state.router;
 
 const makeSelectLocation = () =>
-    createSelector(
-        selectRouter,
-        routerState => routerState.location
-    );
+  createSelector(
+    selectRouter,
+    routerState => routerState.location
+  );
 
 const selectApp = state => state.app;
 
 const makeSelectBreadcrumb = () =>
-    createSelector(
-        selectApp,
-        state => state.breadcrumbs
-    );
+  createSelector(
+    selectApp,
+    state => state.breadcrumbs
+  );
 
 const makeSelectUserLocation = () =>
-    createSelector(
-        selectApp,
-        state => state.location
-    );
+  createSelector(
+    selectApp,
+    state => state.location
+  );
 
 const makeSelectScreenSize = () =>
-    createSelector(
-        selectApp,
-        state => state.screenWidth
-    );
+  createSelector(
+    selectApp,
+    state => state.screenWidth
+  );
 
 const makeSelectLogo = () =>
-    createSelector(
-        selectApp,
-        state => state.logo
-    );
+  createSelector(
+    selectApp,
+    state => state.logo
+  );
 
 const makeSelectSearchPlaceholder = () =>
-    createSelector(
-        selectApp,
-        state => state.searchPlaceholder
-    );
+  createSelector(
+    selectApp,
+    state => state.searchPlaceholder
+  );
+
+const makeSelectCategories = () =>
+  createSelector(
+    selectApp,
+    state => state.categories
+  );
 
 export {
-    makeSelectLocation,
-    makeSelectBreadcrumb,
-    makeSelectUserLocation,
-    makeSelectScreenSize,
-    makeSelectLogo,
-    makeSelectSearchPlaceholder
+  makeSelectLocation,
+  makeSelectBreadcrumb,
+  makeSelectUserLocation,
+  makeSelectScreenSize,
+  makeSelectLogo,
+  makeSelectSearchPlaceholder,
+  makeSelectCategories
 };

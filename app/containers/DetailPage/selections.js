@@ -6,6 +6,7 @@ export const Main = styled.div`
   }
   & img{
     max-width: 100%;
+    object-fit: contain;
   }
   padding-bottom: 20px;
   & .product-inf {
