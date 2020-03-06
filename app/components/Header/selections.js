@@ -79,6 +79,9 @@ export const MobileSearch = styled(Input.Search)`
   border-radius: 4px !important;
   background-color: #fff !important;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+  & > .ant-input-suffix{
+    line-height: 2.3;
+  }
 `;
 
 export const UserLink = styled.ul`

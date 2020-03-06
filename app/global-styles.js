@@ -1,8 +1,8 @@
 import { createGlobalStyle } from 'styled-components';
 import {
-  StyledContent,
-  StyledFooter,
-  BreadcrumbBox,
+    StyledContent,
+    StyledFooter,
+    BreadcrumbBox
 } from './containers/App/selections';
 
 const GlobalStyle = createGlobalStyle`
@@ -12,12 +12,11 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
   }
 
-  body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  * {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !important;
   }
-
-  body.fontLoaded {
-    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  p, label{
+    line-height: 1.6em !important;
   }
 
   #app {

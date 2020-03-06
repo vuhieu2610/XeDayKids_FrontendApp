@@ -10,9 +10,6 @@ export const CustomCard = styled(Card)`
     border-bottom: 1px solid transparent;
     padding-left: 0;
   }
-  & .ant-card-body {
-    padding: 0;
-  }
   & .ant-card-head-title {
     & > h4 {
       font-size: 24px;

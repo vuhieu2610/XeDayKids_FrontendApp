@@ -4,6 +4,9 @@ export const Main = styled.div`
   & * {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
   }
+  & img{
+    max-width: 100%;
+  }
   padding-bottom: 20px;
   & .product-inf {
     display: flex;
@@ -200,6 +203,9 @@ export const Main = styled.div`
       align-items: flex-end;
       & > .order-actions {
         display: ${props => (props.mobile ? 'flex' : 'block')};
+        @media (max-width: 375px) {
+          flex-direction: column;
+        }
         & > button {
           /* border-radius: 20px; */
           height: 45px;
