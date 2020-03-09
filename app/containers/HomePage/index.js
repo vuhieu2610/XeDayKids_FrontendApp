@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /*
  * HomePage
  *
@@ -15,7 +16,6 @@ import propTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { setBreadcrumbs } from '../App/actions';
 import Items from '../../components/Items';
 import {
   MainContent,
@@ -86,7 +86,7 @@ function HomePage({ homeState, categories }) {
             <CustomCaroselWrapper>
               <CustomCarosel autoplay draggable>
                 {homeState.sliders.map((item, index) => (
-                  <Link to="#" key={index}>
+                  <Link to="#" key={_.uniqueId(index)}>
                     <img src={item} alt={_.toString(item)} />
                   </Link>
                 ))}
@@ -97,7 +97,7 @@ function HomePage({ homeState, categories }) {
                     <Link to="/">
                       <img
                         src="https://bibomart.com.vn/media/wysiwyg/bibomart_homepage/homebanner1_6.jpg"
-                        alt
+                        alt="https://bibomart.com.vn/media/wysiwyg/bibomart_homepage/homebanner1_6.jpg"
                       />
                     </Link>
                   </div>
@@ -106,7 +106,7 @@ function HomePage({ homeState, categories }) {
                     <Link to="/">
                       <img
                         src="https://bibomart.com.vn/media/wysiwyg/bibomart_homepage/homebanner2_7.jpg"
-                        alt
+                        alt="https://bibomart.com.vn/media/wysiwyg/bibomart_homepage/homebanner1_6.jpg"
                       />
                     </Link>
                   </div>
@@ -115,7 +115,7 @@ function HomePage({ homeState, categories }) {
                     <Link to="/">
                       <img
                         src="https://bibomart.com.vn/media/wysiwyg/bibomart_homepage/homebanner3_4.jpg"
-                        alt
+                        alt="https://bibomart.com.vn/media/wysiwyg/bibomart_homepage/homebanner1_6.jpg"
                       />
                     </Link>
                   </div>
