@@ -45,10 +45,10 @@ export const CustomItem = styled(Card)`
   user-select: none;
   overflow: hidden;
   @media (min-width: 768px) {
-    margin: 10px !important;
+    margin: 5px 5px 0 0 !important;
   }
   @media (max-width: 767px) {
-    margin: 2px !important;
+    margin: 5px 5px 0 0 !important;
   }
   &:hover {
     border: 1px solid #f0f0f0;
@@ -137,14 +137,17 @@ export const CustomItem = styled(Card)`
       & ${CountDownWrapper} {
         width: 90px;
         margin-left: 10px;
+        text-align: right;
       }
       @media (max-width: 768px) {
+        flex-direction: column;
         & ${CustomBar} {
           width: 100%;
         }
         & ${CountDownWrapper} {
-          display: none;
+          width: 100%;
           margin-left: 0;
+          text-align: center;
         }
       }
     }

@@ -1,31 +1,58 @@
+/* eslint-disable import/no-cycle */
+/* eslint-disable prettier/prettier */
 import React from 'react';
 import { Menu } from 'antd';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import getSlug from 'speakingurl';
+import { getRouteUrl } from '../../route';
+
+const defaultIconPath =
+  'https://bibomart.com.vn/media/mega_menu/item/6-xeday.png';
+
+const getCateUrl = item =>
+  getRouteUrl('ListPage', {
+    slug: getSlug(item.Name),
+    id: item.CategoryId,
+  });
 
 export const VerticleMenuItem = ({ dataList }) => (
   <Menu selectable={false} mode="vertical-left">
     {dataList.map(item => (
-      <MenuItem key={item.CategoryId}>
-        <Link to={item.Href || ''}>
-          {item.Image && (
+      <MenuItem
+        key={item.CategoryId}
+        title={
+          <Link to={getCateUrl(item)}>
             <span
               style={{
-                backgroundImage: `url(${item.Image})`,
+                backgroundImage: `url(${item.Image || defaultIconPath})`,
               }}
               className="icon"
             />
-          )}
-          <span>{item.Name}</span>
-        </Link>
+            <span>{item.Name}</span>
+          </Link>
+        }
+      >
+        <VerticleMenuItem dataList={item.children} />
       </MenuItem>
     ))}
   </Menu>
 );
 
-const MenuItem = styled(Menu.Item)`
+VerticleMenuItem.propTypes = {
+  dataList: PropTypes.array,
+};
+
+const MenuItem = styled(Menu.SubMenu)`
   padding: 0 !important;
-  & > a {
+  & * {
+    color: #333;
+  }
+  & .ant-menu-submenu-title{
+    padding: 0 !important;
+  }
+  & a {
     font-size: 14px;
     line-height: 23px;
     padding: 10px 10px 9px 50px;
@@ -50,11 +77,6 @@ const MenuItem = styled(Menu.Item)`
         text-transform: none;
         font-size: 14px;
       }
-    }
-  }
-  &:hover {
-    & > a {
-      color: #ec7079;
     }
   }
 `;

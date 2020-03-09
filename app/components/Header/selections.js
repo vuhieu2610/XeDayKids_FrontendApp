@@ -25,7 +25,7 @@ export const StyledHeader = styled(Header)`
   & > .content {
     height: calc(108px - 32px);
     /* padding: 0 ${props => (props.mobile ? '10px' : '50px')}; */
-    background-color: ${props => (props.mobile ? '#f0f2f5' : '#fff')};
+    background-color: #fff;
     & > div {
       height: 100%;
     }

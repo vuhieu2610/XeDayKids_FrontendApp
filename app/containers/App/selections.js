@@ -64,8 +64,8 @@ export const CustomBottomNav = styled(Menu)`
 export const PageWrapper = styled.div`
   width: 100%;
   @media (max-width: 1439px) {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 5px;
+    padding-right: 5px;
   }
   @media (min-width: 1440px) {
     margin-left: auto;

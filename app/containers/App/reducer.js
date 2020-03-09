@@ -1,8 +1,8 @@
+/* eslint-disable no-case-declarations */
 /* eslint-disable no-param-reassign */
 import produce from 'immer';
 import _ from 'lodash';
 import {
-  CHANGE_BREADCUMBS_STATE,
   ADD_TO_CART,
   EXCLUDE_ITEM,
   SCREEN_RESIZE,
@@ -21,33 +21,7 @@ export const initalState = {
   },
   categories: {
     isLoading: false,
-    data: [
-      {
-        CategoryId: 1,
-        Name: 'Xe Đẩy 4 bánh',
-        Image: 'https://bibomart.com.vn/media/mega_menu/item/6-xeday.png',
-      },
-      {
-        CategoryId: 2,
-        Name: 'Xe Đẩy có mái che',
-        Image: 'https://bibomart.com.vn/media/mega_menu/item/6-xeday.png',
-      },
-      {
-        CategoryId: 3,
-        Name: 'Xe Đẩy du lịch',
-        Image: 'https://bibomart.com.vn/media/mega_menu/item/6-xeday.png',
-      },
-      {
-        CategoryId: 4,
-        Name: 'Xe Đẩy gấp gọn',
-        Image: 'https://bibomart.com.vn/media/mega_menu/item/6-xeday.png',
-      },
-      {
-        CategoryId: 5,
-        Name: 'Xe Đẩy đôi',
-        Image: 'https://bibomart.com.vn/media/mega_menu/item/6-xeday.png',
-      },
-    ],
+    data: [],
     hasError: false,
   },
 };
@@ -70,6 +44,11 @@ const appReducer = (state = initalState, action) =>
       case CATEGORIES_FETCHED:
         const { data } = action.payload;
         draft.categories.isLoading = false;
+        if (!data) {
+          draft.categories.hasError = true;
+          draft.categories.data = [];
+          return;
+        }
         if (!data.Success) {
           draft.categories.hasError = true;
         } else {

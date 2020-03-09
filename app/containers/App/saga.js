@@ -6,7 +6,7 @@ import { categoriesLoaded } from './actions';
 function reqCategories() {
   return request({
     method: 'post',
-    url: '/CategoryApi/FEGetCategories'
+    url: '/CategoryApi/GetCategories'
   });
 }
 

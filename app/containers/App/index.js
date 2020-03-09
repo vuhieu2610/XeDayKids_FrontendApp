@@ -9,13 +9,13 @@
 
 import React, { useEffect } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
-import { Layout, Breadcrumb, Row, Col } from 'antd';
+import { Layout, Breadcrumb, Row, Col, message } from 'antd';
 
 import { useInjectSaga } from 'utils/injectSaga';
 
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import propTypes from 'prop-types';
-import _ from 'lodash';
+// import _ from 'lodash';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import route, { breadcrumbRoutes } from '../../route';
@@ -58,8 +58,8 @@ function App({
       setScreenSize(window.innerWidth);
     };
     window.addEventListener('resize', changeScreenSize);
-    // getCates();
-    console.log(categories);
+    getCates();
+    // console.log(categories);
     return () => {
       window.removeEventListener('resize', changeScreenSize);
     };
@@ -67,12 +67,12 @@ function App({
 
   const isMobile = getScreenSize('xl') >= screenSize;
 
-  function itemRender(route, params, routes, paths) {
-    const last = routes.indexOf(route) === routes.length - 1;
+  function itemRender(_route, params, routes, paths) {
+    const last = routes.indexOf(_route) === routes.length - 1;
     return last ? (
-      <span>{route.breadcrumbName}</span>
+      <span>{_route.breadcrumbName}</span>
     ) : (
-      <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+      <Link to={paths.join('/')}>{_route.breadcrumbName}</Link>
     );
   }
 
@@ -137,12 +137,12 @@ function App({
 }
 
 App.propTypes = {
-  breadcrumbs: propTypes.object,
   location: propTypes.string,
-  routeLocation: propTypes.object,
+  screenSize: propTypes.number,
   setScreenSize: propTypes.func,
   getCates: propTypes.func,
   searchPlaceHolder: propTypes.string,
+  logo: propTypes.string,
   categories: propTypes.shape({
     isLoading: propTypes.bool,
     data: propTypes.array,

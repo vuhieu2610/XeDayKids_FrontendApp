@@ -19,6 +19,7 @@ export const CustomCarosel = styled(Carousel)`
       & > img {
         width: 100%;
         height: 100%;
+        max-height: 422px;
         object-fit: cover;
         object-position: left;
       }
@@ -44,6 +45,9 @@ export const CustomMenu = styled.div`
   padding: 10px;
   & > .ant-menu {
     margin: -10px;
+  }
+  & .ant-menu-vertical-left {
+    border-right: 0;
   }
 `;
 
@@ -85,9 +89,9 @@ export const CustomCaroselWrapper = styled.div`
     }
   }
 
-  @media (max-width: 1439px) {
+  @media (max-width: 768px) {
     & .ant-carousel {
-      margin: -10px -20px 0 -20px;
+      margin: -10px -9px 0 -9px;
       overflow: hidden;
     }
   }

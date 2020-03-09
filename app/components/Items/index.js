@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
@@ -94,7 +95,7 @@ const carouselResponsiveConfigs = [
     breakpoint: 425,
     settings: {
       rows: 2,
-      slidesToShow: 2.5,
+      slidesToShow: 2.3,
       // slidesToScroll: 3,
     },
   },
@@ -102,7 +103,7 @@ const carouselResponsiveConfigs = [
     breakpoint: 375,
     settings: {
       rows: 2,
-      slidesToShow: 2.2,
+      slidesToShow: 2.1,
       // slidesToScroll: 3,
     },
   },
@@ -110,7 +111,7 @@ const carouselResponsiveConfigs = [
     breakpoint: 320,
     settings: {
       rows: 2,
-      slidesToShow: 2,
+      slidesToShow: 1.7,
       // slidesToScroll: 3,
     },
   },

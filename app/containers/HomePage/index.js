@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /*
  * HomePage
@@ -6,7 +7,7 @@
  *
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Row, Col, Skeleton } from 'antd';
 
 import { useInjectReducer } from 'utils/injectReducer';
@@ -29,6 +30,7 @@ import { makeSelectHomeState } from './selector';
 import { makeSelectCategories } from '../App/selectors';
 import { VerticleMenuItem } from '../../components/Categories';
 import { getSlug } from '../../utils/string';
+import { getRouteUrl } from '../../route';
 
 const defaultCateData = {
   categoryId: 0,
@@ -42,13 +44,14 @@ function HomePage({ homeState, categories }) {
 
   const [cate1, setCate1] = useState(defaultCateData);
   const [cate2, setCate2] = useState(defaultCateData);
+  const [promotion, setPromotion] = useState(defaultCateData);
 
   useEffect(() => {
     setTimeout(() => {
       setCate1({
         loading: false,
         items: getData(),
-        categoryId: 10,
+        id: 10,
         categoryName: 'Xe đẩy em bé',
       });
     }, 1500);
@@ -56,8 +59,17 @@ function HomePage({ homeState, categories }) {
       setCate2({
         loading: false,
         items: getData(),
-        categoryId: 10,
+        id: 10,
         categoryName: 'Xe đẩy VovO',
+      });
+    }, 1500);
+
+    setTimeout(() => {
+      setPromotion({
+        loading: false,
+        items: getPromotions(),
+        id: 11,
+        categoryName: 'Khuyến mại',
       });
     }, 1500);
   }, []);
@@ -70,7 +82,7 @@ function HomePage({ homeState, categories }) {
       </Helmet>
       <MainContent>
         <Row>
-          <Col xl={4} xs={0}>
+          <Col xl={categories.hasError ? 0 : 5} xs={0}>
             <CustomMenu>
               <Skeleton
                 loading={categories.isLoading}
@@ -82,9 +94,9 @@ function HomePage({ homeState, categories }) {
               </Skeleton>
             </CustomMenu>
           </Col>
-          <Col xl={20} xs={24}>
+          <Col xl={categories.hasError ? 24 : 19} xs={24}>
             <CustomCaroselWrapper>
-              <CustomCarosel autoplay draggable>
+              <CustomCarosel draggable>
                 {homeState.sliders.map((item, index) => (
                   <Link to="#" key={_.uniqueId(index)}>
                     <img src={item} alt={_.toString(item)} />
@@ -215,9 +227,37 @@ function HomePage({ homeState, categories }) {
         <Row gutter={[0, 10]}>
           <Col span={24}>
             <Items
-              href={`/category/${getSlug(cate1.categoryName)}.${
-                cate1.categoryId
-              }`}
+              href={getRouteUrl('PromotionPage')}
+              title={
+                <Skeleton
+                  active
+                  loading={promotion.loading}
+                  title={{
+                    width: 100,
+                  }}
+                  paragraph={{
+                    rows: 0,
+                  }}
+                  avatar
+                >
+                  <img
+                    src="https://img.icons8.com/ios/30/000000/tag-window.png"
+                    alt="icon"
+                  />
+                  {promotion.categoryName}
+                </Skeleton>
+              }
+              loading={promotion.loading}
+              data={promotion.items}
+            />
+          </Col>
+
+          <Col span={24}>
+            <Items
+              href={getRouteUrl('ListPage', {
+                slug: getSlug(cate1.categoryName),
+                id: cate1.id,
+              })}
               title={
                 <Skeleton
                   active
@@ -244,9 +284,10 @@ function HomePage({ homeState, categories }) {
 
           <Col span={24}>
             <Items
-              href={`/category/${getSlug(cate2.categoryName)}.${
-                cate2.categoryId
-              }`}
+              href={getRouteUrl('ListPage', {
+                slug: getSlug(cate2.categoryName),
+                id: cate2.id,
+              })}
               title={
                 <Skeleton
                   active
@@ -289,7 +330,7 @@ const mapStateToProp = createStructuredSelector({
   homeState: makeSelectHomeState(),
   categories: makeSelectCategories(),
 });
-const mapDispatchToProp = dispatch => ({});
+const mapDispatchToProp = (/* dispatch */) => ({});
 
 export default connect(
   mapStateToProp,
@@ -308,7 +349,8 @@ export const getData = () => [
       },
     ],
     Price: '12.500.000 ₫',
-    Rating: 0,
+    rating: 5.2,
+    ratingCount: 10,
   },
   {
     ProductId: '22',
@@ -322,6 +364,8 @@ export const getData = () => [
     ],
     Price: '6.800.000 ₫',
     Rating: 0,
+    rating: 5.2,
+    ratingCount: 10,
   },
   {
     ProductId: '23',
@@ -556,5 +600,109 @@ export const getData = () => [
     ],
     Price: '1.250.000 ₫',
     Rating: 0,
+  },
+];
+
+const getPromotions = () => [
+  {
+    ProductId: '21',
+    ShortName: '\nXe đẩy đôi Combi Spazio Duo ',
+    ImageList: [
+      {
+        url:
+          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201706031421xe-day-doi-combi-spazio-duo-115993_1.jpg',
+        alt: 'Xe đẩy đôi Combi Spazio Duo',
+      },
+    ],
+    Price: '12.500.000 ₫',
+    rating: 5.2,
+    ratingCount: 10,
+    DisountId: 10,
+  },
+  {
+    ProductId: '22',
+    ShortName: '\nXe đẩy Joie Litetrax 4 Flex W/RC SIG. Noir ',
+    ImageList: [
+      {
+        url:
+          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-litetrax-4-flex-w-rc-sig-noir.jpg',
+        alt: 'Xe đẩy Joie Litetrax 4 Flex W/RC SIG. Noir',
+      },
+    ],
+    Price: '6.800.000 ₫',
+    Rating: 0,
+    DisountId: 10,
+    rating: 5.2,
+    ratingCount: 10,
+  },
+  {
+    ProductId: '23',
+    ShortName: '\nXe đẩy Joie Pact Flex W/RC&ADPT&TB SIG. Noir ',
+    ImageList: [
+      {
+        url:
+          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-pact-flex-w-rc_adpt_tb-sig-noir.jpg',
+        alt: 'Xe đẩy Joie Pact Flex W/RC&ADPT&TB SIG. Noir',
+      },
+    ],
+    Price: '5.800.000 ₫',
+    Rating: 0,
+    DisountId: 10,
+  },
+  {
+    ProductId: '24',
+    ShortName: '\nXe đẩy Joie Litetrax 4 W/RC Chromium ',
+    ImageList: [
+      {
+        url:
+          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-litetrax-4-w-rc-chromium-3.jpg',
+        alt: 'Xe đẩy Joie Litetrax 4 W/RC Chromium',
+      },
+    ],
+    Price: '5.300.000 ₫',
+    Rating: 0,
+    DisountId: 10,
+  },
+  {
+    ProductId: '25',
+    ShortName: '\nXe đẩy Joie Pact W/RC & ADPT & TB Navy Blazer ',
+    ImageList: [
+      {
+        url:
+          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-pact-w-rc-_-adpt-_-tb-navy-blazer.jpg',
+        alt: 'Xe đẩy Joie Pact W/RC & ADPT & TB Navy Blazer',
+      },
+    ],
+    Price: '4.200.000 ₫',
+    Rating: 0,
+    DisountId: 10,
+  },
+  {
+    ProductId: '26',
+    ShortName: "\nXe đẩy Bibo's A1-262 ",
+    ImageList: [
+      {
+        url:
+          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201709181505xe-day-116025-1_1.jpg',
+        alt: "Xe đẩy Bibo's A1-262",
+      },
+    ],
+    Price: '899.000 ₫',
+    Rating: 0,
+    DisountId: 10,
+  },
+  {
+    ProductId: '27',
+    ShortName: "\nXe đẩy Bibo's A1-112 ",
+    ImageList: [
+      {
+        url:
+          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201709181500xe-day-116024_1.jpg',
+        alt: "Xe đẩy Bibo's A1-112",
+      },
+    ],
+    Price: '899.000 ₫',
+    Rating: 0,
+    DisountId: 10,
   },
 ];

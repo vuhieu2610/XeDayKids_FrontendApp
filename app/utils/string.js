@@ -1,11 +1,10 @@
+/* eslint-disable no-plusplus */
 import speakingurl from 'speakingurl';
 
-export const getSlug = function(string) {
-  return speakingurl(string, {
+export const getSlug = string =>
+  speakingurl(string, {
     lang: 'vi',
   });
-};
-
 export const defaultArray = length => {
   const rs = [];
   for (let i = 0; i < length; i++) {
@@ -13,3 +12,6 @@ export const defaultArray = length => {
   }
   return rs;
 };
+
+export const toMoney = num =>
+  num.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.');
