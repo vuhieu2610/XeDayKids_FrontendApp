@@ -52,7 +52,7 @@ module.exports = require('./webpack.base.babel')({
   babelQuery: {
     plugins: [
       ['import', { libraryName: 'antd', style: 'css' }, 'antd'],
-      ["import", { "libraryName": "antd-mobile", "style": "css" }, 'antd-mobile']
+      ['lodash'],
     ],
   },
 });

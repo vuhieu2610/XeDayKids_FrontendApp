@@ -8,37 +8,37 @@ const route = [
     name: 'HomePage',
     component: HomePage,
     extract: true,
-    path: '/'
+    path: '/',
   },
   {
     component: CheckoutPage,
     name: 'CheckoutPage',
     extract: true,
-    path: '/checkout/cart'
+    path: '/checkout/cart',
   },
   {
     component: ListPage,
     name: 'ListPage',
     extract: true,
-    path: '/products'
+    path: '/category/:slug.:id',
   },
   {
     component: DetailPage,
     name: 'DetailPage',
     extract: true,
-    path: '/:slug'
-  }
+    path: '/:slug.:productId',
+  },
 ];
 
 export const breadcrumbRoutes = [
   {
     path: '/',
-    breadcrumbName: 'Trang chủ'
+    breadcrumbName: 'Trang chủ',
   },
   {
     path: ':slug',
-    breadcrumbName: 'Trang chi tiết'
-  }
+    breadcrumbName: 'Trang chi tiết',
+  },
 ];
 
 export default route;

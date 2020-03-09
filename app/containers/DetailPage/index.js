@@ -23,9 +23,10 @@ import {
   Row,
   Col,
   Carousel,
-  Progress
+  Progress,
 } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
+import _ from 'lodash';
 import makeSelectDetailPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -34,7 +35,6 @@ import { Main } from './selections';
 import { getScreenSize } from '../../utils/responsive';
 import { makeSelectScreenSize } from '../App/selectors';
 import FlashSale from '../../components/FlashSale';
-import _ from 'lodash';
 
 function DetailPage({ screenSize, detailPage }) {
   useInjectReducer({ key: 'detailPage', reducer });
@@ -52,7 +52,7 @@ function DetailPage({ screenSize, detailPage }) {
         <meta name="description" content={detailPage.Metatitle} />
       </Helmet>
 
-      <Main mobile={_.toString(isMobile)}>
+      <Main mobile={isMobile ? 1 : 0}>
         <Row gutter={[10, 10]}>
           <Col xl={9} xs={24} md={24}>
             <div className="product-inf">
@@ -68,50 +68,52 @@ function DetailPage({ screenSize, detailPage }) {
                     {
                       breakpoint: 1440,
                       settings: {
-                        slidesToShow: 4.5
+                        slidesToShow: 4.5,
                         // slidesToScroll: 4,
-                      }
+                      },
                     },
                     {
                       breakpoint: 1350,
                       settings: {
-                        slidesToShow: 5.5
+                        slidesToShow: 5.5,
                         // slidesToScroll: 4,
-                      }
+                      },
                     },
                     {
                       breakpoint: 1024,
                       settings: {
-                        slidesToShow: 11.5
+                        slidesToShow: 11.5,
                         // slidesToScroll: 4,
-                      }
+                      },
                     },
                     {
                       breakpoint: 768,
                       settings: {
-                        slidesToShow: 8.5
+                        slidesToShow: 8.5,
                         // slidesToScroll: 4,
-                      }
+                      },
                     },
                     {
                       breakpoint: 425,
                       settings: {
-                        slidesToShow: 4.5
+                        slidesToShow: 4.5,
                         // slidesToScroll: 4,
-                      }
-                    },{
+                      },
+                    },
+                    {
                       breakpoint: 375,
                       settings: {
-                        slidesToShow: 4.1
+                        slidesToShow: 4.1,
                         // slidesToScroll: 4,
-                      }
-                    },{
+                      },
+                    },
+                    {
                       breakpoint: 320,
                       settings: {
-                        slidesToShow: 3.5
+                        slidesToShow: 3.5,
                         // slidesToScroll: 4,
-                      }
-                    }
+                      },
+                    },
                   ]}
                 >
                   {detailPage.Images.map(image => (
@@ -245,20 +247,20 @@ function DetailPage({ screenSize, detailPage }) {
                   dataSource={[
                     {
                       key: 'Thương hiệu',
-                      value: 'Demo brand'
+                      value: 'Demo brand',
                     },
                     {
                       key: 'Xuất xứ thương hiệu',
-                      value: 'Nhật Bản'
+                      value: 'Nhật Bản',
                     },
                     {
                       key: 'Nơi sản xuất',
-                      value: 'Nhật Bản'
+                      value: 'Nhật Bản',
                     },
                     {
                       key: 'Độ tuổi sử dụng',
-                      value: '1 - 3 tuổi'
-                    }
+                      value: '1 - 3 tuổi',
+                    },
                   ]}
                 >
                   <Table.Column
@@ -274,7 +276,7 @@ function DetailPage({ screenSize, detailPage }) {
               <div
                 className="data item"
                 dangerouslySetInnerHTML={{
-                  __html: detailPage.Description
+                  __html: detailPage.Description,
                 }}
               />
             </div>
@@ -291,27 +293,27 @@ function DetailPage({ screenSize, detailPage }) {
 DetailPage.propTypes = {
   // dispatch: PropTypes.func.isRequired,
   changeBreadcrumbs: PropTypes.func.isRequired,
-  screenSize: PropTypes.number
+  screenSize: PropTypes.number,
 };
 
 const mapStateToProps = createStructuredSelector({
   detailPage: makeSelectDetailPage(),
-  screenSize: makeSelectScreenSize()
+  screenSize: makeSelectScreenSize(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
-    changeBreadcrumbs: obj => dispatch(setBreadcrumbs(obj))
+    changeBreadcrumbs: obj => dispatch(setBreadcrumbs(obj)),
   };
 }
 
 const withConnect = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 );
 
 export default compose(
   withConnect,
-  memo
+  memo,
 )(DetailPage);

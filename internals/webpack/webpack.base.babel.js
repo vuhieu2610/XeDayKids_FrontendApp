@@ -12,7 +12,7 @@ module.exports = options => ({
     {
       // Compile into js/build.js
       path: path.resolve(process.cwd(), 'build'),
-      publicPath: '/',
+      publicPath: '',
     },
     options.output,
   ), // Merge with env dependent settings
@@ -20,7 +20,7 @@ module.exports = options => ({
   module: {
     rules: [
       {
-        test: /\.jsx?$/, // Transform all .js and .jsx files required somewhere with Babel
+        test: /\.js?$/, // Transform all .js and .jsx files required somewhere with Babel
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -43,7 +43,12 @@ module.exports = options => ({
       },
       {
         test: /\.(eot|otf|ttf|woff|woff2)$/,
-        use: 'file-loader',
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: 'Content/fonts/[name].[ext]',
+          },
+        },
       },
       {
         test: /\.svg$/,
@@ -54,6 +59,7 @@ module.exports = options => ({
               // Inline files smaller than 10 kB
               limit: 10 * 1024,
               noquotes: true,
+              name: 'Content/images/[name].[ext]',
             },
           },
         ],
@@ -66,6 +72,7 @@ module.exports = options => ({
             options: {
               // Inline files smaller than 10 kB
               limit: 10 * 1024,
+              name: 'Content/images/[name].[ext]',
             },
           },
           {
@@ -114,6 +121,11 @@ module.exports = options => ({
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
     }),
+    // new webpack.IgnorePlugin(/\.\/locale$/)
+    new webpack.ContextReplacementPlugin(
+      /moment[\\\/]locale$/,
+      /^\.\/(en|de|cz|eu)$/,
+    ),
   ]),
   resolve: {
     modules: ['node_modules', 'app'],

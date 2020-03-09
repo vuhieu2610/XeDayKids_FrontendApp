@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Carousel, Menu } from 'antd';
+import { Carousel } from 'antd';
 
 export const MainContent = styled.main`
   padding-top: 10px;
@@ -27,6 +27,12 @@ export const CustomCarosel = styled(Carousel)`
 
   & .slick-slide h3 {
     color: #fff;
+  }
+  @media (max-width: 1439px) {
+    /* margin: -10px -20px 0 -20px; */
+    & a {
+      height: auto !important;
+    }
   }
 `;
 
@@ -74,6 +80,16 @@ export const CustomCaroselWrapper = styled.div`
         }
       }
     }
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1439px) {
+    & .ant-carousel {
+      margin: -10px -20px 0 -20px;
+      overflow: hidden;
+    }
   }
 `;
 
@@ -98,10 +114,10 @@ export const FourboxBlock = styled.div`
         height: 100%;
         padding: 15px 14px 15px 15px;
         border-radius: 4px;
-
         & > span:not(.img) {
           display: flex;
           flex-direction: column;
+          width: 100%;
           & > span {
             width: 100%;
             padding-left: 15px;
@@ -109,6 +125,7 @@ export const FourboxBlock = styled.div`
             line-height: 1.2;
             color: #999;
             font-weight: 300;
+
             &.title {
               display: block;
               font-size: 18px;
@@ -116,6 +133,27 @@ export const FourboxBlock = styled.div`
               margin: 1px 0 5px;
               font-weight: 300;
             }
+          }
+        }
+        @media (max-width: 768px) {
+          flex-direction: column;
+          align-items: center;
+          padding: 0;
+          background: 0 0;
+          max-width: 165px;
+          margin: auto;
+          justify-content: flex-start;
+          & .title {
+            padding-left: 0 !important;
+            text-align: center !important;
+            font-size: 14px !important;
+            margin-top: 10px !important;
+            margin-left: -5px !important;
+            margin-right: -5px !important;
+            line-height: 1.25 !important;
+          }
+          & > span:not(.img) > span:not(.title) {
+            display: none;
           }
         }
       }

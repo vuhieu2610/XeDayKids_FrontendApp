@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
 import { Drawer as AntDrawer, Menu } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
-import { FloatingAcionButton } from './selections';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import _ from 'lodash';
+import { getSlug } from '../../utils/string';
+import { FloatingAcionButton } from './selections';
 const { SubMenu } = Menu;
 
-export default function Drawer({ logo }) {
+export default function Drawer({ logo, categories }) {
   const [drawableVisible, setDrawableVisible] = useState(false);
   return (
     <AntDrawer
-      title={<img className="logo" src={logo} alt="logo" />}
+      title={
+        <Link to="/">
+          <img className="logo" src={logo} alt="logo" />
+        </Link>
+      }
       placement="left"
       bodyStyle={{
-        padding: 6
+        padding: 6,
       }}
       handler={
         <FloatingAcionButton
@@ -25,56 +32,31 @@ export default function Drawer({ logo }) {
       onClose={() => setDrawableVisible(false)}
     >
       <Menu mode="inline" style={{ width: '100%', borderRight: 'none' }}>
-        <SubMenu
-          key="sub1"
-          title={
-            <span>
-              <span>Navigation One</span>
-            </span>
-          }
-        >
-          <Menu.ItemGroup title="Item 1">
-            <Menu.Item key="1">Option 1</Menu.Item>
-            <Menu.Item key="2">Option 2</Menu.Item>
-          </Menu.ItemGroup>
-          <Menu.ItemGroup title="Iteom 2">
-            <Menu.Item key="3">Option 3</Menu.Item>
-            <Menu.Item key="4">Option 4</Menu.Item>
-          </Menu.ItemGroup>
+        <Menu.Item key="/">
+          <Link to="/">Trang chủ</Link>
+        </Menu.Item>
+        <SubMenu key="/categories" title="Danh mục">
+          {categories &&
+            categories.map(category => (
+              <Menu.Item key={_.uniqueId(category.Name)}>
+                <Link
+                  to={`/category/${getSlug(category.Name)}.${
+                    category.CategoryId
+                  }`}
+                >
+                  {category.Name}
+                </Link>
+              </Menu.Item>
+            ))}
         </SubMenu>
-        <SubMenu
-          key="sub2"
-          title={
-            <span>
-              <span>Navigation Two</span>
-            </span>
-          }
-        >
-          <Menu.Item key="5">Option 5</Menu.Item>
-          <Menu.Item key="6">Option 6</Menu.Item>
-          <SubMenu key="sub3" title="Submenu">
-            <Menu.Item key="7">Option 7</Menu.Item>
-            <Menu.Item key="8">Option 8</Menu.Item>
-          </SubMenu>
-        </SubMenu>
-        <SubMenu
-          key="sub4"
-          title={
-            <span>
-              <span>Navigation Three</span>
-            </span>
-          }
-        >
-          <Menu.Item key="9">Option 9</Menu.Item>
-          <Menu.Item key="10">Option 10</Menu.Item>
-          <Menu.Item key="11">Option 11</Menu.Item>
-          <Menu.Item key="12">Option 12</Menu.Item>
-        </SubMenu>
+        <Menu.Item key="/checkout/cart">
+          <Link to="/checkout/cart">Giỏ hàng</Link>
+        </Menu.Item>
       </Menu>
     </AntDrawer>
   );
 }
 
 Drawer.propTypes = {
-  logo: PropTypes.string
+  logo: PropTypes.string,
 };

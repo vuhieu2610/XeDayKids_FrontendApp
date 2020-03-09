@@ -1,21 +1,20 @@
 import styled from 'styled-components';
 
 export const Main = styled.div`
+  padding-bottom: 20px;
   & * {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
   }
-  & img{
+  & img {
     max-width: 100%;
     object-fit: contain;
   }
-  padding-bottom: 20px;
   & .product-inf {
     display: flex;
     align-items: center;
-    padding-right: ${props => (props.mobile ? '0' : '24px')};
     width: 100%;
     height: 464px;
-    flex-direction: ${props => (props.mobile ? 'column-reverse' : 'row')};
+    flex-direction: column-reverse;
     & > .control {
       width: 100%;
       height: 100px;
@@ -47,7 +46,6 @@ export const Main = styled.div`
       height: 100%;
     }
 
-    & > .preview,
     & .thumb {
       display: flex;
       align-items: center;
@@ -57,11 +55,12 @@ export const Main = styled.div`
   }
 
   & .preview {
-    overflow: hidden;
     max-height: 80%;
     height: 100%;
     margin: 15px 0;
-    width: calc(100% - 75px);
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   & .item-info-main {

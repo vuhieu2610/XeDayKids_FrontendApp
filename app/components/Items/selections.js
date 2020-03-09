@@ -6,9 +6,12 @@ export const CustomCard = styled(Card)`
   margin-top: 10px !important;
   margin-bottom: 5px !important;
 
-  & .ant-card-head {
+  & > .ant-card-head {
     border-bottom: 1px solid transparent;
-    padding-left: 0;
+    padding: 0 !important;
+  }
+  & > .ant-card-body {
+    padding: 0 !important;
   }
   & .ant-card-head-title {
     & > h4 {

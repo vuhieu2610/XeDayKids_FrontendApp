@@ -41,12 +41,15 @@ export const CountDownWrapper = styled.div`
 
 export const CustomItem = styled(Card)`
   width: auto;
-  margin: 10px !important;
   position: relative;
-  /* border: 1px solid transparent; */
   user-select: none;
   overflow: hidden;
-  /* transition: border-color 0.2s; */
+  @media (min-width: 768px) {
+    margin: 10px !important;
+  }
+  @media (max-width: 767px) {
+    margin: 2px !important;
+  }
   &:hover {
     border: 1px solid #f0f0f0;
   }
@@ -80,6 +83,10 @@ export const CustomItem = styled(Card)`
       background-size: 50px 46px;
       margin: 1px 0px 0px;
       background-position: 0px 0px;
+
+      @media (max-width: 768px) {
+        zoom: 0.7;
+      }
     }
     & .item-name {
       height: 36px;
@@ -88,9 +95,8 @@ export const CustomItem = styled(Card)`
         line-height: 1.25;
         color: rgb(36, 36, 36);
         text-decoration: none;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
+        display: block;
+        height: 40px;
         max-height: 40px;
         width: 100%;
         color: rgb(36, 36, 36);

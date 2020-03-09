@@ -14,17 +14,17 @@ import { Layout, Breadcrumb, Row, Col } from 'antd';
 import { useInjectSaga } from 'utils/injectSaga';
 
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import route, { breadcrumbRoutes } from '../../route';
 import propTypes from 'prop-types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
+import route, { breadcrumbRoutes } from '../../route';
 import GlobalStyle from '../../global-styles';
 import {
   StyledContent,
   StyledFooter,
   BreadcrumbBox,
-  PageWrapper
+  PageWrapper,
 } from './selections';
 import Header from '../../components/Header';
 import Drawer from '../../components/Drawer';
@@ -35,7 +35,7 @@ import {
   makeSelectLocation,
   makeSelectLogo,
   makeSelectSearchPlaceholder,
-  makeSelectCategories
+  makeSelectCategories,
 } from './selectors';
 import { SCREEN_RESIZE } from './constants';
 import { getScreenSize } from '../../utils/responsive';
@@ -50,7 +50,7 @@ function App({
   logo,
   categories,
   getCates,
-  searchPlaceHolder
+  searchPlaceHolder,
 }) {
   useInjectSaga({ key: 'app', saga });
   useEffect(() => {
@@ -59,12 +59,11 @@ function App({
     };
     window.addEventListener('resize', changeScreenSize);
     // getCates();
+    console.log(categories);
     return () => {
       window.removeEventListener('resize', changeScreenSize);
     };
   }, []);
-
-  console.log(categories);
 
   const isMobile = getScreenSize('xl') >= screenSize;
 
@@ -130,7 +129,7 @@ function App({
           </PageWrapper>
         </StyledFooter>
       ) : (
-        <Drawer logo={logo} categories={categories} />
+        <Drawer logo={logo} categories={categories.data} />
       )}
       <GlobalStyle />
     </Layout>
@@ -147,8 +146,8 @@ App.propTypes = {
   categories: propTypes.shape({
     isLoading: propTypes.bool,
     data: propTypes.array,
-    hasError: propTypes.bool
-  })
+    hasError: propTypes.bool,
+  }),
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -158,15 +157,15 @@ const mapStateToProps = createStructuredSelector({
   routeLocation: makeSelectLocation(),
   searchPlaceHolder: makeSelectSearchPlaceholder(),
   logo: makeSelectLogo(),
-  categories: makeSelectCategories()
+  categories: makeSelectCategories(),
 });
 
 const mapDispatchToProps = dispatch => ({
   setScreenSize: size => dispatch({ type: SCREEN_RESIZE, payload: size }),
-  getCates: () => dispatch(getCategories())
+  getCates: () => dispatch(getCategories()),
 });
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(App);

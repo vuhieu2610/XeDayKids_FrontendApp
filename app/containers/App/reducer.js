@@ -8,7 +8,7 @@ import {
   SCREEN_RESIZE,
   CATEGORIES_FETCHED,
   SET_SEARCH_PLACEHOLDER,
-  CATEGORIES_FETCH
+  CATEGORIES_FETCH,
 } from './constants';
 
 export const initalState = {
@@ -17,7 +17,7 @@ export const initalState = {
   screenWidth: typeof window === 'object' ? window.innerWidth : null,
   searchPlaceholder: '',
   cart: {
-    cartItems: []
+    cartItems: [],
   },
   categories: {
     isLoading: false,
@@ -25,31 +25,31 @@ export const initalState = {
       {
         CategoryId: 1,
         Name: 'Xe Đẩy 4 bánh',
-        Image: 'https://img.icons8.com/carbon-copy/100/000000/boy-stroller.png'
+        Image: 'https://bibomart.com.vn/media/mega_menu/item/6-xeday.png',
       },
       {
         CategoryId: 2,
         Name: 'Xe Đẩy có mái che',
-        Image: 'https://img.icons8.com/carbon-copy/100/000000/boy-stroller.png'
+        Image: 'https://bibomart.com.vn/media/mega_menu/item/6-xeday.png',
       },
       {
         CategoryId: 3,
         Name: 'Xe Đẩy du lịch',
-        Image: 'https://img.icons8.com/carbon-copy/100/000000/boy-stroller.png'
+        Image: 'https://bibomart.com.vn/media/mega_menu/item/6-xeday.png',
       },
       {
         CategoryId: 4,
         Name: 'Xe Đẩy gấp gọn',
-        Image: 'https://img.icons8.com/carbon-copy/100/000000/boy-stroller.png'
+        Image: 'https://bibomart.com.vn/media/mega_menu/item/6-xeday.png',
       },
       {
         CategoryId: 5,
         Name: 'Xe Đẩy đôi',
-        Image: 'https://img.icons8.com/carbon-copy/100/000000/boy-stroller.png'
-      }
+        Image: 'https://bibomart.com.vn/media/mega_menu/item/6-xeday.png',
+      },
     ],
-    hasError: false
-  }
+    hasError: false,
+  },
 };
 
 const appReducer = (state = initalState, action) =>
