@@ -15,6 +15,7 @@ export const Main = styled.div`
     width: 100%;
     height: 464px;
     flex-direction: column-reverse;
+    margin-top: 10px;
     & > .control {
       width: 100%;
       height: 100px;

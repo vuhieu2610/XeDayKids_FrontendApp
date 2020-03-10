@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-danger */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -16,7 +17,7 @@ import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import {
   InputNumber,
   Button,
@@ -27,21 +28,54 @@ import {
   Carousel,
   Progress,
   message,
+  Empty,
 } from 'antd';
+import produce from 'immer';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import _ from 'lodash';
-import makeSelectDetailPage from './selectors';
 import { setBreadcrumbs } from '../App/actions';
 import { Main } from './selections';
 import { getScreenSize } from '../../utils/responsive';
 import { makeSelectScreenSize } from '../App/selectors';
 import FlashSale from '../../components/FlashSale';
 import { getDetail } from './actions';
+import { baseURL } from '../../utils/request';
+import { toMoney } from '../../utils/string';
+import { getRouteUrl } from '../../route';
 
 const defaultItem = {
   hasData: true,
   data: {
-    ShortName: 'Trang chi tiết',
+    ProductId: 0,
+    Code: '',
+    ShortName: '',
+    Name: '',
+    Price: 0,
+    BuyerCount: 0,
+    RatePerMinute: 0,
+    CategoryId: 0,
+    CategoryName: null,
+    CategoryShortName: null,
+    DescriptionId: 0,
+    Content: '',
+    Details: [],
+    ShortDescription: '',
+    Images: [],
+    ImageList: null,
+    Attributes: [],
+    SimilarProductIds: '',
+    RelatedPostIds: '',
+    RelatedTagIds: '',
+    Rating: null,
+    RatingCount: null,
+    DiscountId: null,
+    IsDeleted: false,
+    CreateBy: null,
+    CreationDate: null,
+    LastUpdateBy: null,
+    LastUpdateDate: null,
+    DeleteBy: null,
+    DeleteDate: null,
   },
 };
 const thumbSliderConfigs = [
@@ -97,11 +131,12 @@ const thumbSliderConfigs = [
 ];
 
 let hideLoading = null;
-function DetailPage({ screenSize, detailPage }) {
+function DetailPage({ screenSize }) {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [item, setItem] = useState(defaultItem);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [quantityItem, setQuantityItem] = useState(0);
 
   const { productId } = useParams();
 
@@ -115,7 +150,7 @@ function DetailPage({ screenSize, detailPage }) {
         setHasError(true);
       } else {
         const { DataList: dataList, HasDataList: hasDataList } = body;
-        if (dataList) {
+        if (hasDataList) {
           const data = dataList[0];
           if (data.Images) {
             try {
@@ -133,21 +168,27 @@ function DetailPage({ screenSize, detailPage }) {
             }
           }
 
-          setItem({
-            hasData: true,
-            data,
-          });
-        } else {
-          setItem({
-            hasData: false,
-            data: null,
-          });
-        }
+          if (data.Details) {
+            try {
+              data.Details = JSON.parse(data.Details);
+            } catch (err) {
+              data.Details = [];
+            }
+          }
 
-        setItem({
-          data: dataList,
-          hasData: hasDataList,
-        });
+          setItem(
+            produce(item, draftItem => {
+              draftItem.data = data;
+              draftItem.hasData = true;
+            }),
+          );
+        } else {
+          setItem(
+            produce(item, draftItem => {
+              draftItem.hasData = false;
+            }),
+          );
+        }
       }
     } catch (err) {
       setHasError(true);
@@ -165,6 +206,8 @@ function DetailPage({ screenSize, detailPage }) {
   }, [isLoading]);
 
   useEffect(() => {
+    if (!item.data.Images) return;
+    window.item = item;
     try {
       setPreviewUrl(item.data.Images[0].url);
     } catch (err) {
@@ -193,82 +236,90 @@ function DetailPage({ screenSize, detailPage }) {
                 slidesToShow={4.5}
                 responsive={thumbSliderConfigs}
               >
-                {detailPage.Images.map(image => (
+                {item.data.Images.map(image => (
                   <div
                     className="thumb "
-                    onClick={() => setPreviewUrl(image.src)}
+                    onClick={() => setPreviewUrl(image.url)}
                     key={_.uniqueId()}
                   >
-                    <img src={image.src} alt={image.src} />
+                    <img src={baseURL + image.url} alt={image.url} />
                   </div>
                 ))}
               </Carousel>
             </div>
             <div className="preview">
-              <img src={previewUrl} alt="demo" />
+              <img src={baseURL + previewUrl} alt="demo" />
             </div>
           </div>
         </Col>
         <Col xl={9} xs={24} md={24}>
           <div className="item-info-main">
             <div className="page-title-wrapper">
-              <h1 className="page-title">{detailPage.ShortName}</h1>
+              <h1 className="page-title">{item.data.Name}</h1>
             </div>
             <div className="product-brand-container">
               <p className="branch-name">
                 <span className="label">Mã sản phầm: </span>
-                <span>123456</span>
+                <span>{item.data.ProductId}</span>
               </p>
             </div>
             <div className="attributes">
               <ul>
-                <li>
-                  Thực phẩm bổ sung: sản phẩm dinh dưỡng Icreo Follow up Milk
-                  (Icreo số 1)
-                </li>
-                <li>Giúp hệ tiêu hóa khỏe, trí não tinh anh</li>
-                <li>
-                  Bổ sung dinh dưỡng khó hấp thu từ bữa ăn: Sắt - vitamin C,
-                  vitamin D - photpho, canxi,…
-                </li>
+                {item.data.Attributes.map(attribute => (
+                  <li key={_.uniqueId()}>{attribute.attr}</li>
+                ))}
               </ul>
             </div>
             <div className="product-info-price">
               <p className="special-price-item">
                 <span className="price-label">Giá: </span>
-                <span className="span-price">1.090.000 ₫</span>
+                <span className="span-price">{toMoney(item.data.Price)} ₫</span>
               </p>
-              <p className="saleoff-price-item">
-                <span className="price-label">Tiết kiệm:</span>
-                <span className="discount-percent"> 45% </span>({' '}
-                <span className="span-saving-price">900.000đ</span> )
-              </p>
-              <p className="old-price-item">
-                <span className="price-label">Giá thị trường:</span>
-                <span className="span-list-price">1.990.000đ</span>
-              </p>
+              {item.data.DiscountId && (
+                <Fragment>
+                  <p className="saleoff-price-item">
+                    <span className="price-label">Tiết kiệm:</span>
+                    <span className="discount-percent"> 45% </span>({' '}
+                    <span className="span-saving-price">900.000đ</span> )
+                  </p>
+                  <p className="old-price-item">
+                    <span className="price-label">Giá thị trường:</span>
+                    <span className="span-list-price">1.990.000đ</span>
+                  </p>
 
-              <div className="deal-process">
-                <div className="deal-process-wrapper">
-                  <div className="deal-time">
-                    <span className="icon-timer" />
-                    khuyến mãi kết thúc sau:
-                    <span>02 ngày 00:00:00</span>
+                  <div className="deal-process">
+                    <div className="deal-process-wrapper">
+                      <div className="deal-time">
+                        <span className="icon-timer" />
+                        khuyến mãi kết thúc sau:
+                        <span>02 ngày 00:00:00</span>
+                      </div>
+                      <div className="deal-info">
+                        Đã bán 10 <Progress percent={70} status="exception" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="deal-info">
-                    Đã bán 10 <Progress percent={70} status="exception" />
-                  </div>
-                </div>
-              </div>
+                </Fragment>
+              )}
             </div>
             <Row className="actions" gutter={[10, 10]}>
               <Col lg={24} md={8} xs={24} className="number">
                 <label>
                   <span>Số lượng</span>
                   <div className="number-control">
-                    <Button>-</Button>
-                    <InputNumber min={0} width={300} defaultValue={0} />
-                    <Button>+</Button>
+                    <Button
+                      onClick={() =>
+                        setQuantityItem(
+                          quantityItem <= 1 ? 0 : quantityItem - 1,
+                        )
+                      }
+                    >
+                      -
+                    </Button>
+                    <InputNumber min={0} width={300} value={quantityItem} />
+                    <Button onClick={() => setQuantityItem(quantityItem + 1)}>
+                      +
+                    </Button>
                   </div>
                 </label>
               </Col>
@@ -302,13 +353,15 @@ function DetailPage({ screenSize, detailPage }) {
                 <li>100% tích điểm thưởng</li>
               </ul>
             </Card>
-            <div style={{ position: 'absolute', width: '100%' }}>
-              <FlashSale
-                endDate="27-03-2020 08:30:00"
-                offsetTop={115}
-                price="80.000 ₫"
-              />
-            </div>
+            {item.data.DiscountId && (
+              <div style={{ position: 'absolute', width: '100%' }}>
+                <FlashSale
+                  endDate="27-03-2020 08:30:00"
+                  offsetTop={115}
+                  price="80.000 ₫"
+                />
+              </div>
+            )}
           </div>
         </Col>
       </Row>
@@ -353,7 +406,7 @@ function DetailPage({ screenSize, detailPage }) {
             <div
               className="data item"
               dangerouslySetInnerHTML={{
-                __html: detailPage.Description,
+                __html: item.data.Content,
               }}
             />
           </div>
@@ -365,7 +418,40 @@ function DetailPage({ screenSize, detailPage }) {
     </Fragment>
   );
 
-  const renderNotFound = () => <span>Not found</span>;
+  const renderNotFound = () => (
+    <div style={{ paddingTop: 20 }}>
+      <Empty description="Không tìm thấy sản phẩm" />
+      <Button
+        type="primary"
+        size="large"
+        style={{
+          margin: '20px auto',
+          display: 'block',
+        }}
+      >
+        <Link to={getRouteUrl('HomePage')}>Quay lại trang chủ</Link>
+      </Button>
+    </div>
+  );
+
+  const renderError = () => (
+    <div style={{ paddingTop: 20 }}>
+      <Empty
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+        description="Có lỗi xảy ra, vui lòng thử lại sau."
+      />
+      <Button
+        type="primary"
+        size="large"
+        style={{
+          margin: '20px auto',
+          display: 'block',
+        }}
+      >
+        <Link to={getRouteUrl('HomePage')}>Quay lại trang chủ</Link>
+      </Button>
+    </div>
+  );
 
   const renderBody = () => {
     if (isLoading) {
@@ -376,6 +462,10 @@ function DetailPage({ screenSize, detailPage }) {
       return renderNotFound();
     }
 
+    if (hasError) {
+      return renderError();
+    }
+
     return renderDetail();
   };
 
@@ -383,7 +473,7 @@ function DetailPage({ screenSize, detailPage }) {
     <Fragment>
       <Helmet>
         <title>{item.data.ShortName}</title>
-        <meta name="description" content={item.data.ShortName} />
+        <meta name="description" content={item.data.ShortDescription} />
       </Helmet>
 
       <Main mobile={isMobile ? 1 : 0}>{renderBody()}</Main>
@@ -398,7 +488,6 @@ DetailPage.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  detailPage: makeSelectDetailPage(),
   screenSize: makeSelectScreenSize(),
 });
 

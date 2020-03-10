@@ -1,9 +1,4 @@
 import { createGlobalStyle } from 'styled-components';
-import {
-    StyledContent,
-    StyledFooter,
-    BreadcrumbBox
-} from './containers/App/selections';
 
 const GlobalStyle = createGlobalStyle`
   html,

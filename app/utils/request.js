@@ -12,16 +12,10 @@ const service = axios.create({
 });
 
 // request interceptor
-service.interceptors.request.use(
-  config => {
-    config.headers['Content-Type'] = 'application/json';
-    // config.headers['Access-Control-Allow-Origin'] = '*';
-    return config;
-  },
-  error => {
-    console.log(error);
-    return Promise.reject(error);
-  },
-);
+service.interceptors.request.use(config => {
+  config.headers['Content-Type'] = 'application/json';
+  // config.headers['Access-Control-Allow-Origin'] = '*';
+  return config;
+});
 
 export default service;

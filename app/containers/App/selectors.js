@@ -5,7 +5,7 @@ const selectRouter = state => state.router;
 const makeSelectLocation = () =>
   createSelector(
     selectRouter,
-    routerState => routerState.location
+    routerState => routerState.location,
   );
 
 const selectApp = state => state.app;
@@ -13,37 +13,55 @@ const selectApp = state => state.app;
 const makeSelectBreadcrumb = () =>
   createSelector(
     selectApp,
-    state => state.breadcrumbs
+    state => state.breadcrumbs,
   );
 
 const makeSelectUserLocation = () =>
   createSelector(
     selectApp,
-    state => state.location
+    state => state.location,
   );
 
 const makeSelectScreenSize = () =>
   createSelector(
     selectApp,
-    state => state.screenWidth
+    state => state.screenWidth,
   );
 
 const makeSelectLogo = () =>
   createSelector(
     selectApp,
-    state => state.logo
+    state => state.logo,
   );
 
 const makeSelectSearchPlaceholder = () =>
   createSelector(
     selectApp,
-    state => state.searchPlaceholder
+    state => state.searchPlaceholder,
   );
 
 const makeSelectCategories = () =>
   createSelector(
     selectApp,
-    state => state.categories
+    state => state.categories,
+  );
+
+const makeSelectCartNumber = () =>
+  createSelector(
+    selectApp,
+    state => state.cart.legnth || 0,
+  );
+
+const makeSelectCart = () =>
+  createSelector(
+    selectApp,
+    state => state.cart || [],
+  );
+
+const makeSelectLocationModalState = () =>
+  createSelector(
+    selectApp,
+    state => state.locationModalState,
   );
 
 export {
@@ -53,5 +71,8 @@ export {
   makeSelectScreenSize,
   makeSelectLogo,
   makeSelectSearchPlaceholder,
-  makeSelectCategories
+  makeSelectCategories,
+  makeSelectCartNumber,
+  makeSelectCart,
+  makeSelectLocationModalState,
 };
