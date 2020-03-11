@@ -1,3 +1,5 @@
+/* eslint-disable indent */
+/* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /*
@@ -7,8 +9,8 @@
  *
  */
 
-import React, { useEffect, useState, useRef } from 'react';
-import { Row, Col, Skeleton } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Skeleton, message } from 'antd';
 
 import { useInjectReducer } from 'utils/injectReducer';
 import { Link } from 'react-router-dom';
@@ -17,6 +19,7 @@ import propTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import produce from 'immer';
 import Items from '../../components/Items';
 import {
   MainContent,
@@ -27,10 +30,17 @@ import {
 } from './selections';
 import reducer from './reducer';
 import { makeSelectHomeState } from './selector';
-import { makeSelectCategories } from '../App/selectors';
+import {
+  makeSelectCategories,
+  makeSelectLocationModalState,
+} from '../App/selectors';
 import { VerticleMenuItem } from '../../components/Categories';
-import { getSlug } from '../../utils/string';
+import { getSlug, getValueFromSiteConfigs } from '../../utils/string';
 import { getRouteUrl } from '../../route';
+import {
+  makeRequestGetHomeData,
+  makeRequestGetProductByCategory,
+} from './actions';
 
 const defaultCateData = {
   categoryId: 0,
@@ -39,30 +49,69 @@ const defaultCateData = {
   items: [],
 };
 
+const defaultPageState = {
+  siteConfigs: [],
+  categories: [],
+};
+
+let loading = null;
 function HomePage({ homeState, categories }) {
   useInjectReducer({ key: 'homePage', reducer });
 
-  const [cate1, setCate1] = useState(defaultCateData);
-  const [cate2, setCate2] = useState(defaultCateData);
+  const [siteState, setSiteState] = useState(defaultPageState);
   const [promotion, setPromotion] = useState(defaultCateData);
 
+  const getHomeData = async () => {
+    loading = message.loading('Đang lấy dữ liệu trang web', 0);
+    try {
+      const res = await makeRequestGetHomeData();
+      if (res.HasError) {
+        message.error('có lỗi xảy ra, vui lòng thử lại sau.', 5);
+        return;
+      }
+
+      const { Data: data } = res;
+      setSiteState(
+        produce(siteState, draftState => {
+          draftState.siteConfigs = data.siteConfigs;
+          draftState.categories = data.categories;
+        }),
+      );
+    } catch (ex) {
+      message.error('có lỗi xảy ra, vui lòng thử lại sau.', 5);
+    } finally {
+      loading();
+    }
+  };
+
+  const getProductByCategory = async homeCategories => {
+    try {
+      const res = await makeRequestGetProductByCategory(
+        homeCategories.map(cate => cate.CategoryId),
+      );
+      if (res.HasError) {
+        message.error('có lỗi xảy ra, vui lòng thử lại sau.', 5);
+        return;
+      }
+      const { Data: data } = res;
+      
+      homeCategories.forEach((cate, index) => {
+        homeCategories[index].Products = data[cate.CategoryId];
+        homeCategories[index].Loading = false;
+      });
+
+      setSiteState(
+        produce(siteState, state => {
+          state.categories = homeCategories;
+        }),
+      );
+    } catch (err) {
+      message.error('có lỗi xảy ra, vui lòng thử lại sau.', 5);
+    }
+  };
+
   useEffect(() => {
-    setTimeout(() => {
-      setCate1({
-        loading: false,
-        items: getData(),
-        id: 10,
-        categoryName: 'Xe đẩy em bé',
-      });
-    }, 1500);
-    setTimeout(() => {
-      setCate2({
-        loading: false,
-        items: getData(),
-        id: 10,
-        categoryName: 'Xe đẩy VovO',
-      });
-    }, 1500);
+    getHomeData();
 
     setTimeout(() => {
       setPromotion({
@@ -74,12 +123,32 @@ function HomePage({ homeState, categories }) {
     }, 1500);
   }, []);
 
+  useEffect(() => {
+    const { categories: homeCategories } = siteState;
+    if (_.isEmpty(homeCategories)) return;
+    getProductByCategory(homeCategories);
+  }, [siteState]);
+
   return (
     <React.Fragment>
       <Helmet>
-        <title>Trang chủ</title>
-        <meta name="description" content="déc" />
+        <title>
+          {getValueFromSiteConfigs({
+            siteConfigs: siteState.siteConfigs,
+            configKey: 'title',
+            defaultValue: 'Trang chủ',
+          })}
+        </title>
+        <meta
+          name="description"
+          content={getValueFromSiteConfigs({
+            siteConfigs: siteState.siteConfigs,
+            configKey: 'description',
+            defaultValue: 'mô tả',
+          })}
+        />
       </Helmet>
+
       <MainContent>
         <Row>
           <Col xl={categories.hasError ? 0 : 5} xs={0}>
@@ -252,65 +321,40 @@ function HomePage({ homeState, categories }) {
             />
           </Col>
 
-          <Col span={24}>
-            <Items
-              href={getRouteUrl('ListPage', {
-                slug: getSlug(cate1.categoryName),
-                id: cate1.id,
-              })}
-              title={
-                <Skeleton
-                  active
-                  loading={cate1.loading}
-                  title={{
-                    width: 100,
-                  }}
-                  paragraph={{
-                    rows: 0,
-                  }}
-                  avatar
-                >
-                  <img
-                    src="https://image.flaticon.com/icons/svg/420/420792.svg"
-                    alt="icon"
-                  />
-                  {cate1.categoryName}
-                </Skeleton>
-              }
-              loading={cate1.loading}
-              data={cate1.items}
-            />
-          </Col>
-
-          <Col span={24}>
-            <Items
-              href={getRouteUrl('ListPage', {
-                slug: getSlug(cate2.categoryName),
-                id: cate2.id,
-              })}
-              title={
-                <Skeleton
-                  active
-                  loading={cate2.loading}
-                  title={{
-                    width: 100,
-                  }}
-                  paragraph={{
-                    rows: 0,
-                  }}
-                  avatar
-                >
-                  <img
-                    src="https://image.flaticon.com/icons/svg/420/420792.svg"
-                    alt="icon"
-                  />
-                  {cate2.categoryName}
-                </Skeleton>
-              }
-              loading={cate2.loading}
-              data={cate2.items}
-            />
-          </Col>
+          {siteState.categories.map(category => (
+            <Col span={24} key={_.uniqueId()}>
+              <Items
+                href={getRouteUrl('ListPage', {
+                  slug: getSlug(category.Name),
+                  id: category.CategoryId,
+                })}
+                title={
+                  <Skeleton
+                    active
+                    loading={category.Loading}
+                    title={{
+                      width: 100,
+                    }}
+                    paragraph={{
+                      rows: 0,
+                    }}
+                    avatar
+                  >
+                    <img
+                      src={
+                        category.Image ||
+                        'https://image.flaticon.com/icons/svg/420/420792.svg'
+                      }
+                      alt="icon"
+                    />
+                    {category.Name}
+                  </Skeleton>
+                }
+                loading={category.Loading}
+                data={category.Products || []}
+              />
+            </Col>
+          ))}
         </Row>
       </MainContent>
     </React.Fragment>

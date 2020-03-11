@@ -1,5 +1,6 @@
 /* eslint-disable no-plusplus */
 import speakingurl from 'speakingurl';
+import _ from 'lodash';
 
 export const getSlug = string =>
   speakingurl(string, {
@@ -15,3 +16,14 @@ export const defaultArray = length => {
 
 export const toMoney = num =>
   num.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.');
+
+export const getValueFromSiteConfigs = ({
+  siteConfigs,
+  defaultValue,
+  configKey,
+}) => {
+  if (_.isEmpty(siteConfigs)) return defaultValue;
+  const findKey = siteConfigs.find(config => _.eq(config.ConfigKey, configKey));
+
+  return _.isNull(findKey) ? defaultValue : findKey.ConfigValue;
+};

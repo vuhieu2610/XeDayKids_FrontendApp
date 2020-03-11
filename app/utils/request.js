@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const signOut = () => {};
 
-export const baseURL = `http://172.27.161.164`;
+export const baseURL = `http://172.27.161.138`;
 
 const service = axios.create({
   // baseURL: 'http://42.112.20.36/plesk-site-preview/xedaykidsrelax.com.vn/data'
@@ -15,6 +15,8 @@ const service = axios.create({
 service.interceptors.request.use(config => {
   config.headers['Content-Type'] = 'application/json';
   // config.headers['Access-Control-Allow-Origin'] = '*';
+  config.crossDomain = true;
+  config.useCredentails = true;
   return config;
 });
 
