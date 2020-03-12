@@ -61,7 +61,7 @@ const defaultItem = {
     Details: [],
     ShortDescription: '',
     Images: [],
-    ImageList: null,
+    ImageList: [],
     Attributes: [],
     SimilarProductIds: '',
     RelatedPostIds: '',
@@ -152,7 +152,7 @@ function DetailPage({ screenSize }) {
         const { DataList: dataList, HasDataList: hasDataList } = body;
         if (hasDataList) {
           const data = dataList[0];
-          if (data.Images) {
+          if (!_.isNull(data.Images)) {
             try {
               data.Images = JSON.parse(data.Images);
             } catch (err) {
@@ -160,7 +160,7 @@ function DetailPage({ screenSize }) {
             }
           }
 
-          if (data.Attributes) {
+          if (!_.isNull(data.Attributes)) {
             try {
               data.Attributes = JSON.parse(data.Attributes);
             } catch (err) {
@@ -168,14 +168,13 @@ function DetailPage({ screenSize }) {
             }
           }
 
-          if (data.Details) {
+          if (!_.isNull(data.Details)) {
             try {
               data.Details = JSON.parse(data.Details);
             } catch (err) {
               data.Details = [];
             }
           }
-
           setItem(
             produce(item, draftItem => {
               draftItem.data = data;

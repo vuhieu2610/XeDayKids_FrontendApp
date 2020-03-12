@@ -17,6 +17,9 @@ export const defaultArray = length => {
 export const toMoney = num =>
   num.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.');
 
+export const isNullOrUndefined = value =>
+  _.isUndefined(value) || _.isNull(value);
+
 export const getValueFromSiteConfigs = ({
   siteConfigs,
   defaultValue,
@@ -25,5 +28,5 @@ export const getValueFromSiteConfigs = ({
   if (_.isEmpty(siteConfigs)) return defaultValue;
   const findKey = siteConfigs.find(config => _.eq(config.ConfigKey, configKey));
 
-  return _.isNull(findKey) ? defaultValue : findKey.ConfigValue;
+  return isNullOrUndefined(findKey) ? defaultValue : findKey.ConfigValue;
 };

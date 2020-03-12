@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable indent */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
@@ -30,10 +31,7 @@ import {
 } from './selections';
 import reducer from './reducer';
 import { makeSelectHomeState } from './selector';
-import {
-  makeSelectCategories,
-  makeSelectLocationModalState,
-} from '../App/selectors';
+import { makeSelectCategories } from '../App/selectors';
 import { VerticleMenuItem } from '../../components/Categories';
 import { getSlug, getValueFromSiteConfigs } from '../../utils/string';
 import { getRouteUrl } from '../../route';
@@ -94,11 +92,18 @@ function HomePage({ homeState, categories }) {
         return;
       }
       const { Data: data } = res;
-      
+
       homeCategories.forEach((cate, index) => {
         homeCategories[index].Products = data[cate.CategoryId];
         homeCategories[index].Loading = false;
       });
+      setPromotion(
+        produce(promotion, state => {
+          state.items = data[0];
+          state.loading = false;
+          state.categoryName = 'Khuyến mại';
+        }),
+      );
 
       setSiteState(
         produce(siteState, state => {
@@ -112,15 +117,6 @@ function HomePage({ homeState, categories }) {
 
   useEffect(() => {
     getHomeData();
-
-    setTimeout(() => {
-      setPromotion({
-        loading: false,
-        items: getPromotions(),
-        id: 11,
-        categoryName: 'Khuyến mại',
-      });
-    }, 1500);
   }, []);
 
   useEffect(() => {
