@@ -8,6 +8,7 @@ export const StyledContent = styled(Content)`
   background-color: #fff;
 `;
 export const StyledFooter = styled(Footer)`
+  padding: 24px 0;
   background-color: #f4f5f7;
   padding-bottom: 30px;
   text-align: left;
@@ -63,11 +64,11 @@ export const CustomBottomNav = styled(Menu)`
 
 export const PageWrapper = styled.div`
   width: 100%;
-  @media (max-width: 1439px) {
+  @media (max-width: 1199px) {
     padding-left: 5px;
     padding-right: 5px;
   }
-  @media (min-width: 1440px) {
+  @media (min-width: 1200px) {
     margin-left: auto;
     margin-right: auto;
     max-width: 1282px;

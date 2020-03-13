@@ -122,31 +122,26 @@ function App({
             </Switch>
           </PageWrapper>
         </StyledContent>
-        {!isMobile ? (
-          <StyledFooter>
-            <PageWrapper>
-              <Row>
-                <Col span={12}>
-                  <p>Đơn vị chủ quản: Công ty cổ phần Bibomart TM</p>
-                  <p>
-                    Địa chỉ: 120 Trần Duy Hưng, Phường Trung Hòa, Quận Cầu Giấy,
-                    Hà Nội, Việt Nam
-                  </p>
-                  <p>
-                    Điện thoại: (024) 73091168 - Email: cskh@bibomart.com.vn
-                  </p>
-                  <p>
-                    Mã số thuế / Mã số doanh nghiệp: 0108024302, Ngày cấp:
-                    16/10/2017, Sở KHĐTHN
-                  </p>
-                </Col>
-                <Col span={12} />
-              </Row>
-            </PageWrapper>
-          </StyledFooter>
-        ) : (
-          <Drawer logo={logo} categories={categories.data} />
-        )}
+        <StyledFooter>
+          <PageWrapper>
+            <Row>
+              <Col sm={12} xs={24}>
+                <p>Đơn vị chủ quản: Công ty cổ phần Bibomart TM</p>
+                <p>
+                  Địa chỉ: 120 Trần Duy Hưng, Phường Trung Hòa, Quận Cầu Giấy,
+                  Hà Nội, Việt Nam
+                </p>
+                <p>Điện thoại: (024) 73091168 - Email: cskh@bibomart.com.vn</p>
+                <p>
+                  Mã số thuế / Mã số doanh nghiệp: 0108024302, Ngày cấp:
+                  16/10/2017, Sở KHĐTHN
+                </p>
+              </Col>
+              <Col sm={12} xs={0} />
+            </Row>
+          </PageWrapper>
+        </StyledFooter>
+        {isMobile && <Drawer logo={logo} categories={categories.data} />}
         <GlobalStyle />
       </Layout>
       <LocationModal

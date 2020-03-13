@@ -41,7 +41,7 @@ const getCateUrl = item =>
 //   </Menu>
 // );
 
-export const VerticleMenuItem = ({ dataList, isSubMenu = false }) => {
+export const VerticleMenuItem = ({ dataList, isSubMenu = false, ...res }) => {
   const renderItem = item => {
     if (!_.isEmpty(item.children)) {
       return (
@@ -84,7 +84,7 @@ export const VerticleMenuItem = ({ dataList, isSubMenu = false }) => {
 
   const renderChildren = () => dataList.map(item => renderItem(item));
 
-  return <Menu>{renderChildren()}</Menu>;
+  return <Menu {...res}>{renderChildren()}</Menu>;
 };
 
 VerticleMenuItem.propTypes = {
@@ -108,12 +108,13 @@ VerticleMenuItem.propTypes = {
 };
 
 const SubMenuItem = styled(Menu.SubMenu)`
-  padding: 0 !important;
+  /* padding: 0 !important; */
   & * {
     color: #333;
+    user-select: none;
   }
   & .ant-menu-submenu-title {
-    padding: 0 !important;
+    /* padding: 0 !important; */
   }
   & a {
     font-size: 14px;
@@ -199,15 +200,21 @@ const SubMenuItem = styled(Menu.SubMenu)`
     .ant-menu-submenu-arrow::before {
     transition: none;
   }
+
+  & .ant-menu-inline,
+  .ant-menu-vertical,
+  .ant-menu-vertical-left {
+    border-right: none;
+  }
 `;
 
 const MenuItem = styled(Menu.Item)`
-  padding: 0 !important;
+  /* padding: 0 !important; */
   & * {
     color: #333;
   }
   & .ant-menu-submenu-title {
-    padding: 0 !important;
+    /* padding: 0 !important; */
   }
   & a {
     font-size: 14px;

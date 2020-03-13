@@ -21,7 +21,10 @@ import _ from 'lodash';
 import Item from '../../components/Item';
 
 import makeSelectListPage from './selectors';
-import { setSearchPlaceholder as setSearchPlaceholderAction } from '../App/actions';
+import {
+  setSearchPlaceholder as setSearchPlaceholderAction,
+  setBreadcrumbs,
+} from '../App/actions';
 import {
   Grid,
   CustomCardTitle,
@@ -31,8 +34,8 @@ import {
 
 import { defaultArray } from '../../utils/string';
 import { getProductsByCategoryId, getPromotionProducts } from './actions';
-
-const { SubMenu } = Menu;
+import { VerticleMenuItem } from '../../components/Categories';
+import { makeSelectCategories } from '../App/selectors';
 
 const defaultItems = {
   isLoading: false,
@@ -40,10 +43,18 @@ const defaultItems = {
   data: defaultArray(20),
 };
 
-function ListPage({ setSearchPlaceholder }) {
+const sorts = [
+  { value: 'Price ASC', text: 'Giá tăng dần' },
+  { value: 'Price DESC', text: 'Giá giảm dần' },
+  { value: 'ProductId ASC', text: 'Hàng mới' },
+  { value: 'BuyerCount DESC', text: 'Phổ biến nhất' },
+];
+
+function ListPage({ setSearchPlaceholder, changeBreadcrumb, categories }) {
   const [items, setItems] = useState(defaultItems);
   const [totalItems, setTotalItems] = useState(0);
   const [categoryName, setCategoryName] = useState('');
+  const [sortBy, setSortBy] = useState('ProductId ASC');
   const [pagination, setPagination] = useState({
     pageSize: 20,
     pageIndex: 1,
@@ -52,6 +63,15 @@ function ListPage({ setSearchPlaceholder }) {
 
   useEffect(() => {
     setSearchPlaceholder(categoryName);
+    changeBreadcrumb({
+      displayable: true,
+      items: [
+        {
+          name: categoryName,
+          href: '#',
+        },
+      ],
+    });
     return () => setSearchPlaceholder('');
   }, [categoryName]);
 
@@ -61,6 +81,7 @@ function ListPage({ setSearchPlaceholder }) {
       const req = await getProductsByCategoryId({
         pageSize: pagination.pageSize,
         pageIndex: pagination.pageIndex,
+        sortBy,
         item: { CategoryId: id },
       });
       const { data: body } = req;
@@ -69,6 +90,7 @@ function ListPage({ setSearchPlaceholder }) {
         setTotalItems(0);
       } else {
         setItems({ data: body.DataList, isLoading: false, hasError: false });
+        setCategoryName(body.Data && body.Data.CategoryName);
         setTotalItems(body.TotalRecords);
       }
     } catch (err) {
@@ -79,8 +101,20 @@ function ListPage({ setSearchPlaceholder }) {
 
   const getPromotionItems = async () => {
     setItems({ ...defaultItems, isLoading: true });
+    changeBreadcrumb({
+      displayable: true,
+      items: [
+        {
+          name: 'Khuyến mại',
+          href: '#',
+        },
+      ],
+    });
     try {
-      const req = await getPromotionProducts(pagination);
+      const req = await getPromotionProducts({
+        ...pagination,
+        sortBy,
+      });
       const { data: body } = req;
       if (!body || body.HasError) {
         setItems({ ...defaultItems, isLoading: false, hasError: true });
@@ -100,13 +134,20 @@ function ListPage({ setSearchPlaceholder }) {
   }, [items.hasError]);
 
   useEffect(() => {
+    changeBreadcrumb({
+      displayable: true,
+      items: [],
+    });
+  }, []);
+
+  useEffect(() => {
     if (!id) {
       getPromotionItems();
       setCategoryName('Khuyến mại');
     } else {
       getItemsByCategory();
     }
-  }, []);
+  }, [sortBy, id]);
 
   return (
     <Fragment>
@@ -115,54 +156,16 @@ function ListPage({ setSearchPlaceholder }) {
       </Helmet>
       <Row gutter={[10, 10]} style={{ padding: '30px 0' }}>
         <Col xs={0} sm={0} xl={6}>
-          <Card>
-            <Menu mode="inline" style={{ width: '100%', borderRight: 'none' }}>
-              <SubMenu
-                key="sub1"
-                title={
-                  <span>
-                    <span>Navigation One</span>
-                  </span>
-                }
-              >
-                <Menu.ItemGroup title="Item 1">
-                  <Menu.Item key="1">Option 1</Menu.Item>
-                  <Menu.Item key="2">Option 2</Menu.Item>
-                </Menu.ItemGroup>
-                <Menu.ItemGroup title="Iteom 2">
-                  <Menu.Item key="3">Option 3</Menu.Item>
-                  <Menu.Item key="4">Option 4</Menu.Item>
-                </Menu.ItemGroup>
-              </SubMenu>
-              <SubMenu
-                key="sub2"
-                title={
-                  <span>
-                    <span>Navigation Two</span>
-                  </span>
-                }
-              >
-                <Menu.Item key="5">Option 5</Menu.Item>
-                <Menu.Item key="6">Option 6</Menu.Item>
-                <SubMenu key="sub3" title="Submenu">
-                  <Menu.Item key="7">Option 7</Menu.Item>
-                  <Menu.Item key="8">Option 8</Menu.Item>
-                </SubMenu>
-              </SubMenu>
-              <SubMenu
-                key="sub4"
-                title={
-                  <span>
-                    <span>Navigation Three</span>
-                  </span>
-                }
-              >
-                <Menu.Item key="9">Option 9</Menu.Item>
-                <Menu.Item key="10">Option 10</Menu.Item>
-                <Menu.Item key="11">Option 11</Menu.Item>
-                <Menu.Item key="12">Option 12</Menu.Item>
-              </SubMenu>
-            </Menu>
+          <Card
+            bodyStyle={{
+              padding: '10px 0',
+            }}
+          >
+            <VerticleMenuItem
+              dataList={categories.data}
+              mode="inline"
+              style={{ width: '100%', borderRight: 'none' }}
+            />
           </Card>
         </Col>
         <Col xs={24} sm={24} xl={18}>
@@ -184,18 +187,14 @@ function ListPage({ setSearchPlaceholder }) {
                     width: '100%',
                     height: '100%',
                   }}
-                  defaultValue="Phổ biến nhất"
+                  value={sortBy}
+                  onChange={value => setSortBy(value)}
                 >
-                  <Select.Option value="Phổ biến nhất">
-                    Phổ biến nhất
-                  </Select.Option>
-                  <Select.Option value="Phổ biến nhì">
-                    Phổ biến nhì
-                  </Select.Option>
-                  <Select.Option value="Phổ biến ba">Phổ biến ba</Select.Option>
-                  <Select.Option value="Phổ biến bét">
-                    Phổ biến bét
-                  </Select.Option>
+                  {sorts.map(option => (
+                    <Select.Option value={option.value} key={_.uniqueId()}>
+                      {option.text}
+                    </Select.Option>
+                  ))}
                 </Select>
               </CustomCardExtra>
             }
@@ -225,10 +224,17 @@ function ListPage({ setSearchPlaceholder }) {
 ListPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
   setSearchPlaceholder: PropTypes.func,
+  changeBreadcrumb: PropTypes.func,
+  categories: PropTypes.shape({
+    isLoading: PropTypes.bool,
+    data: PropTypes.array,
+    hasError: PropTypes.bool,
+  }),
 };
 
 const mapStateToProps = createStructuredSelector({
   listPage: makeSelectListPage(),
+  categories: makeSelectCategories(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -236,6 +242,7 @@ function mapDispatchToProps(dispatch) {
     dispatch,
     setSearchPlaceholder: content =>
       dispatch(setSearchPlaceholderAction(content)),
+    changeBreadcrumb: state => dispatch(setBreadcrumbs(state)),
   };
 }
 

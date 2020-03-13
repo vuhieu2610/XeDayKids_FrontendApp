@@ -29,10 +29,18 @@ const defaultItems = {
   data: defaultArray(20),
 };
 
+const sorts = [
+  { value: 'Price ASC', text: 'Giá tăng dần' },
+  { value: 'Price DESC', text: 'Giá giảm dần' },
+  { value: 'ProductId ASC', text: 'Hàng mới' },
+  { value: 'BuyerCount DESC', text: 'Phổ biến nhất' },
+];
+
 export function SearchPage({ changeBreadcrumbs }) {
   const [searchText, setsearchText] = useState('');
   const [totalItems, setTotalItems] = useState(0);
   const { searchContent } = useParams();
+  const [sortBy, setSortBy] = useState('ProductId ASC');
   const [pagination, setPagination] = useState({
     pageSize: 20,
     pageIndex: 1,
@@ -45,6 +53,7 @@ export function SearchPage({ changeBreadcrumbs }) {
       const req = await makeRequestSearch({
         ...pagination,
         content: searchContent,
+        sortBy,
       });
       const { DataList: data, HasError, TotalRecords } = req;
 
@@ -64,7 +73,7 @@ export function SearchPage({ changeBreadcrumbs }) {
   useEffect(() => {
     if (!searchText) return;
     getProducts();
-  }, [searchText]);
+  }, [searchText, sortBy]);
 
   useEffect(() => {
     changeBreadcrumbs({
@@ -88,12 +97,15 @@ export function SearchPage({ changeBreadcrumbs }) {
       <div>
         <CustomCard
           bordered={false}
+          style={{
+            paddingTop: 10,
+          }}
           title={
             <CustomCardTitle>
               <h1>
                 <span>Kết quả tìm kiếm cho: '{searchText}'</span>
               </h1>
-              <span> 60 sản phẩm</span>
+              <span> {totalItems} sản phẩm</span>
             </CustomCardTitle>
           }
           extra={
@@ -104,14 +116,14 @@ export function SearchPage({ changeBreadcrumbs }) {
                   width: '100%',
                   height: '100%',
                 }}
-                defaultValue="Phổ biến nhất"
+                value={sortBy}
+                onChange={value => setSortBy(value)}
               >
-                <Select.Option value="Phổ biến nhất">
-                  Phổ biến nhất
-                </Select.Option>
-                <Select.Option value="Phổ biến nhì">Phổ biến nhì</Select.Option>
-                <Select.Option value="Phổ biến ba">Phổ biến ba</Select.Option>
-                <Select.Option value="Phổ biến bét">Phổ biến bét</Select.Option>
+                {sorts.map(option => (
+                  <Select.Option value={option.value} key={_.uniqueId()}>
+                    {option.text}
+                  </Select.Option>
+                ))}
               </Select>
             </CustomCardExtra>
           }

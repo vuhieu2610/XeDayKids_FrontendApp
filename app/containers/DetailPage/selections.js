@@ -35,6 +35,9 @@ export const Main = styled.div`
             display: inline-flex !important;
             align-items: center;
             justify-content: center;
+            &.active {
+              border: solid 1px red;
+            }
           }
           & img {
             width: 100%;
@@ -117,8 +120,8 @@ export const Main = styled.div`
         font-weight: 500;
       }
       & .special-price-item {
-        margin: 19px 0 2px;
-        font-size: 14px;
+        margin: 0px 0 2px;
+        font-size: 13px;
         color: #9b9b9b;
         font-weight: 300;
         & > .price-label {
@@ -127,12 +130,13 @@ export const Main = styled.div`
         }
         & > .span-price {
           color: #ff3425;
-          font-size: 40px;
+          font-size: 19px;
           font-weight: bold;
+          margin-left: 5px;
         }
       }
       & .saleoff-price-item {
-        font-size: 14px;
+        font-size: 13px;
         margin: 4px 0;
         font-weight: 300;
         color: #9b9b9b;
@@ -209,13 +213,16 @@ export const Main = styled.div`
         }
         & > button {
           /* border-radius: 20px; */
-          height: 45px;
+          height: 35px;
           padding: 0 16px;
           min-width: 160px;
           margin-right: ${props => (props.mobile ? '10px' : '20px')};
           display: inline-flex;
           align-items: center;
           justify-content: center;
+          @media (max-width: 375px) {
+            margin: 5px 0;
+          }
         }
       }
       & > .number {
@@ -235,7 +242,7 @@ export const Main = styled.div`
           & > .number-control {
             display: flex;
             align-items: center;
-            margin-top: 16px;
+            margin-top: 5px;
             & button {
               border-radius: 0;
               height: 35px;
@@ -310,6 +317,13 @@ export const Main = styled.div`
       & .ant-table tbody > tr.ant-table-row:hover > td {
         background-color: #fff;
       }
+    }
+
+    .ant-table thead > tr > th,
+    .ant-table tbody > tr > td,
+    .ant-table tfoot > tr > th,
+    .ant-table tfoot > tr > td {
+      padding: 12px 18px 9px 18px;
     }
   }
 `;

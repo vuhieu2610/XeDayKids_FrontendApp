@@ -20,6 +20,7 @@ module.exports = require('./webpack.base.babel')({
   output: {
     filename: 'Scripts/[name].js',
     chunkFilename: 'Scripts/chunks/[name].chunk.js',
+    publicPath: '/',
   },
 
   optimization: {
@@ -82,6 +83,7 @@ module.exports = require('./webpack.base.babel')({
         minifyURLs: true,
       },
       inject: true,
+      chunksSortMode: 'none',
     }),
 
     // Put it in the end to capture all the HtmlWebpackPlugin's

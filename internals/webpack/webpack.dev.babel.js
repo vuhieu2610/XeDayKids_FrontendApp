@@ -19,8 +19,8 @@ module.exports = require('./webpack.base.babel')({
 
   // Don't use hashes in dev mode for better performance
   output: {
-    filename: '[name].js',
-    chunkFilename: '[name].chunk.js',
+    filename: 'Scripts/[name].js',
+    chunkFilename: 'Scripts/chunks/[name].chunk.js',
     publicPath: '/',
   },
 

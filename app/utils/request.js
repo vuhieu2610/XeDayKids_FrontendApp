@@ -4,11 +4,10 @@ import axios from 'axios';
 
 const signOut = () => {};
 
-export const baseURL = `https://612cd642.ngrok.io`;
-// export const baseURL = `http://xedaykidsrelax.com.vn/`;
+// export const baseURL = `http://172.27.161.164`;
+export const baseURL = `http://xedaykidsrelax.com.vn`;
 
 const service = axios.create({
-  // baseURL: 'http://42.112.20.36/plesk-site-preview/xedaykidsrelax.com.vn/data'
   baseURL: `${baseURL}/data`,
 });
 

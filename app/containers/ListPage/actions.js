@@ -13,7 +13,12 @@ export function defaultAction() {
   };
 }
 
-export function getProductsByCategoryId({ item = {}, pageSize, pageIndex }) {
+export function getProductsByCategoryId({
+  item = {},
+  pageSize,
+  pageIndex,
+  sortBy,
+}) {
   return request({
     method: 'post',
     url: `/ProductApi/GetProductsByCategoryId`,
@@ -21,14 +26,28 @@ export function getProductsByCategoryId({ item = {}, pageSize, pageIndex }) {
       Item: item,
       PageSize: pageSize,
       PageIndex: pageIndex,
+      SortBy: sortBy,
     },
   });
 }
 
-export function getPromotionProducts({ pageSize, pageIndex }) {
+export function getPromotionProducts({ pageSize, pageIndex, sortBy }) {
   const body = {
     PageIndex: pageIndex,
     PageSize: pageSize,
+    SortBy: sortBy,
+    Filters: [
+      {
+        field: 'PromotionId',
+        op: `&(INN`,
+        value: 0
+      },
+      {
+        field: 'PromotionId',
+        op: `&<>)`,
+        value: 0,
+      },
+    ],
   };
   return request({
     method: 'post',

@@ -23,7 +23,7 @@ export const CustomBar = styled(Progress)`
     left: 50%;
     transform: translate(-50%, -50%);
     height: ${barHeight};
-    color: #fff;
+    color: #fff !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -124,6 +124,14 @@ export const CustomItem = styled(Card)`
         line-height: 1.6;
         margin: 0px;
         padding: 8px 0px 0px;
+      }
+      & .original.deal {
+        color: rgb(120, 120, 120);
+        font-size: 13px;
+        font-weight: normal;
+        text-decoration: line-through;
+        display: inline-block;
+        margin-left: 15px;
       }
     }
     & .progress {

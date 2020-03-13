@@ -77,6 +77,21 @@ const defaultItem = {
     LastUpdateDate: null,
     DeleteBy: null,
     DeleteDate: null,
+    PromotionId: 0,
+    PromotionCode: '',
+    PromotionShortName: '',
+    PromotionName: '',
+    PromotionImages: [],
+    PromotionQuantity: 0,
+    PromotionCurrentPrice: 0,
+    PromotionPrice: 0,
+    PromotionStartDate: '',
+    PromotionEndDate: '',
+    PromotionBuyerCount: 0,
+    PromotionRatePerMinute: 0,
+    PromotionAttributes: [],
+    PromotionDetails: [],
+    PromotionDescriptionId: 0,
   },
 };
 const thumbSliderConfigs = [
@@ -84,49 +99,49 @@ const thumbSliderConfigs = [
     breakpoint: 1440,
     settings: {
       slidesToShow: 4.5,
-      // slidesToScroll: 4,
+      slidesToScroll: 4,
     },
   },
   {
     breakpoint: 1350,
     settings: {
       slidesToShow: 5.5,
-      // slidesToScroll: 4,
+      slidesToScroll: 5,
     },
   },
   {
     breakpoint: 1024,
     settings: {
       slidesToShow: 11.5,
-      // slidesToScroll: 4,
+      slidesToScroll: 11,
     },
   },
   {
     breakpoint: 768,
     settings: {
       slidesToShow: 8.5,
-      // slidesToScroll: 4,
+      slidesToScroll: 8,
     },
   },
   {
     breakpoint: 425,
     settings: {
       slidesToShow: 4.5,
-      // slidesToScroll: 4,
+      slidesToScroll: 4,
     },
   },
   {
     breakpoint: 375,
     settings: {
       slidesToShow: 4.1,
-      // slidesToScroll: 4,
+      slidesToScroll: 4,
     },
   },
   {
     breakpoint: 320,
     settings: {
       slidesToShow: 3.5,
-      // slidesToScroll: 4,
+      slidesToScroll: 3,
     },
   },
 ];
@@ -150,9 +165,9 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
       if (!body || body.HasError) {
         setHasError(true);
       } else {
-        const { DataList: dataList, HasDataList: hasDataList } = body;
-        if (hasDataList) {
-          const data = dataList[0];
+        const { Data: data, HasData: hasData } = body;
+        if (hasData) {
+          // const data = data[0];
           if (!_.isNull(data.Images)) {
             try {
               data.Images = JSON.parse(data.Images);
@@ -176,6 +191,31 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
               data.Details = [];
             }
           }
+
+          if (!_.isNull(data.PromotionImages)) {
+            try {
+              data.PromotionImages = JSON.parse(data.PromotionImages);
+            } catch (err) {
+              data.PromotionImages = [];
+            }
+          }
+
+          if (!_.isNull(data.PromotionAttributes)) {
+            try {
+              data.PromotionAttributes = JSON.parse(data.PromotionAttributes);
+            } catch (err) {
+              data.PromotionAttributes = [];
+            }
+          }
+
+          if (!_.isNull(data.PromotionDetails)) {
+            try {
+              data.PromotionDetails = JSON.parse(data.PromotionDetails);
+            } catch (err) {
+              data.PromotionDetails = [];
+            }
+          }
+
           setItem(
             produce(item, draftItem => {
               draftItem.data = data;
@@ -218,10 +258,10 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
       displayable: true,
       items: [
         {
-          name: 'Danh mục',
+          name: item.data.CategoryName,
           href: getRouteUrl('ListPage', {
-            slug: getSlug('Danh mục'),
-            id: 1,
+            slug: getSlug(item.data.CategoryName),
+            id: item.data.CategoryId,
           }),
         },
         {
@@ -255,7 +295,8 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
               >
                 {item.data.Images.map(image => (
                   <div
-                    className="thumb "
+                    className={`thumb ${_.eq(previewUrl, image.url) &&
+                      'active'}`}
                     onClick={() => setPreviewUrl(image.url)}
                     key={_.uniqueId()}
                   >
@@ -279,11 +320,17 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
                 <span className="label">Mã sản phầm: </span>
                 <span>{item.data.ProductId}</span>
               </p>
+              {item.data.BuyerCount > 0 && (
+                <p className="branch-name">
+                  <span className="label">Số người mua: </span>
+                  <span>{item.data.BuyerCount}</span>
+                </p>
+              )}
             </div>
             <div className="attributes">
               <ul>
                 {item.data.Attributes.map(attribute => (
-                  <li key={_.uniqueId()}>{attribute.attr}</li>
+                  <li key={_.uniqueId()}>{attribute.value}</li>
                 ))}
               </ul>
             </div>
@@ -359,8 +406,8 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
           <div className="sidebar-right">
             <Card title="Liên hệ">
               <ul>
-                <li>Hotline: 1800 6886</li>
-                <li>Email: cskh@bibomart.com.vn</li>
+                <li>Hotline: 123456789</li>
+                <li>Email: cskh@xedaykids.com.vn</li>
               </ul>
             </Card>
             <Card>
@@ -370,12 +417,12 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
                 <li>100% tích điểm thưởng</li>
               </ul>
             </Card>
-            {item.data.DiscountId && (
-              <div style={{ position: 'absolute', width: '100%' }}>
+            {item.data.PromotionId && (
+              <div style={{ position: 'absolute' }}>
                 <FlashSale
-                  endDate="27-03-2020 08:30:00"
+                  endDate={item.data.PromotionEndDate}
                   offsetTop={115}
-                  price="80.000 ₫"
+                  price={`${toMoney(item.data.PromotionPrice)} đ`}
                 />
               </div>
             )}
@@ -391,24 +438,8 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
                 showHeader={false}
                 bordered
                 pagination={false}
-                dataSource={[
-                  {
-                    key: 'Thương hiệu',
-                    value: 'Demo brand',
-                  },
-                  {
-                    key: 'Xuất xứ thương hiệu',
-                    value: 'Nhật Bản',
-                  },
-                  {
-                    key: 'Nơi sản xuất',
-                    value: 'Nhật Bản',
-                  },
-                  {
-                    key: 'Độ tuổi sử dụng',
-                    value: '1 - 3 tuổi',
-                  },
-                ]}
+                dataSource={item.data.Details}
+                emptyText="Không có thông tin"
               >
                 <Table.Column
                   className="label"
@@ -422,6 +453,7 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
             <div className="data item title">Mô tả sản phẩm</div>
             <div
               className="data item"
+              style={{ minHeight: 150 }}
               dangerouslySetInnerHTML={{
                 __html: item.data.Content,
               }}
