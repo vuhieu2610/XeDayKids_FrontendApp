@@ -40,6 +40,8 @@ import {
   makeRequestGetProductByCategory,
 } from './actions';
 
+import { setBreadcrumbs as setBreadcrumbsAction } from '../App/actions';
+
 const defaultCateData = {
   categoryId: 0,
   categoryName: 'default',
@@ -53,7 +55,7 @@ const defaultPageState = {
 };
 
 let loading = null;
-function HomePage({ homeState, categories }) {
+function HomePage({ homeState, categories, setBreadcrumbs }) {
   useInjectReducer({ key: 'homePage', reducer });
 
   const [siteState, setSiteState] = useState(defaultPageState);
@@ -116,6 +118,10 @@ function HomePage({ homeState, categories }) {
   };
 
   useEffect(() => {
+    setBreadcrumbs({
+      items: [],
+      displayable: false,
+    });
     getHomeData();
   }, []);
 
@@ -290,32 +296,34 @@ function HomePage({ homeState, categories }) {
         </Row>
 
         <Row gutter={[0, 10]}>
-          <Col span={24}>
-            <Items
-              href={getRouteUrl('PromotionPage')}
-              title={
-                <Skeleton
-                  active
-                  loading={promotion.loading}
-                  title={{
-                    width: 100,
-                  }}
-                  paragraph={{
-                    rows: 0,
-                  }}
-                  avatar
-                >
-                  <img
-                    src="https://img.icons8.com/ios/30/000000/tag-window.png"
-                    alt="icon"
-                  />
-                  {promotion.categoryName}
-                </Skeleton>
-              }
-              loading={promotion.loading}
-              data={promotion.items}
-            />
-          </Col>
+          {(promotion.loading || !_.isEmpty(promotion.items)) && (
+            <Col span={24}>
+              <Items
+                href={getRouteUrl('PromotionPage')}
+                title={
+                  <Skeleton
+                    active
+                    loading={promotion.loading}
+                    title={{
+                      width: 100,
+                    }}
+                    paragraph={{
+                      rows: 0,
+                    }}
+                    avatar
+                  >
+                    <img
+                      src="https://img.icons8.com/ios/30/000000/tag-window.png"
+                      alt="icon"
+                    />
+                    {promotion.categoryName}
+                  </Skeleton>
+                }
+                loading={promotion.loading}
+                data={promotion.items}
+              />
+            </Col>
+          )}
 
           {siteState.categories.map(category => (
             <Col span={24} key={_.uniqueId()}>
@@ -358,6 +366,7 @@ function HomePage({ homeState, categories }) {
 }
 
 HomePage.propTypes = {
+  setBreadcrumbs: propTypes.func,
   homeState: propTypes.object,
   categories: propTypes.shape({
     isLoading: propTypes.bool,
@@ -370,379 +379,11 @@ const mapStateToProp = createStructuredSelector({
   homeState: makeSelectHomeState(),
   categories: makeSelectCategories(),
 });
-const mapDispatchToProp = (/* dispatch */) => ({});
+const mapDispatchToProp = dispatch => ({
+  setBreadcrumbs: state => dispatch(setBreadcrumbsAction(state)),
+});
 
 export default connect(
   mapStateToProp,
   mapDispatchToProp,
 )(HomePage);
-
-export const getData = () => [
-  {
-    ProductId: '21',
-    ShortName: '\nXe đẩy đôi Combi Spazio Duo ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201706031421xe-day-doi-combi-spazio-duo-115993_1.jpg',
-        alt: 'Xe đẩy đôi Combi Spazio Duo',
-      },
-    ],
-    Price: '12.500.000 ₫',
-    rating: 5.2,
-    ratingCount: 10,
-  },
-  {
-    ProductId: '22',
-    ShortName: '\nXe đẩy Joie Litetrax 4 Flex W/RC SIG. Noir ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-litetrax-4-flex-w-rc-sig-noir.jpg',
-        alt: 'Xe đẩy Joie Litetrax 4 Flex W/RC SIG. Noir',
-      },
-    ],
-    Price: '6.800.000 ₫',
-    Rating: 0,
-    rating: 5.2,
-    ratingCount: 10,
-  },
-  {
-    ProductId: '23',
-    ShortName: '\nXe đẩy Joie Pact Flex W/RC&ADPT&TB SIG. Noir ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-pact-flex-w-rc_adpt_tb-sig-noir.jpg',
-        alt: 'Xe đẩy Joie Pact Flex W/RC&ADPT&TB SIG. Noir',
-      },
-    ],
-    Price: '5.800.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '24',
-    ShortName: '\nXe đẩy Joie Litetrax 4 W/RC Chromium ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-litetrax-4-w-rc-chromium-3.jpg',
-        alt: 'Xe đẩy Joie Litetrax 4 W/RC Chromium',
-      },
-    ],
-    Price: '5.300.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '25',
-    ShortName: '\nXe đẩy Joie Pact W/RC & ADPT & TB Navy Blazer ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-pact-w-rc-_-adpt-_-tb-navy-blazer.jpg',
-        alt: 'Xe đẩy Joie Pact W/RC & ADPT & TB Navy Blazer',
-      },
-    ],
-    Price: '4.200.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '26',
-    ShortName: "\nXe đẩy Bibo's A1-262 ",
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201709181505xe-day-116025-1_1.jpg',
-        alt: "Xe đẩy Bibo's A1-262",
-      },
-    ],
-    Price: '899.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '27',
-    ShortName: "\nXe đẩy Bibo's A1-112 ",
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201709181500xe-day-116024_1.jpg',
-        alt: "Xe đẩy Bibo's A1-112",
-      },
-    ],
-    Price: '899.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '28',
-    ShortName: '\nXe đẩy VoVo gấp gọn màu xanh pastel ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201812181604xe-day-gap-gon-vovo-xanh-pastel-119531-4_1.jpg',
-        alt: 'Xe đẩy VoVo gấp gọn màu xanh pastel',
-      },
-    ],
-    Price: '1.999.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '29',
-    ShortName: '\nXe đẩy VoVo gấp gọn màu xanh dương ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201812181600xe-day-gap-gon-vovo-xanh-bien-119529-5_1.jpg',
-        alt: 'Xe đẩy VoVo gấp gọn màu xanh dương',
-      },
-    ],
-    Price: '1.999.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '30',
-    ShortName: '\nXe đẩy 2 chiều Gluck C8 màu xanh da trời ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201802051428xe-day-gluck-c8-mau-xanh-duong-800820-1_1.jpg',
-        alt: 'Xe đẩy 2 chiều Gluck C8 màu xanh da trời',
-      },
-    ],
-    Price: '1.790.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '31',
-    ShortName: '\nXe đẩy 2 chiều Gluck C8 màu đỏ ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201801301622xe-day-gluck-c8-mau-do-1_1.jpg',
-        alt: 'Xe đẩy 2 chiều Gluck C8 màu đỏ',
-      },
-    ],
-    Price: '1.790.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '32',
-    ShortName: '\nXe đẩy 2 chiều Seebaby T11 Plus màu xanh ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-seebaby-t11-3.jpg',
-        alt: 'Xe đẩy 2 chiều Seebaby T11 Plus màu xanh',
-      },
-    ],
-    Price: '1.499.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '33',
-    ShortName: '\nXe đẩy Seebaby Q6 màu xanh dương/xanh lá ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-seebaby-q6-xanh-duong-xanh-la-120318-1.jpg',
-        alt: 'Xe đẩy Seebaby Q6 màu xanh dương/xanh lá',
-      },
-    ],
-    Price: '895.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '34',
-    ShortName: '\nXe đẩy 2 chiều Seebaby T11 Plus màu đỏ ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201709271641xe-day-seebaby-t11-mau-do-106424_1.jpg',
-        alt: 'Xe đẩy 2 chiều Seebaby T11 Plus màu đỏ',
-      },
-    ],
-    Price: '1.499.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '35',
-    ShortName: '\nXe đẩy Seebaby Q6 màu đỏ ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-seebaby-q6-do-120319-1.jpg',
-        alt: 'Xe đẩy Seebaby Q6 màu đỏ ',
-      },
-    ],
-    Price: '895.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '36',
-    ShortName: '\nXe đẩy Combi Umbretta 4 bánh quay tự động nâu kaki ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-combi-umbretta-4-banh-quay-tu-dong-nau-kaki.jpg',
-        alt: 'Xe đẩy Combi Umbretta 4 bánh quay tự động nâu kaki',
-      },
-    ],
-    Price: '20.090.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '37',
-    ShortName: '\nXe đẩy Combi Handy S màu tím ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-handy-s-mau-tim_1.jpg',
-        alt: 'Xe đẩy Combi Handy S màu tím',
-      },
-    ],
-    Price: '8.590.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '38',
-    ShortName: '\nXe đẩy Joie Litetrax 4 Flex W/RC SIG. Granit Bleu ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-litetrax-4-flex-w-rc-sig-granit-bleu.jpg',
-        alt: 'Xe đẩy Joie Litetrax 4 Flex W/RC SIG. Granit Bleu',
-      },
-    ],
-    Price: '6.800.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '39',
-    ShortName: '\nXe đẩy Joie Litetrax 4 W/RC Sandstone ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-litetrax-4-w-rc-sandstone.jpg',
-        alt: 'Xe đẩy Joie Litetrax 4 W/RC Sandstone',
-      },
-    ],
-    Price: '5.300.000 ₫',
-    Rating: 0,
-  },
-  {
-    ProductId: '40',
-    ShortName: '\nXe đẩy du lịch Mastela siêu nhẹ A2 xám đậm ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-du-lich-sieu-nhe-a2-cua-mastela-mstl419-xam-dam.jpg',
-        alt: 'Xe đẩy du lịch Mastela siêu nhẹ A2 xám đậm',
-      },
-    ],
-    Price: '1.250.000 ₫',
-    Rating: 0,
-  },
-];
-
-const getPromotions = () => [
-  {
-    ProductId: '21',
-    ShortName: '\nXe đẩy đôi Combi Spazio Duo ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201706031421xe-day-doi-combi-spazio-duo-115993_1.jpg',
-        alt: 'Xe đẩy đôi Combi Spazio Duo',
-      },
-    ],
-    Price: '12.500.000 ₫',
-    rating: 5.2,
-    ratingCount: 10,
-    DisountId: 10,
-  },
-  {
-    ProductId: '22',
-    ShortName: '\nXe đẩy Joie Litetrax 4 Flex W/RC SIG. Noir ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-litetrax-4-flex-w-rc-sig-noir.jpg',
-        alt: 'Xe đẩy Joie Litetrax 4 Flex W/RC SIG. Noir',
-      },
-    ],
-    Price: '6.800.000 ₫',
-    Rating: 0,
-    DisountId: 10,
-    rating: 5.2,
-    ratingCount: 10,
-  },
-  {
-    ProductId: '23',
-    ShortName: '\nXe đẩy Joie Pact Flex W/RC&ADPT&TB SIG. Noir ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-pact-flex-w-rc_adpt_tb-sig-noir.jpg',
-        alt: 'Xe đẩy Joie Pact Flex W/RC&ADPT&TB SIG. Noir',
-      },
-    ],
-    Price: '5.800.000 ₫',
-    Rating: 0,
-    DisountId: 10,
-  },
-  {
-    ProductId: '24',
-    ShortName: '\nXe đẩy Joie Litetrax 4 W/RC Chromium ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-litetrax-4-w-rc-chromium-3.jpg',
-        alt: 'Xe đẩy Joie Litetrax 4 W/RC Chromium',
-      },
-    ],
-    Price: '5.300.000 ₫',
-    Rating: 0,
-    DisountId: 10,
-  },
-  {
-    ProductId: '25',
-    ShortName: '\nXe đẩy Joie Pact W/RC & ADPT & TB Navy Blazer ',
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/x/e/xe-day-tre-em-joie-pact-w-rc-_-adpt-_-tb-navy-blazer.jpg',
-        alt: 'Xe đẩy Joie Pact W/RC & ADPT & TB Navy Blazer',
-      },
-    ],
-    Price: '4.200.000 ₫',
-    Rating: 0,
-    DisountId: 10,
-  },
-  {
-    ProductId: '26',
-    ShortName: "\nXe đẩy Bibo's A1-262 ",
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201709181505xe-day-116025-1_1.jpg',
-        alt: "Xe đẩy Bibo's A1-262",
-      },
-    ],
-    Price: '899.000 ₫',
-    Rating: 0,
-    DisountId: 10,
-  },
-  {
-    ProductId: '27',
-    ShortName: "\nXe đẩy Bibo's A1-112 ",
-    ImageList: [
-      {
-        url:
-          'https://bibomart.com.vn/media/catalog/product/cache/8619f7f906915ea6d91fa39ca3b3a403/h/t/httpsmedia.bibomart.netubbmproduct201709181500xe-day-116024_1.jpg',
-        alt: "Xe đẩy Bibo's A1-112",
-      },
-    ],
-    Price: '899.000 ₫',
-    Rating: 0,
-    DisountId: 10,
-  },
-];

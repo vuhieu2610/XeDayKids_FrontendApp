@@ -70,6 +70,11 @@ export const Search = styled(Input.Search)`
   height: 40px;
   border-radius: 20px !important;
   padding: 4px 20px !important;
+
+  & .ant-input-suffix{
+    line-height: 2;
+  }
+
 `;
 
 export const MobileSearch = styled(Input.Search)`

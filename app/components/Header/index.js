@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Badge, Affix } from 'antd';
 import { Link } from 'react-router-dom';
+import { push } from 'connected-react-router';
 import propTypes from 'prop-types';
 import {
   ShoppingCartOutlined,
@@ -28,14 +29,25 @@ export default function Header({
   searchPlaceholder,
   cartNumber,
   handlerSelectLocation,
+  dispatch,
 }) {
+  const handleSearch = (content, event) => {
+    dispatch(
+      push(
+        getRouteUrl('SearchPage', {
+          searchContent: decodeURIComponent(content),
+        }),
+      ),
+    );
+  };
+
   return (
     <StyledHeader mobile={mobile}>
       <div className="panel">
         <PageWrapper>
           <Row>
             <Col lg={14} xs={24}>
-              <LocaltionHeader onClick={handlerSelectLocation} >
+              <LocaltionHeader onClick={handlerSelectLocation}>
                 <EnvironmentFilled />
                 <div className="location-main">
                   {location || 'Bạn muốn giao hàng tới đâu?'}
@@ -72,7 +84,10 @@ export default function Header({
                 </Col>
                 <Col span={11}>
                   <div className="flexbox">
-                    <Search placeholder="Ba mẹ tìm gì cho bé hôm nay?" />
+                    <Search
+                      placeholder="Ba mẹ tìm gì cho bé hôm nay?"
+                      onSearch={handleSearch}
+                    />
                   </div>
                 </Col>
                 <Col span={8} className="rightSide">
@@ -120,6 +135,7 @@ export default function Header({
                     placeholder={
                       searchPlaceholder || 'Ba mẹ tìm gì cho bé hôm nay?'
                     }
+                    onSearch={handleSearch}
                   />
                 </Affix>
               </div>
@@ -138,4 +154,5 @@ Header.propTypes = {
   logo: propTypes.string,
   cartNumber: propTypes.number,
   handlerSelectLocation: propTypes.func.isRequired,
+  dispatch: propTypes.func,
 };

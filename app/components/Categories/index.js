@@ -216,7 +216,7 @@ const MenuItem = styled(Menu.Item)`
     position: relative;
     transition: ease 0.4s;
     height: 100%;
-    display: flex;
+    display: flex !important;
     align-items: center;
     & span.icon {
       display: block;

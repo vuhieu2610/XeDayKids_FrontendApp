@@ -10,6 +10,7 @@ import {
   SET_SEARCH_PLACEHOLDER,
   CATEGORIES_FETCH,
   TOGGLE_LOCATION_MODAL,
+  CHANGE_BREADCUMBS_STATE,
 } from './constants';
 
 export const initalState = {
@@ -25,11 +26,18 @@ export const initalState = {
     hasError: false,
   },
   locationModalState: false,
+  breadcrumbs: {
+    displayable: false,
+    items: [],
+  },
 };
 
 const appReducer = (state = initalState, action) =>
   produce(state, draft => {
     switch (action.type) {
+      case CHANGE_BREADCUMBS_STATE:
+        draft.breadcrumbs = action.payload;
+        break;
       case ADD_TO_CART:
         draft.cartItems.push(action.payload);
         break;

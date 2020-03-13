@@ -1,3 +1,4 @@
+/* eslint-disable no-script-url */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-danger */
@@ -40,7 +41,7 @@ import { makeSelectScreenSize } from '../App/selectors';
 import FlashSale from '../../components/FlashSale';
 import { getDetail } from './actions';
 import { baseURL } from '../../utils/request';
-import { toMoney } from '../../utils/string';
+import { toMoney, getSlug } from '../../utils/string';
 import { getRouteUrl } from '../../route';
 
 const defaultItem = {
@@ -131,7 +132,7 @@ const thumbSliderConfigs = [
 ];
 
 let hideLoading = null;
-function DetailPage({ screenSize }) {
+function DetailPage({ screenSize, changeBreadcrumbs }) {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [item, setItem] = useState(defaultItem);
   const [isLoading, setIsLoading] = useState(true);
@@ -212,6 +213,23 @@ function DetailPage({ screenSize }) {
     } catch (err) {
       //
     }
+
+    changeBreadcrumbs({
+      displayable: true,
+      items: [
+        {
+          name: 'Danh mục',
+          href: getRouteUrl('ListPage', {
+            slug: getSlug('Danh mục'),
+            id: 1,
+          }),
+        },
+        {
+          name: item.data.Name,
+          href: '#',
+        },
+      ],
+    });
   }, [item]);
 
   useEffect(() => {
@@ -482,7 +500,7 @@ function DetailPage({ screenSize }) {
 
 DetailPage.propTypes = {
   // dispatch: PropTypes.func.isRequired,
-  // changeBreadcrumbs: PropTypes.func.isRequired,
+  changeBreadcrumbs: PropTypes.func.isRequired,
   screenSize: PropTypes.number,
 };
 

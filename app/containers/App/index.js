@@ -17,8 +17,9 @@ import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import propTypes from 'prop-types';
 // import _ from 'lodash';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import { createStructuredSelector } from 'reselect';
-import route, { breadcrumbRoutes } from '../../route';
+import route, { getRouteUrl } from '../../route';
 import GlobalStyle from '../../global-styles';
 import {
   StyledContent,
@@ -59,6 +60,8 @@ function App({
   cartNumber,
   handlerSelectLocation,
   locationModalState,
+  breadcrumbs,
+  dispatch,
 }) {
   useInjectSaga({ key: 'app', saga });
   useEffect(() => {
@@ -75,15 +78,6 @@ function App({
 
   const isMobile = getScreenSize('xl') >= screenSize;
 
-  function itemRender(_route, params, routes, paths) {
-    const last = routes.indexOf(_route) === routes.length - 1;
-    return last ? (
-      <span>{_route.breadcrumbName}</span>
-    ) : (
-      <Link to={paths.join('/')}>{_route.breadcrumbName}</Link>
-    );
-  }
-
   return (
     <React.Fragment>
       <Layout>
@@ -95,17 +89,25 @@ function App({
           cart={cart}
           cartNumber={cartNumber}
           handlerSelectLocation={handlerSelectLocation}
+          dispatch={dispatch}
         />
         <StyledContent mobile={isMobile ? 1 : 0}>
-          <BreadcrumbBox>
-            <PageWrapper>
-              <Breadcrumb
-                itemRender={itemRender}
-                separator=">"
-                routes={breadcrumbRoutes}
-              />
-            </PageWrapper>
-          </BreadcrumbBox>
+          {breadcrumbs.displayable && (
+            <BreadcrumbBox>
+              <PageWrapper>
+                <Breadcrumb separator=">">
+                  <Breadcrumb.Item>
+                    <Link to={getRouteUrl('HomePage')}>Trang chủ</Link>
+                  </Breadcrumb.Item>
+                  {breadcrumbs.items.map(item => (
+                    <Breadcrumb.Item key={_.uniqueId()}>
+                      <Link to={item.href}>{item.name}</Link>
+                    </Breadcrumb.Item>
+                  ))}
+                </Breadcrumb>
+              </PageWrapper>
+            </BreadcrumbBox>
+          )}
           <PageWrapper>
             <Switch>
               {route.map(page => (
@@ -156,6 +158,8 @@ function App({
 }
 
 App.propTypes = {
+  dispatch: propTypes.func,
+  breadcrumbs: propTypes.object,
   handlerSelectLocation: propTypes.func,
   cart: propTypes.array,
   cartNumber: propTypes.number,
@@ -187,6 +191,7 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
+  dispatch,
   setScreenSize: size => dispatch({ type: SCREEN_RESIZE, payload: size }),
   getCates: () => dispatch(getCategories()),
   handlerSelectLocation: state => dispatch(toggleLocationModal(state)),

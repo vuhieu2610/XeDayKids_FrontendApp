@@ -4,6 +4,7 @@ import HomePage from './containers/HomePage/Loadable';
 import DetailPage from './containers/DetailPage/Loadable';
 import CheckoutPage from './containers/CheckoutPage';
 import ListPage from './containers/ListPage';
+import SearchPage from './containers/SearchPage/Loadable';
 
 export const getRouteUrl = (name, params = {}) => {
   const _route = {
@@ -11,7 +12,8 @@ export const getRouteUrl = (name, params = {}) => {
     CheckoutPage: '/checkout/cart',
     ListPage: `/category/${params.slug || ':slug'}.${params.id || ':id'}`,
     PromotionPage: `/khuyen-mai`,
-    DetailPage: `/${params.slug || ':slug'}.${params.productId ||
+    SearchPage: `/tim-kiem/${params.searchContent || ':searchContent'}`,
+    DetailPage: `/span-pham/${params.slug || ':slug'}.${params.productId ||
       ':productId'}`,
   };
 
@@ -32,6 +34,12 @@ const route = [
     path: getRouteUrl('CheckoutPage'),
   },
   {
+    component: SearchPage,
+    name: 'SearchPage',
+    extract: true,
+    path: getRouteUrl('SearchPage'),
+  },
+  {
     component: ListPage,
     name: 'ListPage',
     extract: true,
@@ -48,17 +56,6 @@ const route = [
     name: 'DetailPage',
     extract: true,
     path: getRouteUrl('DetailPage'),
-  },
-];
-
-export const breadcrumbRoutes = [
-  {
-    path: '/',
-    breadcrumbName: 'Trang chủ',
-  },
-  {
-    path: ':slug',
-    breadcrumbName: 'Trang chi tiết',
   },
 ];
 
