@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Card, Carousel, Button } from 'antd';
+import { CustomItem } from '../Item/selections';
 
 export const CustomCard = styled(Card)`
   width: 100%;
@@ -85,6 +86,9 @@ export const CustomCard = styled(Card)`
 
 export const CustomCarousel = styled(Carousel)`
   width: 100%;
+  & ${CustomItem} {
+    margin: 5px 5px 0px 0px;
+  }
 `;
 
 export const CustomSlideButton = styled(Button)`

@@ -208,7 +208,7 @@ function ListPage({ setSearchPlaceholder, changeBreadcrumb, categories }) {
                 items.data.map(item => (
                   <Col xl={6} sm={6} xs={12} key={_.uniqueId()}>
                     <Skeleton loading={items.isLoading} active>
-                      {_.isObject(item) && <Item data={item} />}
+                      {_.isObject(item) && <Item showPromotion={!id} data={item} />}
                     </Skeleton>
                   </Col>
                 ))

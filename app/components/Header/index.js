@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Badge, Affix } from 'antd';
+import { Row, Col, Badge, Affix, Button } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
 import propTypes from 'prop-types';
 import {
@@ -45,11 +45,15 @@ export default function Header({
         <PageWrapper>
           <Row>
             <Col lg={14} xs={24}>
-              <LocaltionHeader onClick={handlerSelectLocation}>
-                <EnvironmentFilled />
-                <div className="location-main">
+              <LocaltionHeader>
+                <Button
+                  type="link"
+                  onClick={handlerSelectLocation}
+                  style={{ color: '#999', padding: 0 }}
+                  icon={<EnvironmentFilled style={{ color: '#ff464b' }} />}
+                >
                   {location || 'Bạn muốn giao hàng tới đâu?'}
-                </div>
+                </Button>
               </LocaltionHeader>
             </Col>
             <Col lg={10} xs={0} style={{ textAlign: 'right' }}>
@@ -133,6 +137,7 @@ export default function Header({
                     placeholder={
                       searchPlaceholder || 'Ba mẹ tìm gì cho bé hôm nay?'
                     }
+                    type="search"
                     onSearch={handleSearch}
                   />
                 </Affix>

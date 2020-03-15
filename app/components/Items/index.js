@@ -55,7 +55,7 @@ export default function Items({
           <Row gutter={[5, 5]}>
             {!loading
               ? data.map((i, index) => (
-                  <Col xs={12} sm={6} key={_.uniqueId()}>
+                  <Col xl={6} sm={6} xs={12} key={_.uniqueId()}>
                     <Item
                       showPromotion={showPromotion}
                       key={_.uniqueId(index)}

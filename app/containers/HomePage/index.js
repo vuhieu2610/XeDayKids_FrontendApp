@@ -115,11 +115,10 @@ function HomePage({
     if (pageLoading) {
       if (!loading) loading = message.loading('Đang lấy dữ liệu trang web', 0);
       return;
-    } else {
-      if (loading) {
-        loading();
-        loading = null;
-      }
+    }
+    if (loading) {
+      loading();
+      loading = null;
     }
 
     if (hasError) {
@@ -127,7 +126,8 @@ function HomePage({
       return;
     }
 
-    !_.isEmpty(homeCategories) && getProductByCategory(homeCategories);
+    if (!_.isEmpty(homeCategories) && _.isEmpty(homeCategories.Products))
+      getProductByCategory(homeCategories);
   }, [siteState]);
 
   const isMobile = getScreenSize('xl') >= screenSize;
@@ -144,6 +144,25 @@ function HomePage({
         </title>
         <meta
           name="description"
+          content={getValueFromSiteConfigs({
+            siteConfigs: siteState.siteConfigs,
+            configKey: 'description',
+            defaultValue: 'mô tả',
+          })}
+        />
+
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:type" content="article" />
+        <meta
+          property="og:title"
+          content={getValueFromSiteConfigs({
+            siteConfigs: siteState.siteConfigs,
+            configKey: 'title',
+            defaultValue: 'Trang chủ',
+          })}
+        />
+        <meta
+          property="og:description"
           content={getValueFromSiteConfigs({
             siteConfigs: siteState.siteConfigs,
             configKey: 'description',
@@ -168,7 +187,7 @@ function HomePage({
           </Col>
           <Col xl={categories.hasError ? 24 : 19} xs={24}>
             <CustomCaroselWrapper>
-              <CustomCarosel draggable>
+              <CustomCarosel draggable mobile={isMobile ? 1 : 0}>
                 {homeState.sliders.map((item, index) => (
                   <Link to="#" key={_.uniqueId(index)}>
                     <img src={item} alt={_.toString(item)} />

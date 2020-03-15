@@ -45,12 +45,6 @@ export const CustomItem = styled(Card)`
   position: relative;
   user-select: none;
   overflow: hidden;
-  @media (min-width: 768px) {
-    margin: 5px 5px 0 0 !important;
-  }
-  @media (max-width: 767px) {
-    margin: 5px 5px 0 0 !important;
-  }
   &:hover {
     border: 1px solid #f0f0f0;
   }
@@ -60,7 +54,7 @@ export const CustomItem = styled(Card)`
   }
 
   & .ant-card-body {
-    padding: 10px;
+    padding: 6px;
     padding-top: 0;
   }
   & .item-details {
@@ -117,6 +111,9 @@ export const CustomItem = styled(Card)`
       margin-top: 10px;
       margin-bottom: 8px;
       min-height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       & span {
         align-self: stretch;
         color: rgb(36, 36, 36);
@@ -132,10 +129,11 @@ export const CustomItem = styled(Card)`
         font-size: 13px;
         font-weight: normal;
         text-decoration: line-through;
-        display: inline-block;
+        display: inline-flex;
+        justify-content: flex-end;
+        align-items: flex-end;
         margin-left: 15px;
         @media (max-width: 768px) {
-          display: block;
           margin-left: 0;
         }
       }

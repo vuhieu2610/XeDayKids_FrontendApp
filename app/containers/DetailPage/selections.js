@@ -72,7 +72,7 @@ export const Main = styled.div`
     padding-bottom: 15px;
 
     & > .page-title-wrapper {
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       margin-right: 16px;
       & > h1 {
         display: inline-block;
@@ -282,6 +282,12 @@ export const Main = styled.div`
       & .branch-name {
         margin: 0;
         font-weight: 300;
+        &.buyer-count {
+          margin-bottom: 14px;
+          strong {
+            font-weight: bold;
+          }
+        }
         & > .label {
           color: #333;
         }

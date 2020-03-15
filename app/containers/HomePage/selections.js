@@ -18,7 +18,7 @@ export const CustomCarosel = styled(Carousel)`
       height: 422px;
       & > img {
         width: 100%;
-        height: 100%;
+        height: ${props => (!props.mobile ? '422px' : '100%')};
         max-height: 422px;
         object-fit: cover;
         object-position: left;

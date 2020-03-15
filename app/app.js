@@ -13,7 +13,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
-import { HashRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import history from 'utils/history';
 
 // Import root app
@@ -42,9 +42,9 @@ const render = messages => {
   ReactDOM.render(
     <Provider store={store}>
       <LanguageProvider messages={messages}>
-        <HashRouter hashType="slash" history={history}>
+        <BrowserRouter history={history}>
           <App />
-        </HashRouter>
+        </BrowserRouter>
       </LanguageProvider>
     </Provider>,
     MOUNT_NODE,

@@ -1,3 +1,6 @@
+/* eslint-disable consistent-return */
+/* eslint-disable indent */
+/* eslint-disable jsx-a11y/iframe-has-title */
 /* eslint-disable no-script-url */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
@@ -380,7 +383,7 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
             <div className="product-brand-container">
               {item.data.BuyerCount > 0 && (
                 <div className="social-box">
-                  <p className="branch-name">
+                  <p className="branch-name buyer-count">
                     <span className="label">Số người mua: </span>
                     <strong style={{ fontSize: 16 }}>
                       {`0${item.data.BuyerCount}`.slice(-2)}
@@ -393,7 +396,7 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
                       height="20"
                       scrolling="no"
                       frameBorder="0"
-                      allowtransparency="true"
+                      allowTransparency="true"
                       allow="encrypted-media"
                     />
                   </div>
@@ -413,7 +416,7 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
                         height="20"
                         scrolling="no"
                         frameBorder="0"
-                        allowtransparency="true"
+                        allowTransparency="true"
                         allow="encrypted-media"
                       />
                     </div>
@@ -683,6 +686,23 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
       <Helmet>
         <title>{item.data.ShortName}</title>
         <meta name="description" content={item.data.ShortDescription} />
+        <meta
+          property="og:url"
+          content={window.location.href}
+        />
+        <meta property="og:type" content="article" />
+        <meta
+          property="og:title"
+          content={item.data.ShortName}
+        />
+        <meta
+          property="og:description"
+          content={item.data.ShortDescription}
+        />
+        <meta
+          property="og:image"
+          content={previewUrl}
+        />
       </Helmet>
 
       <Main mobile={isMobile ? 1 : 0}>{renderBody()}</Main>

@@ -85,7 +85,9 @@ export const MobileSearch = styled(Input.Search)`
   background-color: #fff !important;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
   & > .ant-input-suffix{
-    line-height: 2.3;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
   }
 `;
 

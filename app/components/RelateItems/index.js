@@ -1,11 +1,13 @@
+/* eslint-disable indent */
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Affix, Card } from 'antd';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
 import { getRouteUrl } from '../../route';
 import { getProductsByCategoryId } from '../../containers/ListPage/actions';
-import _ from 'lodash';
 import { baseURL } from '../../utils/request';
 import { getSlug, toMoney } from '../../utils/string';
 
@@ -42,7 +44,9 @@ export default function RelateItems({
           // body.DataList,
         );
       }
-    } catch (err) {}
+    } catch (err) {
+      //
+    }
   };
 
   useEffect(() => {
@@ -73,7 +77,7 @@ export default function RelateItems({
                   <span className="product-image">
                     <img
                       src={`${baseURL}${toJson(item.Images, [])[0].url}`}
-                      alt="product-image"
+                      alt="product"
                     />
                   </span>
                 </Link>
@@ -173,12 +177,15 @@ const Item = styled.div`
           font-size: 16px;
           line-height: 1.33;
           color: #333;
-          font-weight: 500;
+          letter-spacing: 1px;
+          font-weight: bold;
           display: block;
         }
         .old-price {
+          letter-spacing: 1px;
+          margin-top: 4px;
           display: block;
-          font-size: 14px;
+          font-size: 12px;
           line-height: 1.29;
           color: #999;
           font-weight: 300;
