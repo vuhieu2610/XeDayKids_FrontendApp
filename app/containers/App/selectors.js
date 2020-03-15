@@ -64,6 +64,12 @@ const makeSelectLocationModalState = () =>
     state => state.locationModalState,
   );
 
+const makeSelectSite = () =>
+  createSelector(
+    selectApp,
+    state => state.site,
+  );
+
 export {
   makeSelectLocation,
   makeSelectBreadcrumb,
@@ -75,4 +81,5 @@ export {
   makeSelectCartNumber,
   makeSelectCart,
   makeSelectLocationModalState,
+  makeSelectSite,
 };

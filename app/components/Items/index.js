@@ -3,73 +3,104 @@
 import React, { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Skeleton } from 'antd';
+import { Skeleton, Row, Col } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import _ from 'lodash';
-import { CustomCard, CustomCarousel } from './selections';
+import { CustomCard, CustomCarousel, CustomSlideButton } from './selections';
 import Item from '../Item';
 import { defaultArray } from '../../utils/string';
 
-export default function Items({ title, data, loading, href }) {
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [isMouseMove, setIsMouseMove] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-
-  useEffect(() => {
-    setIsDragging(isMouseDown && isMouseMove);
-  }, [isMouseDown, isMouseMove]);
+function NextArrow(props) {
+  const { className, style, onClick } = props;
   return (
-    <div
-      onMouseDown={() => setIsMouseDown(true)}
-      onMouseMove={() => {
-        if (isMouseDown) setIsMouseMove(true);
-      }}
-      onMouseUp={() => {
-        setIsMouseDown(false);
-        setIsMouseMove(false);
-      }}
-      onMouseLeave={() => {
-        setIsMouseDown(false);
-        setIsMouseMove(false);
-      }}
-      onMouseOut={() => {
-        setIsMouseDown(false);
-        setIsMouseMove(false);
-      }}
-      onBlur={() => {
-        setIsMouseDown(false);
-        setIsMouseMove(false);
-      }}
-    >
+    <CustomSlideButton
+      className={className}
+      onClick={onClick}
+      shape="circle"
+      icon={<RightOutlined />}
+    />
+  );
+}
+
+function PrevArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    <CustomSlideButton
+      className={className}
+      onClick={onClick}
+      shape="circle"
+      icon={<LeftOutlined />}
+    />
+  );
+}
+
+export default function Items({
+  title,
+  data,
+  loading,
+  href,
+  showPromotion = false,
+  isMobile,
+}) {
+  // const isMobile = true;
+
+  return (
+    <div>
       <CustomCard
         bordered={false}
         title={<h4>{title}</h4>}
         extra={<Link to={href}>Xem thêm</Link>}
       >
-        <CustomCarousel
-          slidesToShow={4.5}
-          speed={300}
-          draggable
-          dots={false}
-          swipeToSlide
-          infinite={false}
-          responsive={carouselResponsiveConfigs}
-        >
-          {!loading
-            ? data.map((i, index) => (
-                <Item
-                  isDragging={isDragging}
-                  key={_.uniqueId(index)}
-                  data={i}
-                />
-              ))
-            : defaultArray(10).map(i => (
-                <div key={_.uniqueId(i)}>
-                  <div style={{ padding: 10 }}>
-                    <Skeleton active loading />
+        {isMobile ? (
+          <Row gutter={[5, 5]}>
+            {!loading
+              ? data.map((i, index) => (
+                  <Col xs={12} sm={6} key={_.uniqueId()}>
+                    <Item
+                      showPromotion={showPromotion}
+                      key={_.uniqueId(index)}
+                      data={i}
+                    />
+                  </Col>
+                ))
+              : defaultArray(10).map(i => (
+                  <Col xs={12} sm={6} key={_.uniqueId(i)}>
+                    <div style={{ padding: 10 }}>
+                      <Skeleton active loading />
+                    </div>
+                  </Col>
+                ))}
+          </Row>
+        ) : (
+          <CustomCarousel
+            slidesToShow={4.5}
+            speed={300}
+            draggable
+            dots={false}
+            swipeToSlide
+            infinite={false}
+            arrows
+            nextArrow={<NextArrow />}
+            prevArrow={<PrevArrow />}
+            responsive={carouselResponsiveConfigs}
+          >
+            {!loading
+              ? data.map((i, index) => (
+                  <Item
+                    showPromotion={showPromotion}
+                    key={_.uniqueId(index)}
+                    data={i}
+                  />
+                ))
+              : defaultArray(10).map(i => (
+                  <div key={_.uniqueId(i)}>
+                    <div style={{ padding: 10 }}>
+                      <Skeleton active loading />
+                    </div>
                   </div>
-                </div>
-              ))}
-        </CustomCarousel>
+                ))}
+          </CustomCarousel>
+        )}
       </CustomCard>
     </div>
   );
@@ -122,4 +153,6 @@ Items.propTypes = {
   data: propTypes.array,
   loading: propTypes.bool,
   href: propTypes.string,
+  showPromotion: propTypes.bool,
+  isMobile: propTypes.bool,
 };

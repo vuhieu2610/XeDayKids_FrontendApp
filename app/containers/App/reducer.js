@@ -11,6 +11,9 @@ import {
   CATEGORIES_FETCH,
   TOGGLE_LOCATION_MODAL,
   CHANGE_BREADCUMBS_STATE,
+  SITE_CONFIG_FETCH,
+  SITE_CONFIG_FETCHED,
+  SET_SITE_CONFIGS,
 } from './constants';
 
 export const initalState = {
@@ -29,6 +32,12 @@ export const initalState = {
   breadcrumbs: {
     displayable: false,
     items: [],
+  },
+  site: {
+    siteConfigs: [],
+    categories: [],
+    hasError: false,
+    loading: false,
   },
 };
 
@@ -69,6 +78,23 @@ const appReducer = (state = initalState, action) =>
         break;
       case TOGGLE_LOCATION_MODAL:
         draft.locationModalState = !draft.locationModalState;
+        break;
+      case SITE_CONFIG_FETCH:
+        draft.site.loading = true;
+        break;
+      case SITE_CONFIG_FETCHED:
+        const { HasError, Data } = action.payload;
+        draft.site.loading = false;
+        if (HasError) {
+          draft.site.hasError = true;
+          return;
+        }
+
+        draft.site.siteConfigs = Data.siteConfigs;
+        draft.site.categories = Data.categories;
+        break;
+      case SET_SITE_CONFIGS:
+        draft.site = action.payload;
         break;
       default:
         break;

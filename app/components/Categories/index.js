@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Menu } from 'antd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import getSlug from 'speakingurl';
 import _ from 'lodash';
 import { getRouteUrl } from '../../route';
+import { baseURL } from '../../utils/request';
 
 const defaultIconPath =
   'https://bibomart.com.vn/media/mega_menu/item/6-xeday.png';
@@ -42,6 +43,13 @@ const getCateUrl = item =>
 // );
 
 export const VerticleMenuItem = ({ dataList, isSubMenu = false, ...res }) => {
+  useEffect(() => {
+    if (isSubMenu) return;
+    if (dataList && dataList.length > 10) {
+      dataList.length = 10;
+    }
+  }, []);
+
   const renderItem = item => {
     if (!_.isEmpty(item.children)) {
       return (
@@ -52,7 +60,9 @@ export const VerticleMenuItem = ({ dataList, isSubMenu = false, ...res }) => {
             <Link to={getCateUrl(item)}>
               <span
                 style={{
-                  backgroundImage: `url(${item.Image || defaultIconPath})`,
+                  backgroundImage: `url(${(item.Image &&
+                    `${baseURL}${item.Image}`) ||
+                    defaultIconPath})`,
                 }}
                 className="icon"
               />
@@ -71,7 +81,9 @@ export const VerticleMenuItem = ({ dataList, isSubMenu = false, ...res }) => {
           {!isSubMenu && (
             <span
               style={{
-                backgroundImage: `url(${item.Image || defaultIconPath})`,
+                backgroundImage: `url(${(item.Image &&
+                  `${baseURL}${item.Image}`) ||
+                  defaultIconPath})`,
               }}
               className="icon"
             />
@@ -108,13 +120,15 @@ VerticleMenuItem.propTypes = {
 };
 
 const SubMenuItem = styled(Menu.SubMenu)`
-  /* padding: 0 !important; */
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 42px !important;
   & * {
     color: #333;
     user-select: none;
   }
   & .ant-menu-submenu-title {
-    /* padding: 0 !important; */
+    padding: 0 !important;
   }
   & a {
     font-size: 14px;
@@ -124,8 +138,8 @@ const SubMenuItem = styled(Menu.SubMenu)`
     transition: ease 0.4s;
     & span.icon {
       display: block;
-      width: 25px;
-      height: 25px;
+      width: 30px;
+      height: 30px;
       object-fit: cover;
       object-position: left top;
       top: 0;
@@ -209,7 +223,10 @@ const SubMenuItem = styled(Menu.SubMenu)`
 `;
 
 const MenuItem = styled(Menu.Item)`
-  /* padding: 0 !important; */
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 42px !important;
+
   & * {
     color: #333;
   }
@@ -227,8 +244,8 @@ const MenuItem = styled(Menu.Item)`
     align-items: center;
     & span.icon {
       display: block;
-      width: 25px;
-      height: 25px;
+      width: 30px;
+      height: 30px;
       object-fit: cover;
       object-position: left top;
       top: 0;
@@ -240,12 +257,14 @@ const MenuItem = styled(Menu.Item)`
       position: absolute;
       & + span {
         font-weight: 300 !important;
-        text-decoration: none;
-        text-transform: none;
         font-size: 14px;
         height: 100%;
         display: flex;
         align-items: center;
+        width: 100%;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
       }
     }
   }

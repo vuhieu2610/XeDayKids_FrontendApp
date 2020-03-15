@@ -40,12 +40,17 @@ import {
   makeSelectCart,
   makeSelectCartNumber,
   makeSelectLocationModalState,
+  makeSelectSite,
 } from './selectors';
 import { SCREEN_RESIZE } from './constants';
 import { getScreenSize } from '../../utils/responsive';
 
 import saga from './saga';
-import { getCategories, toggleLocationModal } from './actions';
+import {
+  getCategories,
+  toggleLocationModal,
+  makeRequestGetHomeData,
+} from './actions';
 import LocationModal from '../../components/LocationModal';
 
 function App({
@@ -55,12 +60,14 @@ function App({
   logo,
   categories,
   getCates,
+  getSiteConfigs,
   searchPlaceHolder,
   cart,
   cartNumber,
   handlerSelectLocation,
   locationModalState,
   breadcrumbs,
+  site,
   dispatch,
 }) {
   useInjectSaga({ key: 'app', saga });
@@ -70,6 +77,7 @@ function App({
     };
     window.addEventListener('resize', changeScreenSize);
     getCates();
+    getSiteConfigs();
     // console.log(categories);
     return () => {
       window.removeEventListener('resize', changeScreenSize);
@@ -155,12 +163,14 @@ function App({
 App.propTypes = {
   dispatch: propTypes.func,
   breadcrumbs: propTypes.object,
+  site: propTypes.object,
   handlerSelectLocation: propTypes.func,
   cart: propTypes.array,
   cartNumber: propTypes.number,
   location: propTypes.string,
   screenSize: propTypes.number,
   setScreenSize: propTypes.func,
+  getSiteConfigs: propTypes.func,
   getCates: propTypes.func,
   searchPlaceHolder: propTypes.string,
   logo: propTypes.string,
@@ -183,6 +193,7 @@ const mapStateToProps = createStructuredSelector({
   logo: makeSelectLogo(),
   categories: makeSelectCategories(),
   locationModalState: makeSelectLocationModalState(),
+  site: makeSelectSite(),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -190,6 +201,7 @@ const mapDispatchToProps = dispatch => ({
   setScreenSize: size => dispatch({ type: SCREEN_RESIZE, payload: size }),
   getCates: () => dispatch(getCategories()),
   handlerSelectLocation: state => dispatch(toggleLocationModal(state)),
+  getSiteConfigs: () => dispatch(makeRequestGetHomeData()),
 });
 
 export default connect(

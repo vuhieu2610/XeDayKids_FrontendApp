@@ -69,7 +69,7 @@ export const Main = styled.div`
 
   & .item-info-main {
     width: 100%;
-    padding-bottom: 25px;
+    padding-bottom: 15px;
 
     & > .page-title-wrapper {
       margin-bottom: 24px;
@@ -85,12 +85,13 @@ export const Main = styled.div`
       }
     }
     & > .attributes {
-      margin: 20px 0;
+      margin: 16px 0;
       color: #333;
       line-height: 1.71;
       & ul {
         padding: 0 0 0 13px;
         list-style: none;
+        margin: 0;
         & > li {
           margin: 0 0 1px;
           font-weight: 300;
@@ -188,6 +189,8 @@ export const Main = styled.div`
       & .deal-info {
         display: flex;
         align-items: flex-end;
+        justify-content: space-between;
+        white-space: nowrap;
         color: #ff3b27;
         margin-top: 8px;
         & .ant-progress-text {
@@ -195,7 +198,7 @@ export const Main = styled.div`
         }
         & .ant-progress {
           margin-left: 8px;
-          width: calc(100% - 80px);
+          width: calc(100% - 120px);
         }
       }
     }
@@ -206,8 +209,8 @@ export const Main = styled.div`
       margin-top: 16px;
       margin-bottom: 18px;
       align-items: flex-end;
-      & > .order-actions {
-        display: ${props => (props.mobile ? 'flex' : 'block')};
+      & .order-actions {
+        display: flex;
         @media (max-width: 375px) {
           flex-direction: column;
         }
@@ -269,10 +272,14 @@ export const Main = styled.div`
 
     & .product-brand-container {
       margin-top: 2px;
-      margin-bottom: 19px;
+      margin-bottom: 16px;
       line-height: 18px;
-      max-width: calc(100% - 130px);
-      & > .branch-name {
+      max-width: 100%;
+      .social-box {
+        display: flex;
+        justify-content: space-between;
+      }
+      & .branch-name {
         margin: 0;
         font-weight: 300;
         & > .label {
@@ -283,7 +290,7 @@ export const Main = styled.div`
   }
 
   & .sidebar-right {
-    width: 296px;
+    /* width: 296px; */
     padding-bottom: 25px;
     padding-top: 20px;
     & > .ant-card {

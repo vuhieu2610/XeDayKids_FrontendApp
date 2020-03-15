@@ -37,6 +37,7 @@ export const CountDownWrapper = styled.div`
   font-weight: 300;
   line-height: 18px;
   margin: 0px;
+  white-space: nowrap;
 `;
 
 export const CustomItem = styled(Card)`
@@ -125,6 +126,7 @@ export const CustomItem = styled(Card)`
         margin: 0px;
         padding: 8px 0px 0px;
       }
+
       & .original.deal {
         color: rgb(120, 120, 120);
         font-size: 13px;
@@ -132,6 +134,10 @@ export const CustomItem = styled(Card)`
         text-decoration: line-through;
         display: inline-block;
         margin-left: 15px;
+        @media (max-width: 768px) {
+          display: block;
+          margin-left: 0;
+        }
       }
     }
     & .progress {
@@ -140,7 +146,7 @@ export const CustomItem = styled(Card)`
       margin-top: 12px;
       align-items: center;
       & ${CustomBar} {
-        width: calc(100% - 100px);
+        width: calc(100% - 115px);
       }
       & ${CountDownWrapper} {
         width: 90px;

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Row, Col, Badge, Affix } from 'antd';
-import { Link } from 'react-router-dom';
-import { push } from 'connected-react-router';
+import { Link, useHistory } from 'react-router-dom';
 import propTypes from 'prop-types';
 import {
   ShoppingCartOutlined,
@@ -31,13 +30,12 @@ export default function Header({
   handlerSelectLocation,
   dispatch,
 }) {
+  const history = useHistory();
   const handleSearch = (content, event) => {
-    dispatch(
-      push(
-        getRouteUrl('SearchPage', {
-          searchContent: decodeURIComponent(content),
-        }),
-      ),
+    history.push(
+      getRouteUrl('SearchPage', {
+        searchContent: decodeURIComponent(content),
+      }),
     );
   };
 

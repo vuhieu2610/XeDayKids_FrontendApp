@@ -31,16 +31,21 @@ import {
 } from './selections';
 import reducer from './reducer';
 import { makeSelectHomeState } from './selector';
-import { makeSelectCategories } from '../App/selectors';
+import {
+  makeSelectCategories,
+  makeSelectScreenSize,
+  makeSelectSite,
+} from '../App/selectors';
 import { VerticleMenuItem } from '../../components/Categories';
 import { getSlug, getValueFromSiteConfigs } from '../../utils/string';
 import { getRouteUrl } from '../../route';
-import {
-  makeRequestGetHomeData,
-  makeRequestGetProductByCategory,
-} from './actions';
+import { makeRequestGetProductByCategory } from './actions';
 
-import { setBreadcrumbs as setBreadcrumbsAction } from '../App/actions';
+import {
+  setBreadcrumbs as setBreadcrumbsAction,
+  setSiteConfigs,
+} from '../App/actions';
+import { getScreenSize } from '../../utils/responsive';
 
 const defaultCateData = {
   categoryId: 0,
@@ -49,40 +54,17 @@ const defaultCateData = {
   items: [],
 };
 
-const defaultPageState = {
-  siteConfigs: [],
-  categories: [],
-};
-
 let loading = null;
-function HomePage({ homeState, categories, setBreadcrumbs }) {
+function HomePage({
+  homeState,
+  categories,
+  setBreadcrumbs,
+  screenSize,
+  siteState,
+  setSiteState,
+}) {
   useInjectReducer({ key: 'homePage', reducer });
-
-  const [siteState, setSiteState] = useState(defaultPageState);
   const [promotion, setPromotion] = useState(defaultCateData);
-
-  const getHomeData = async () => {
-    loading = message.loading('Đang lấy dữ liệu trang web', 0);
-    try {
-      const res = await makeRequestGetHomeData();
-      if (res.HasError) {
-        message.error('có lỗi xảy ra, vui lòng thử lại sau.', 5);
-        return;
-      }
-
-      const { Data: data } = res;
-      setSiteState(
-        produce(siteState, draftState => {
-          draftState.siteConfigs = data.siteConfigs;
-          draftState.categories = data.categories;
-        }),
-      );
-    } catch (ex) {
-      message.error('có lỗi xảy ra, vui lòng thử lại sau.', 5);
-    } finally {
-      loading();
-    }
-  };
 
   const getProductByCategory = async homeCategories => {
     try {
@@ -122,14 +104,33 @@ function HomePage({ homeState, categories, setBreadcrumbs }) {
       items: [],
       displayable: false,
     });
-    getHomeData();
   }, []);
 
   useEffect(() => {
-    const { categories: homeCategories } = siteState;
-    if (_.isEmpty(homeCategories)) return;
-    getProductByCategory(homeCategories);
+    const {
+      categories: homeCategories,
+      loading: pageLoading,
+      hasError,
+    } = siteState;
+    if (pageLoading) {
+      if (!loading) loading = message.loading('Đang lấy dữ liệu trang web', 0);
+      return;
+    } else {
+      if (loading) {
+        loading();
+        loading = null;
+      }
+    }
+
+    if (hasError) {
+      message.error('có lỗi xảy ra, vui lòng thử lại sau.', 5);
+      return;
+    }
+
+    !_.isEmpty(homeCategories) && getProductByCategory(homeCategories);
   }, [siteState]);
+
+  const isMobile = getScreenSize('xl') >= screenSize;
 
   return (
     <React.Fragment>
@@ -300,17 +301,19 @@ function HomePage({ homeState, categories, setBreadcrumbs }) {
             <Col span={24}>
               <Items
                 href={getRouteUrl('PromotionPage')}
+                showPromotion
+                isMobile={isMobile}
                 title={
                   <Skeleton
                     active
                     loading={promotion.loading}
-                    title={{
-                      width: 100,
-                    }}
+                    title={false}
                     paragraph={{
-                      rows: 0,
+                      rows: 1,
                     }}
-                    avatar
+                    avatar={{
+                      shape: 'square',
+                    }}
                   >
                     <img
                       src="https://img.icons8.com/ios/30/000000/tag-window.png"
@@ -332,17 +335,18 @@ function HomePage({ homeState, categories, setBreadcrumbs }) {
                   slug: getSlug(category.Name),
                   id: category.CategoryId,
                 })}
+                isMobile={isMobile}
                 title={
                   <Skeleton
                     active
                     loading={category.Loading}
-                    title={{
-                      width: 100,
-                    }}
+                    title={false}
                     paragraph={{
-                      rows: 0,
+                      rows: 1,
                     }}
-                    avatar
+                    avatar={{
+                      shape: 'square',
+                    }}
                   >
                     <img
                       src={
@@ -373,14 +377,19 @@ HomePage.propTypes = {
     data: propTypes.array,
     hasError: propTypes.bool,
   }),
+  screenSize: propTypes.number,
+  siteState: propTypes.object,
 };
 
 const mapStateToProp = createStructuredSelector({
   homeState: makeSelectHomeState(),
   categories: makeSelectCategories(),
+  screenSize: makeSelectScreenSize(),
+  siteState: makeSelectSite(),
 });
 const mapDispatchToProp = dispatch => ({
   setBreadcrumbs: state => dispatch(setBreadcrumbsAction(state)),
+  setSiteState: siteState => dispatch(setSiteConfigs(siteState)),
 });
 
 export default connect(

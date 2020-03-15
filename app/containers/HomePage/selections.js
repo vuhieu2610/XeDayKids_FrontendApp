@@ -42,9 +42,10 @@ export const CustomMenu = styled.div`
   border-radius: 0;
   border: 1px solid #ebecf0;
   height: 422px;
-  padding: 10px;
-  & > .ant-menu {
-    margin: -10px;
+  padding: 0;
+  .ant-skeleton {
+    margin: 10px;
+    width: calc(100% - 20px);
   }
   & .ant-menu-vertical-left {
     border-right: 0;

@@ -1,10 +1,24 @@
 import styled from 'styled-components';
-import { Card, Carousel } from 'antd';
+import { Card, Carousel, Button } from 'antd';
 
 export const CustomCard = styled(Card)`
   width: 100%;
   margin-top: 10px !important;
   margin-bottom: 5px !important;
+
+  /* & .mobile-list {
+    overflow-y: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    & > div {
+      display: inline-block;
+      width: 250px;
+      margin: 4px 2.5px;
+    }
+  } */
 
   & > .ant-card-head {
     border-bottom: 1px solid transparent;
@@ -24,16 +38,37 @@ export const CustomCard = styled(Card)`
       white-space: nowrap;
       position: relative;
       padding-left: 54px;
-      & img {
+      & img,
+      .ant-skeleton-header {
         display: block;
+        position: absolute;
+        margin: auto;
+        left: 0;
+      }
+      .ant-skeleton-paragraph {
+        width: 100%;
+        .ant-skeleton-header {
+          top: 50%;
+          transform: translate(0, -50%);
+        }
+      }
+      img {
+        top: 0;
         max-width: 34px;
         max-height: 34px;
-        position: absolute;
-        top: 0;
         bottom: 0;
-        left: 0;
         right: calc(100% - 54px);
-        margin: auto;
+      }
+      .ant-skeleton {
+        height: 40px;
+      }
+      .ant-skeleton-content {
+        position: relative;
+        ul {
+          position: absolute;
+          top: 50%;
+          transform: translate(0, -50%);
+        }
       }
     }
   }
@@ -50,4 +85,17 @@ export const CustomCard = styled(Card)`
 
 export const CustomCarousel = styled(Carousel)`
   width: 100%;
+`;
+
+export const CustomSlideButton = styled(Button)`
+  width: 35px !important;
+  height: 35px !important;
+  z-index: 999;
+  border: 1px solid #ccc !important;
+  background: #fff !important;
+  color: #464646 !important;
+  font-size: 16px !important;
+  &:hover {
+    background: #eee !important;
+  }
 `;

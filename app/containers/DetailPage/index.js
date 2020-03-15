@@ -32,7 +32,14 @@ import {
   Empty,
 } from 'antd';
 import produce from 'immer';
-import { ShoppingCartOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import {
+  ShoppingCartOutlined,
+  PhoneOutlined,
+  MailOutlined,
+  SyncOutlined,
+  StarOutlined,
+} from '@ant-design/icons';
 import _ from 'lodash';
 import { setBreadcrumbs } from '../App/actions';
 import { Main } from './selections';
@@ -43,6 +50,7 @@ import { getDetail } from './actions';
 import { baseURL } from '../../utils/request';
 import { toMoney, getSlug } from '../../utils/string';
 import { getRouteUrl } from '../../route';
+import RelateItems from '../../components/RelateItems';
 
 const defaultItem = {
   hasData: true,
@@ -147,6 +155,9 @@ const thumbSliderConfigs = [
 ];
 
 let hideLoading = null;
+const interval = 1000;
+const timeFormat = `YYYY-MM-DD'T'HH:mm:ss`;
+
 function DetailPage({ screenSize, changeBreadcrumbs }) {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [item, setItem] = useState(defaultItem);
@@ -154,7 +165,58 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
   const [hasError, setHasError] = useState(false);
   const [quantityItem, setQuantityItem] = useState(0);
 
+  const [showRelateItems, setShowRelateItems] = useState(false);
+
+  const [day, setDay] = useState('00');
+  const [hour, setHour] = useState('00');
+  const [min, setMin] = useState('00');
+  const [second, setSecond] = useState('00');
+  const [percentDeal, setPercentDeal] = useState(0);
+  const [currentDuration, setCurrentDuration] = useState(0);
+
+  useEffect(() => {
+    const { data } = item;
+
+    if (!data || !data.PromotionId) return;
+
+    setPercentDeal(100 - _.round((data.PromotionPrice / data.Price) * 100));
+
+    const endDate = moment(data.PromotionEndDate, timeFormat).unix();
+    const startDate = moment().unix();
+    const diffTime = endDate - startDate;
+    let duration = moment.duration(diffTime * 1000, 'milliseconds');
+    setCurrentDuration(duration);
+    const loop = setInterval(() => {
+      duration = moment.duration(
+        duration.asMilliseconds() - interval,
+        'milliseconds',
+      );
+      setCurrentDuration(duration);
+      let d = moment.duration(duration).days();
+      let h = moment.duration(duration).hours();
+      let m = moment.duration(duration).minutes();
+      let s = moment.duration(duration).seconds();
+      d = _.trim(d).length === 1 ? `0${d}` : d;
+      h = _.trim(h).length === 1 ? `0${h}` : h;
+      m = _.trim(m).length === 1 ? `0${m}` : m;
+      s = _.trim(s).length === 1 ? `0${s}` : s;
+
+      setDay(duration > 0 ? d : '00');
+      setHour(duration > 0 ? h : '00');
+      setMin(duration > 0 ? m : '00');
+      setSecond(duration > 0 ? s : '00');
+    }, interval);
+
+    return () => {
+      clearInterval(loop);
+    };
+  }, [item]);
+
   const { productId } = useParams();
+
+  const socialUrl = `https://www.facebook.com/plugins/like.php?href=${encodeURIComponent(
+    window.location.href,
+  )}&width=150&layout=button_count&action=like&size=small&share=true&height=20&appId=787227998123391`;
 
   const fetchingItem = async () => {
     setIsLoading(true);
@@ -274,7 +336,7 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
 
   useEffect(() => {
     fetchingItem();
-  }, []);
+  }, [productId]);
 
   const isMobile = getScreenSize('xl') >= screenSize;
 
@@ -287,10 +349,10 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
               <Carousel
                 dots={false}
                 draggable
-                slidesToScroll={3}
+                slidesToScroll={5}
                 speed={700}
                 infinite={false}
-                slidesToShow={4.5}
+                slidesToShow={5.2}
                 responsive={thumbSliderConfigs}
               >
                 {item.data.Images.map(image => (
@@ -316,16 +378,48 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
               <h1 className="page-title">{item.data.Name}</h1>
             </div>
             <div className="product-brand-container">
-              <p className="branch-name">
-                <span className="label">Mã sản phầm: </span>
-                <span>{item.data.ProductId}</span>
-              </p>
               {item.data.BuyerCount > 0 && (
-                <p className="branch-name">
-                  <span className="label">Số người mua: </span>
-                  <span>{item.data.BuyerCount}</span>
-                </p>
+                <div className="social-box">
+                  <p className="branch-name">
+                    <span className="label">Số người mua: </span>
+                    <strong style={{ fontSize: 16 }}>
+                      {`0${item.data.BuyerCount}`.slice(-2)}
+                    </strong>
+                  </p>
+                  <div className="social-components">
+                    <iframe
+                      src={socialUrl}
+                      width="172"
+                      height="20"
+                      scrolling="no"
+                      frameBorder="0"
+                      allowtransparency="true"
+                      allow="encrypted-media"
+                    />
+                  </div>
+                </div>
               )}
+              {
+                <div className="social-box">
+                  <p className="branch-name">
+                    <span className="label">Mã sản phầm: </span>
+                    <span>{item.data.Code.slice(0, 8)}</span>
+                  </p>
+                  {item.data.BuyerCount <= 0 && (
+                    <div className="social-components">
+                      <iframe
+                        src={socialUrl}
+                        width="172"
+                        height="20"
+                        scrolling="no"
+                        frameBorder="0"
+                        allowtransparency="true"
+                        allow="encrypted-media"
+                      />
+                    </div>
+                  )}
+                </div>
+              }
             </div>
             <div className="attributes">
               <ul>
@@ -337,18 +431,28 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
             <div className="product-info-price">
               <p className="special-price-item">
                 <span className="price-label">Giá: </span>
-                <span className="span-price">{toMoney(item.data.Price)} ₫</span>
+                <span className="span-price">
+                  {toMoney(item.data.PromotionPrice || item.data.Price)} ₫
+                </span>
               </p>
-              {item.data.DiscountId && (
+              {item.data.PromotionId && (
                 <Fragment>
                   <p className="saleoff-price-item">
                     <span className="price-label">Tiết kiệm:</span>
-                    <span className="discount-percent"> 45% </span>({' '}
-                    <span className="span-saving-price">900.000đ</span> )
+                    <span className="discount-percent">
+                      {' '}
+                      {percentDeal}%{' '}
+                    </span>({' '}
+                    <span className="span-saving-price">
+                      {toMoney(item.data.Price - item.data.PromotionPrice)} đ
+                    </span>{' '}
+                    )
                   </p>
                   <p className="old-price-item">
                     <span className="price-label">Giá thị trường:</span>
-                    <span className="span-list-price">1.990.000đ</span>
+                    <span className="span-list-price">
+                      {toMoney(item.data.Price)} đ
+                    </span>
                   </p>
 
                   <div className="deal-process">
@@ -356,10 +460,24 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
                       <div className="deal-time">
                         <span className="icon-timer" />
                         khuyến mãi kết thúc sau:
-                        <span>02 ngày 00:00:00</span>
+                        <span>
+                          {day} ngày {hour}:{min}:{second}
+                        </span>
                       </div>
                       <div className="deal-info">
-                        Đã bán 10 <Progress percent={70} status="exception" />
+                        {currentDuration < 0
+                          ? 'Đã kết thúc'
+                          : item.data.PromotionBuyerCount
+                          ? `Đã bán ${item.data.PromotionBuyerCount}`
+                          : 'Vừa mở bán'}
+                        <Progress
+                          percent={_.round(
+                            (item.data.PromotionBuyerCount /
+                              item.data.PromotionQuantity) *
+                              100,
+                          )}
+                          status="exception"
+                        />
                       </div>
                     </div>
                   </div>
@@ -387,46 +505,88 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
                   </div>
                 </label>
               </Col>
-              <Col lg={24} md={16} xs={24} className="order-actions">
-                <Button className="order-now" type="danger" size="large">
-                  Mua ngay
-                </Button>
-                <Button
-                  className="add-to-card"
-                  size="large"
-                  icon={<ShoppingCartOutlined />}
-                >
-                  Thêm vào giỏ hàng
-                </Button>
+              <Col lg={24} md={16} xs={24}>
+                <div className="order-actions">
+                  <Button className="order-now" type="danger" size="large">
+                    Mua ngay
+                  </Button>
+                  <Button
+                    className="add-to-card"
+                    size="large"
+                    icon={<ShoppingCartOutlined />}
+                  >
+                    Thêm vào giỏ hàng
+                  </Button>
+                </div>
               </Col>
             </Row>
           </div>
         </Col>
-        <Col xl={6} xs={0} md={0}>
-          <div className="sidebar-right">
-            <Card title="Liên hệ">
-              <ul>
-                <li>Hotline: 123456789</li>
-                <li>Email: cskh@xedaykids.com.vn</li>
-              </ul>
-            </Card>
-            <Card>
-              <ul>
-                <li> Miễn phí giao hàng</li>
-                <li>365 ngày đổi trả</li>
-                <li>100% tích điểm thưởng</li>
-              </ul>
-            </Card>
-            {item.data.PromotionId && (
-              <div style={{ position: 'absolute' }}>
-                <FlashSale
-                  endDate={item.data.PromotionEndDate}
-                  offsetTop={115}
-                  price={`${toMoney(item.data.PromotionPrice)} đ`}
-                />
+        <Col xl={6} xs={24} md={24}>
+          <Row gutter={[0, 10]} style={{ paddingTop: isMobile ? 0 : 11 }}>
+            <Col xl={24} xs={0} md={0}>
+              <Card
+                title="Liên hệ"
+                bodyStyle={{ padding: '8px 11px 15px 11px', fontSize: 14 }}
+              >
+                <div>
+                  <PhoneOutlined style={{ fontSize: 18, marginRight: 8 }} />{' '}
+                  <span>Hotline: 123456789</span>
+                </div>
+                <div>
+                  <MailOutlined style={{ fontSize: 18, marginRight: 8 }} />{' '}
+                  <span>Email: cskh@xedaykids.com.vn</span>
+                </div>
+              </Card>
+            </Col>
+            <Col xl={24} xs={0} md={0}>
+              <Card bodyStyle={{ padding: '12px 11px', fontSize: 14 }}>
+                <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
+                  <li>
+                    <StarOutlined
+                      style={{ fontSize: 18, marginRight: 8, color: '#ff464b' }}
+                    />{' '}
+                    Cam kết sản phẩm chính hãng
+                  </li>
+                  <li>
+                    <SyncOutlined
+                      style={{ fontSize: 18, marginRight: 8, color: '#ff464b' }}
+                    />{' '}
+                    365 ngày đổi trả
+                  </li>
+                </ul>
+              </Card>
+            </Col>
+            <Col span={24}>
+              <div
+                style={!isMobile ? { position: 'absolute', width: '100%' } : {}}
+              >
+                {item.data.PromotionId ? (
+                  !isMobile && (
+                    <FlashSale
+                      endDate={item.data.PromotionEndDate}
+                      offsetTop={115}
+                      price={`${toMoney(item.data.PromotionPrice)} đ`}
+                    />
+                  )
+                ) : (
+                  <div
+                    style={{
+                      visibility: showRelateItems ? 'visible' : 'hidden',
+                    }}
+                  >
+                    <RelateItems
+                      cateId={item.data.CategoryId}
+                      offsetTop={115}
+                      hasOffset={!isMobile}
+                      currentItem={Number(productId) || 0}
+                      show={() => setShowRelateItems(true)}
+                    />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </Col>
+          </Row>
         </Col>
       </Row>
       <Row gutter={[10, 10]}>

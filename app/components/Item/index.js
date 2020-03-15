@@ -22,9 +22,8 @@ const defaultThumb = `https://img.icons8.com/ios/480/000000/product.png`;
 
 const interval = 1000;
 const timeFormat = `YYYY-MM-DD'T'HH:mm:ss`;
-export default function Item({ data }) {
+export default function Item({ data, showPromotion = false }) {
   // let then = moment(endDate, timeFormat).unix();
-  window.moment = moment;
   const [day, setDay] = useState('00');
   const [hour, setHour] = useState('00');
   const [min, setMin] = useState('00');
@@ -36,7 +35,7 @@ export default function Item({ data }) {
     if (!data || !data.PromotionId) return;
 
     setPercentDeal(
-      _.round((data.PromotionPrice / data.PromotionCurrentPrice) * 100),
+      100 - _.round((data.PromotionPrice / data.PromotionCurrentPrice) * 100),
     );
 
     const endDate = moment(data.PromotionEndDate, timeFormat).unix();
@@ -93,7 +92,7 @@ export default function Item({ data }) {
       }
     >
       <div className="item-details">
-        {data.PromotionId && (
+        {showPromotion && data.PromotionId && (
           <span className="percent deal">-{percentDeal}%</span>
         )}
         <span className="item-name">
@@ -108,12 +107,12 @@ export default function Item({ data }) {
         </span>
         <div className="price-box">
           <span>
-            {data.PromotionPrice
+            {showPromotion && data.PromotionPrice
               ? toMoney(data.PromotionPrice)
               : toMoney(data.Price)}
             ₫
           </span>
-          {data.PromotionPrice && (
+          {showPromotion && data.PromotionPrice && (
             <span className="original deal">{toMoney(data.Price)} ₫</span>
           )}
         </div>
@@ -132,7 +131,7 @@ export default function Item({ data }) {
             <span className="ant-rate-text">Chưa có đánh giá</span>
           )}
         </div>
-        {data.PromotionId && (
+        {showPromotion && data.PromotionId && (
           <div className="progress">
             <CustomBar
               percent={_.round(
@@ -142,8 +141,8 @@ export default function Item({ data }) {
                 currentDuration < 0
                   ? 'Đã kết thúc'
                   : data.PromotionBuyerCount
-                    ? `Đã bán ${data.PromotionBuyerCount}`
-                    : 'Vừa mở bán'
+                  ? `Đã bán ${data.PromotionBuyerCount}`
+                  : 'Vừa mở bán'
               }
             />
             <CountDownWrapper>
@@ -158,4 +157,5 @@ export default function Item({ data }) {
 
 Item.propTypes = {
   data: propTypes.object,
+  showPromotion: propTypes.bool,
 };
