@@ -22,7 +22,12 @@ export const initalState = {
   hotLine: '123456567',
   screenWidth: typeof window === 'object' ? window.innerWidth : null,
   searchPlaceholder: '',
-  cart: [],
+  cartData: {
+    totals: {
+      items: [],
+    },
+    address: {},
+  },
   categories: {
     isLoading: false,
     data: [],
@@ -48,10 +53,22 @@ const appReducer = (state = initalState, action) =>
         draft.breadcrumbs = action.payload;
         break;
       case ADD_TO_CART:
-        draft.cartItems.push(action.payload);
+        // draft.cartItems.push(action.payload);
+        const { ProductId, Quantity } = action.payload;
+        const { items } = draft.cartData.totals;
+        const findItemIndex = items.findIndex(i =>
+          _.eq(i.ProductId, ProductId),
+        );
+
+        if (findItemIndex > -1) {
+          items[findItemIndex].Quantity += Quantity;
+        } else {
+          items.push(action.payload);
+        }
+
         break;
       case EXCLUDE_ITEM:
-        _.remove(draft, item => _.eq(item.Id, action.payload.Id));
+        // _.remove(draft, item => _.eq(item.Id, action.payload.Id));
         break;
       case SCREEN_RESIZE:
         draft.screenWidth = action.payload;

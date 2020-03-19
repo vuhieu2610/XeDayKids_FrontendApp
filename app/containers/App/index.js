@@ -165,7 +165,7 @@ App.propTypes = {
   breadcrumbs: propTypes.object,
   site: propTypes.object,
   handlerSelectLocation: propTypes.func,
-  cart: propTypes.array,
+  cart: propTypes.object,
   cartNumber: propTypes.number,
   location: propTypes.string,
   screenSize: propTypes.number,

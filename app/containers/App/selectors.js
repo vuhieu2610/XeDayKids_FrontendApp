@@ -49,13 +49,17 @@ const makeSelectCategories = () =>
 const makeSelectCartNumber = () =>
   createSelector(
     selectApp,
-    state => state.cart.legnth || 0,
+    state =>
+      state.cartData.totals.items.reduce(
+        (total, item) => total + item.Quantity,
+        0,
+      ),
   );
 
 const makeSelectCart = () =>
   createSelector(
     selectApp,
-    state => state.cart || [],
+    state => state.cartData,
   );
 
 const makeSelectLocationModalState = () =>

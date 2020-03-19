@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
+import { useInjectReducer } from 'utils/injectReducer';
 import { Helmet } from 'react-helmet';
 import { useInjectSaga } from 'utils/injectSaga';
 import { Table, Card, Button, Row, Col } from 'antd';
@@ -18,12 +19,14 @@ import { EnvironmentFilled } from '@ant-design/icons';
 import { createStructuredSelector } from 'reselect';
 import saga from './saga';
 import { CustomEmpty, CartContainer } from './selections';
+import reducer from './reducer';
 import { setBreadcrumbs } from '../App/actions';
 import { makeSelectUserLocation } from '../App/selectors';
 import messages from './messages';
 
 function CheckoutPage({ changeBreadcrumbs, location }) {
   useInjectSaga({ key: 'checkoutPage', saga });
+  useInjectReducer({ key: 'checkoutPage', reducer });
 
   useEffect(() => {
     changeBreadcrumbs({

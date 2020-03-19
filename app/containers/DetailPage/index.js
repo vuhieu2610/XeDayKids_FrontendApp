@@ -21,7 +21,7 @@ import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useHistory } from 'react-router-dom';
 import {
   InputNumber,
   Button,
@@ -44,7 +44,7 @@ import {
   StarOutlined,
 } from '@ant-design/icons';
 import _ from 'lodash';
-import { setBreadcrumbs } from '../App/actions';
+import { setBreadcrumbs, addToCart } from '../App/actions';
 import { Main } from './selections';
 import { getScreenSize } from '../../utils/responsive';
 import { makeSelectScreenSize } from '../App/selectors';
@@ -161,7 +161,8 @@ let hideLoading = null;
 const interval = 1000;
 const timeFormat = `YYYY-MM-DD'T'HH:mm:ss`;
 
-function DetailPage({ screenSize, changeBreadcrumbs }) {
+function DetailPage({ screenSize, changeBreadcrumbs, addItemToCart }) {
+  const history = useHistory();
   const [previewUrl, setPreviewUrl] = useState(null);
   const [item, setItem] = useState(defaultItem);
   const [isLoading, setIsLoading] = useState(true);
@@ -216,6 +217,18 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
   }, [item]);
 
   const { productId } = useParams();
+
+  const doAddToCart = (defaultQty = 1) => {
+    const { data } = item;
+    addItemToCart({
+      ProductId: data.ProductId,
+      PromotionPrice: data.PromotionPrice || data.Price,
+      ProductPrice: data.Price,
+      Quantity: quantityItem || defaultQty,
+      Code: data.PromotionCode,
+    });
+    setQuantityItem(0);
+  };
 
   const socialUrl = `https://www.facebook.com/plugins/like.php?href=${encodeURIComponent(
     window.location.href,
@@ -510,13 +523,23 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
               </Col>
               <Col lg={24} md={16} xs={24}>
                 <div className="order-actions">
-                  <Button className="order-now" type="danger" size="large">
+                  <Button
+                    className="order-now"
+                    type="danger"
+                    size="large"
+                    onClick={() => {
+                      doAddToCart(1);
+                      history.push(getRouteUrl('CheckoutPage'));
+                    }}
+                  >
                     Mua ngay
                   </Button>
                   <Button
                     className="add-to-card"
                     size="large"
+                    disabled={quantityItem === 0}
                     icon={<ShoppingCartOutlined />}
+                    onClick={doAddToCart}
                   >
                     Thêm vào giỏ hàng
                   </Button>
@@ -686,23 +709,11 @@ function DetailPage({ screenSize, changeBreadcrumbs }) {
       <Helmet>
         <title>{item.data.ShortName}</title>
         <meta name="description" content={item.data.ShortDescription} />
-        <meta
-          property="og:url"
-          content={window.location.href}
-        />
+        <meta property="og:url" content={window.location.href} />
         <meta property="og:type" content="article" />
-        <meta
-          property="og:title"
-          content={item.data.ShortName}
-        />
-        <meta
-          property="og:description"
-          content={item.data.ShortDescription}
-        />
-        <meta
-          property="og:image"
-          content={previewUrl}
-        />
+        <meta property="og:title" content={item.data.ShortName} />
+        <meta property="og:description" content={item.data.ShortDescription} />
+        <meta property="og:image" content={previewUrl} />
       </Helmet>
 
       <Main mobile={isMobile ? 1 : 0}>{renderBody()}</Main>
@@ -714,6 +725,7 @@ DetailPage.propTypes = {
   // dispatch: PropTypes.func.isRequired,
   changeBreadcrumbs: PropTypes.func.isRequired,
   screenSize: PropTypes.number,
+  addItemToCart: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -724,6 +736,7 @@ function mapDispatchToProps(dispatch) {
   return {
     dispatch,
     changeBreadcrumbs: obj => dispatch(setBreadcrumbs(obj)),
+    addItemToCart: item => dispatch(addToCart(item)),
   };
 }
 

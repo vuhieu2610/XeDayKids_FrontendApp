@@ -13,7 +13,7 @@ export const getRouteUrl = (name, params = {}) => {
     ListPage: `/category/${params.slug || ':slug'}.${params.id || ':id'}`,
     PromotionPage: `/khuyen-mai`,
     SearchPage: `/tim-kiem/${params.searchContent || ':searchContent'}`,
-    DetailPage: `/span-pham/${params.slug || ':slug'}.${params.productId ||
+    DetailPage: `/san-pham/${params.slug || ':slug'}.${params.productId ||
       ':productId'}`,
   };
 
