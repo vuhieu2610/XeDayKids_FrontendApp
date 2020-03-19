@@ -58,7 +58,7 @@ export default function RelateItems({
   }, []);
 
   const Parent = ({ children, ...res }) =>
-    hasOffset ? <Affix {...res}>{children}</Affix> : <div>{children}</div>;
+    hasOffset ? <Affix {...res}>{children}</Affix> : <div>{children}</div>;44
 
   return (
     <Parent {...{ offsetTop }}>
@@ -76,7 +76,11 @@ export default function RelateItems({
                 >
                   <span className="product-image">
                     <img
-                      src={`${baseURL}${toJson(item.Images, [])[0].url}`}
+                      src={`${baseURL}${
+                        toJson(item.Images, [{ url: '' }])[0]
+                          ? toJson(item.Images, [{ url: '' }])[0].url
+                          : ''
+                      }`}
                       alt="product"
                     />
                   </span>

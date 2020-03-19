@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 /* eslint-disable consistent-return */
 /* eslint-disable indent */
 /* eslint-disable jsx-a11y/iframe-has-title */
@@ -47,9 +48,9 @@ import _ from 'lodash';
 import { setBreadcrumbs, addToCart } from '../App/actions';
 import { Main } from './selections';
 import { getScreenSize } from '../../utils/responsive';
-import { makeSelectScreenSize } from '../App/selectors';
+import { makeSelectScreenSize, makeSelectCacheItems } from '../App/selectors';
 import FlashSale from '../../components/FlashSale';
-import { getDetail } from './actions';
+import { getDetail, addItemToCache } from './actions';
 import { baseURL } from '../../utils/request';
 import { toMoney, getSlug } from '../../utils/string';
 import { getRouteUrl } from '../../route';
@@ -161,7 +162,13 @@ let hideLoading = null;
 const interval = 1000;
 const timeFormat = `YYYY-MM-DD'T'HH:mm:ss`;
 
-function DetailPage({ screenSize, changeBreadcrumbs, addItemToCart }) {
+function DetailPage({
+  screenSize,
+  changeBreadcrumbs,
+  addItemToCart,
+  addToCache,
+  itemFromCache,
+}) {
   const history = useHistory();
   const [previewUrl, setPreviewUrl] = useState(null);
   const [item, setItem] = useState(defaultItem);
@@ -181,7 +188,10 @@ function DetailPage({ screenSize, changeBreadcrumbs, addItemToCart }) {
   useEffect(() => {
     const { data } = item;
 
-    if (!data || !data.PromotionId) return;
+    if (!data) return;
+    if (!_.eq(data.ProductId, 0)) addToCache(data);
+
+    if (!data.PromotionId) return;
 
     setPercentDeal(100 - _.round((data.PromotionPrice / data.Price) * 100));
 
@@ -221,6 +231,7 @@ function DetailPage({ screenSize, changeBreadcrumbs, addItemToCart }) {
   const doAddToCart = (defaultQty = 1) => {
     const { data } = item;
     addItemToCart({
+      ProductName: data.Name,
       ProductId: data.ProductId,
       PromotionPrice: data.PromotionPrice || data.Price,
       ProductPrice: data.Price,
@@ -351,6 +362,13 @@ function DetailPage({ screenSize, changeBreadcrumbs, addItemToCart }) {
   }, [item]);
 
   useEffect(() => {
+    const cacheItem = itemFromCache[productId];
+    if (cacheItem) {
+      setItem({
+        ...item,
+        data: cacheItem,
+      });
+    }
     fetchingItem();
   }, [productId]);
 
@@ -409,7 +427,7 @@ function DetailPage({ screenSize, changeBreadcrumbs, addItemToCart }) {
                       height="20"
                       scrolling="no"
                       frameBorder="0"
-                      allowTransparency="true"
+                      allowtransparency="true"
                       allow="encrypted-media"
                     />
                   </div>
@@ -429,7 +447,7 @@ function DetailPage({ screenSize, changeBreadcrumbs, addItemToCart }) {
                         height="20"
                         scrolling="no"
                         frameBorder="0"
-                        allowTransparency="true"
+                        allowtransparency="true"
                         allow="encrypted-media"
                       />
                     </div>
@@ -724,12 +742,15 @@ function DetailPage({ screenSize, changeBreadcrumbs, addItemToCart }) {
 DetailPage.propTypes = {
   // dispatch: PropTypes.func.isRequired,
   changeBreadcrumbs: PropTypes.func.isRequired,
+  itemFromCache: PropTypes.object,
   screenSize: PropTypes.number,
   addItemToCart: PropTypes.func,
+  addToCache: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
   screenSize: makeSelectScreenSize(),
+  itemFromCache: makeSelectCacheItems(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -737,6 +758,7 @@ function mapDispatchToProps(dispatch) {
     dispatch,
     changeBreadcrumbs: obj => dispatch(setBreadcrumbs(obj)),
     addItemToCart: item => dispatch(addToCart(item)),
+    addToCache: item => dispatch(addItemToCache(item)),
   };
 }
 

@@ -59,7 +59,7 @@ const makeSelectCartNumber = () =>
 const makeSelectCart = () =>
   createSelector(
     selectApp,
-    state => state.cartData,
+    state => state.cartData.totals,
   );
 
 const makeSelectLocationModalState = () =>
@@ -74,6 +74,12 @@ const makeSelectSite = () =>
     state => state.site,
   );
 
+const makeSelectCacheItems = () =>
+  createSelector(
+    selectApp,
+    state => state.cacheItems,
+  );
+
 export {
   makeSelectLocation,
   makeSelectBreadcrumb,
@@ -86,4 +92,5 @@ export {
   makeSelectCart,
   makeSelectLocationModalState,
   makeSelectSite,
+  makeSelectCacheItems,
 };

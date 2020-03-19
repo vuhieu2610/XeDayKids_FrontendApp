@@ -20,3 +20,6 @@ export const TOGGLE_LOCATION_MODAL = 'app/TOGGLE_LOCATION_MODAL';
 export const SITE_CONFIG_FETCH = 'app/SITE_CONFIG_FETCH';
 export const SITE_CONFIG_FETCHED = 'app/SITE_CONFIG_FETCHED';
 export const SET_SITE_CONFIGS = 'app/SET_SITE_CONFIGS';
+export const ADD_ITEM_TO_CACHE = 'app/ADD_ITEM_TO_CACHE';
+
+export const APP_CACHE_DATA_STORE_KEY = 'app/app-cache-data';

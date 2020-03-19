@@ -21,10 +21,22 @@ import saga from './saga';
 import { CustomEmpty, CartContainer } from './selections';
 import reducer from './reducer';
 import { setBreadcrumbs } from '../App/actions';
-import { makeSelectUserLocation } from '../App/selectors';
+import {
+  makeSelectUserLocation,
+  makeSelectCacheItems,
+  makeSelectCart,
+  makeSelectCartNumber,
+} from '../App/selectors';
 import messages from './messages';
+import { toMoney } from '../../utils/string';
 
-function CheckoutPage({ changeBreadcrumbs, location }) {
+function CheckoutPage({
+  changeBreadcrumbs,
+  location,
+  cacheItems,
+  cart,
+  cartCount,
+}) {
   useInjectSaga({ key: 'checkoutPage', saga });
   useInjectReducer({ key: 'checkoutPage', reducer });
 
@@ -64,11 +76,34 @@ function CheckoutPage({ changeBreadcrumbs, location }) {
                 </span>
               </h1>
             </div>
-            <Table bordered pagination={false}>
-              <Table.Column title="Sản phẩm" key="Name" />
-              <Table.Column title="Giá" key="Price" align="center" />
-              <Table.Column title="Số lượng" key="qty" align="center" />
-              <Table.Column title="Thành tiền" key="subtotal" align="center" />
+            <Table bordered pagination={false} dataSource={cart.items}>
+              <Table.Column
+                title="Sản phẩm"
+                key="ProductName"
+                dataIndex="ProductName"
+              />
+              <Table.Column
+                title="Giá"
+                key="ProductPrice"
+                align="center"
+                render={row => toMoney(row.PromotionPrice || row.ProductPrice)}
+              />
+              <Table.Column
+                title="Số lượng"
+                key="Quantity"
+                dataIndex="Quantity"
+                align="center"
+              />
+              <Table.Column
+                title="Thành tiền"
+                key="subtotal"
+                align="center"
+                render={row =>
+                  toMoney(
+                    (row.PromotionPrice || row.ProductPrice) * row.Quantity,
+                  )
+                }
+              />
             </Table>
           </Col>
           <Col xs={24} sm={24} xl={8} className="right-side">
@@ -77,7 +112,10 @@ function CheckoutPage({ changeBreadcrumbs, location }) {
               <span>{location}</span>
             </Card>
 
-            <Card title="Tổng số lượng sản phẩm">
+            <Card
+              headStyle={{ padding: '0 16px' }}
+              title={`Tổng số lượng sản phẩm ( ${cartCount} sản phẩm )`}
+            >
               <table className="data table totals">
                 <tbody>
                   <tr>
@@ -112,6 +150,9 @@ CheckoutPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
   changeBreadcrumbs: PropTypes.func.isRequired,
   location: PropTypes.string,
+  cart: PropTypes.object,
+  cacheItems: PropTypes.object,
+  cartCount: PropTypes.number,
 };
 
 function mapDispatchToProps(dispatch) {
@@ -124,6 +165,9 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps() {
   return createStructuredSelector({
     location: makeSelectUserLocation(),
+    cacheItems: makeSelectCacheItems(),
+    cart: makeSelectCart(),
+    cartCount: makeSelectCartNumber(),
   });
 }
 

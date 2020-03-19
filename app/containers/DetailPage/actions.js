@@ -6,6 +6,7 @@
 
 import { DEFAULT_ACTION } from './constants';
 import request from '../../utils/request';
+import { ADD_ITEM_TO_CACHE } from '../App/constants';
 
 export function defaultAction() {
   return {
@@ -18,3 +19,8 @@ export const getDetail = productId =>
     method: 'POST',
     url: `/ProductApi/GetProductById/${productId}`,
   });
+
+export const addItemToCache = item => ({
+  type: ADD_ITEM_TO_CACHE,
+  payload: item,
+});
