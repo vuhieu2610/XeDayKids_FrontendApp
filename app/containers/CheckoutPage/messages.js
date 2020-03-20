@@ -29,8 +29,16 @@ export default defineMessages({
     id: `${scope}.price`,
     defaultMessage: 'Thành tiền',
   },
+  locationAsking: {
+    id: `${scope}.locationAsking`,
+    defaultMessage: 'Bạn muốn giao hàng tới đâu?',
+  },
   checkoutButton: {
     id: `${scope}.checkoutButton`,
     defaultMessage: 'Tiến hành đặt hàng',
+  },
+  item: {
+    id: `${scope}.item`,
+    defaultMessage: 'sản phẩm',
   },
 });

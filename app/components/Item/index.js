@@ -110,10 +110,9 @@ export default function Item({ data, showPromotion = false }) {
             {showPromotion && data.PromotionPrice
               ? toMoney(data.PromotionPrice)
               : toMoney(data.Price)}
-            ₫
           </span>
           {showPromotion && data.PromotionPrice && (
-            <span className="original deal">{toMoney(data.Price)} ₫</span>
+            <span className="original deal">{toMoney(data.Price)}</span>
           )}
         </div>
         <div className="item-reviews">

@@ -1,3 +1,5 @@
+/* eslint-disable arrow-body-style */
+/* eslint-disable no-param-reassign */
 import { createSelector } from 'reselect';
 
 const selectRouter = state => state.router;
@@ -62,6 +64,35 @@ const makeSelectCart = () =>
     state => state.cartData.totals,
   );
 
+const makeSelectCartItems = () =>
+  createSelector(
+    makeSelectCacheItems(),
+    makeSelectCart(),
+    (cacheItems, totals) =>
+      totals.items.map(item => {
+        // const cacheItem = cacheItems[item.ProductId];
+        // if (cacheItem) {
+        //   item.ProductName = cacheItem.Name;
+        //   item.Images = cacheItem.Images;
+        //   item.ProductPrice = cacheItem.Price;
+        //   item.PromotionPrice = cacheItem.PromotionPrice;
+        // }
+        return item;
+      }),
+  );
+
+const makeSelectTotalPrice = () =>
+  createSelector(
+    makeSelectCartItems(),
+    items =>
+      items.reduce(
+        (totalPrice, item) =>
+          totalPrice +
+          (item.PromotionPrice || item.ProductPrice) * item.Quantity,
+        0,
+      ),
+  );
+
 const makeSelectLocationModalState = () =>
   createSelector(
     selectApp,
@@ -93,4 +124,6 @@ export {
   makeSelectLocationModalState,
   makeSelectSite,
   makeSelectCacheItems,
+  makeSelectTotalPrice,
+  makeSelectCartItems
 };

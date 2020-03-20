@@ -16,7 +16,7 @@ export const defaultArray = length => {
 };
 
 export const toMoney = num =>
-  num.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.');
+  `${num.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.')  } ₫`;
 
 export const isNullOrUndefined = value =>
   _.isUndefined(value) || _.isNull(value);

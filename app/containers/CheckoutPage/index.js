@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/no-unused-prop-types */
 /**
  *
@@ -17,25 +19,29 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { Table, Card, Button, Row, Col } from 'antd';
 import { EnvironmentFilled } from '@ant-design/icons';
 import { createStructuredSelector } from 'reselect';
+import _ from 'lodash';
 import saga from './saga';
 import { CustomEmpty, CartContainer } from './selections';
 import reducer from './reducer';
-import { setBreadcrumbs } from '../App/actions';
+import { setBreadcrumbs, toggleLocationModal } from '../App/actions';
 import {
   makeSelectUserLocation,
-  makeSelectCacheItems,
-  makeSelectCart,
+  makeSelectCartItems,
   makeSelectCartNumber,
+  makeSelectTotalPrice,
 } from '../App/selectors';
 import messages from './messages';
 import { toMoney } from '../../utils/string';
+import { updateCacheItem } from './actions';
 
 function CheckoutPage({
   changeBreadcrumbs,
   location,
-  cacheItems,
-  cart,
+  cartItems,
   cartCount,
+  cartTotalPrice,
+  handlerSelectLocation,
+  fetchItems,
 }) {
   useInjectSaga({ key: 'checkoutPage', saga });
   useInjectReducer({ key: 'checkoutPage', reducer });
@@ -50,98 +56,123 @@ function CheckoutPage({
         },
       ],
     });
+
+    if (cartCount > 0) {
+      fetchItems(cartItems.map(item => item.ProductId));
+    }
   }, []);
 
   return (
     <Fragment>
       <Helmet>
         <title>Giỏ mua hàng</title>
-        <meta name="description" content="Description of DetailPage" />
       </Helmet>
 
-      {false && (
+      {_.eq(cartCount, 0) && (
         <CustomEmpty
           image="https://bibomart.com.vn/media/wysiwyg/bibomart_theme/giohangrong.png"
-          description="Chưa có sản phẩm nào trong giỏ hàng."
+          description={<FormattedMessage {...messages.empty} />}
         />
       )}
 
-      <CartContainer>
-        <Row gutter={[10, 10]}>
-          <Col xs={24} sm={24} xl={16} className="left-side">
-            <div className="page-title-wrapper">
-              <h1 className="page-title">
-                <span className="base" data-ui-id="page-title-wrapper">
-                  <FormattedMessage {...messages.title} />
-                </span>
-              </h1>
-            </div>
-            <Table bordered pagination={false} dataSource={cart.items}>
-              <Table.Column
-                title="Sản phẩm"
-                key="ProductName"
-                dataIndex="ProductName"
-              />
-              <Table.Column
-                title="Giá"
-                key="ProductPrice"
-                align="center"
-                render={row => toMoney(row.PromotionPrice || row.ProductPrice)}
-              />
-              <Table.Column
-                title="Số lượng"
-                key="Quantity"
-                dataIndex="Quantity"
-                align="center"
-              />
-              <Table.Column
-                title="Thành tiền"
-                key="subtotal"
-                align="center"
-                render={row =>
-                  toMoney(
-                    (row.PromotionPrice || row.ProductPrice) * row.Quantity,
-                  )
-                }
-              />
-            </Table>
-          </Col>
-          <Col xs={24} sm={24} xl={8} className="right-side">
-            <Card title="Giao hàng tới">
-              <EnvironmentFilled />
-              <span>{location}</span>
-            </Card>
+      {cartCount > 0 && (
+        <CartContainer>
+          <Row>
+            <Col xs={24} sm={24} xl={24}>
+              <div className="page-title-wrapper">
+                <h1 className="page-title">
+                  <span className="base" data-ui-id="page-title-wrapper">
+                    <FormattedMessage {...messages.title} />
+                  </span>
+                </h1>
+              </div>
+              <Row gutter={[10, 10]}>
+                <Col xs={24} sm={24} xl={16} className="left-side">
+                  <Table bordered pagination={false} dataSource={cartItems}>
+                    <Table.Column
+                      title="Sản phẩm"
+                      key="ProductName"
+                      dataIndex="ProductName"
+                    />
+                    <Table.Column
+                      title="Giá"
+                      key="ProductPrice"
+                      align="center"
+                      render={row =>
+                        toMoney(row.PromotionPrice || row.ProductPrice)
+                      }
+                    />
+                    <Table.Column
+                      title="Số lượng"
+                      key="Quantity"
+                      dataIndex="Quantity"
+                      align="center"
+                    />
+                    <Table.Column
+                      title="Thành tiền"
+                      key="subtotal"
+                      align="center"
+                      render={row =>
+                        toMoney(
+                          (row.PromotionPrice || row.ProductPrice) *
+                            row.Quantity,
+                        )
+                      }
+                    />
+                  </Table>
+                </Col>
+                <Col xs={24} sm={24} xl={8} className="right-side">
+                  <Card title="Giao hàng tới">
+                    <Button
+                      type="link"
+                      style={{ cursor: 'pointer' }}
+                      onClick={handlerSelectLocation}
+                      icon={<EnvironmentFilled />}
+                    >
+                      <span>
+                        {location || (
+                          <FormattedMessage {...messages.locationAsking} />
+                        )}
+                      </span>
+                    </Button>
+                  </Card>
 
-            <Card
-              headStyle={{ padding: '0 16px' }}
-              title={`Tổng số lượng sản phẩm ( ${cartCount} sản phẩm )`}
-            >
-              <table className="data table totals">
-                <tbody>
-                  <tr>
-                    <th>
-                      <FormattedMessage {...messages.totals} />
-                    </th>
-                    <td>123.000 ₫</td>
-                  </tr>
-
-                  <tr>
-                    <th>
-                      <FormattedMessage {...messages.price} />
-                    </th>
-                    <td>
-                      <span className="price">123.000 ₫</span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Card>
-            <Button className="checkout" type="danger">
-              <FormattedMessage {...messages.checkoutButton} />
-            </Button>
-          </Col>
-        </Row>
-      </CartContainer>
+                  <Card
+                    headStyle={{ padding: '0 16px' }}
+                    title={
+                      <span>
+                        <FormattedMessage {...messages.totals} />
+                        <span style={{ color: '#828282' }}>
+                          ( {cartCount} <FormattedMessage {...messages.item} />{' '}
+                          )
+                        </span>
+                      </span>
+                    }
+                  >
+                    <table className="data table totals">
+                      <tbody>
+                        <tr>
+                          <th>
+                            <FormattedMessage {...messages.price} />
+                          </th>
+                          <td>
+                            <span className="price">
+                              {toMoney(cartTotalPrice)}
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </Card>
+                  <Button className="checkout" type="danger">
+                    <FormattedMessage {...messages.checkoutButton} />
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </CartContainer>
+      )}
     </Fragment>
   );
 }
@@ -150,24 +181,28 @@ CheckoutPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
   changeBreadcrumbs: PropTypes.func.isRequired,
   location: PropTypes.string,
-  cart: PropTypes.object,
-  cacheItems: PropTypes.object,
+  cartItems: PropTypes.array,
   cartCount: PropTypes.number,
+  cartTotalPrice: PropTypes.number,
+  handlerSelectLocation: PropTypes.func,
+  fetchItems: PropTypes.func,
 };
 
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
     changeBreadcrumbs: obj => dispatch(setBreadcrumbs(obj)),
+    handlerSelectLocation: () => dispatch(toggleLocationModal(true)),
+    fetchItems: items => dispatch(updateCacheItem(items)),
   };
 }
 
 function mapStateToProps() {
   return createStructuredSelector({
     location: makeSelectUserLocation(),
-    cacheItems: makeSelectCacheItems(),
-    cart: makeSelectCart(),
+    cartItems: makeSelectCartItems(),
     cartCount: makeSelectCartNumber(),
+    cartTotalPrice: makeSelectTotalPrice(),
   });
 }
 

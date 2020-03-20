@@ -17,6 +17,7 @@ import {
   ADD_ITEM_TO_CACHE,
 } from './constants';
 import { cacheData, setCacheData } from '../../utils/string';
+import { UPDATEED_CACHE_ITEM } from '../CheckoutPage/constants';
 
 export const initalState = (() => {
   const defaultState = {
@@ -157,13 +158,33 @@ const appReducer = (state = initalState, action) =>
       case SET_SITE_CONFIGS:
         draft.site = action.payload;
         break;
-      case ADD_ITEM_TO_CACHE:
+      case ADD_ITEM_TO_CACHE: {
         const { payload } = action;
-        draft.cacheItems[action.payload.ProductId] = action.payload;
+        draft.cacheItems[payload.ProductId] = payload;
 
         cacheData.cacheItems[payload.ProductId] = { ...payload };
         setCacheData(cacheData);
         break;
+      }
+      case UPDATEED_CACHE_ITEM: {
+        const { payload } = action;
+        payload.forEach(item => {
+          draft.cacheItems[item.ProductId] = item;
+          cacheData.cacheItems[item.ProductId] = { ...item };
+        });
+        draft.cartData.totals.items.map(item => {
+          const cacheItem = draft.cacheItems[item.ProductId];
+          if (cacheItem) {
+            item.ProductName = cacheItem.Name;
+            item.Images = cacheItem.Images;
+            item.ProductPrice = cacheItem.Price;
+            item.PromotionPrice = cacheItem.PromotionPrice;
+          }
+          return item;
+        });
+        setCacheData(cacheData);
+        break;
+      }
       default:
         break;
     }

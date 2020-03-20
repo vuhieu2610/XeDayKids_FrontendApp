@@ -58,7 +58,8 @@ export default function RelateItems({
   }, []);
 
   const Parent = ({ children, ...res }) =>
-    hasOffset ? <Affix {...res}>{children}</Affix> : <div>{children}</div>;44
+    hasOffset ? <Affix {...res}>{children}</Affix> : <div>{children}</div>;
+  44;
 
   return (
     <Parent {...{ offsetTop }}>
@@ -102,10 +103,9 @@ export default function RelateItems({
                       {toMoney(
                         item.PromotionId ? item.PromotionPrice : item.Price,
                       )}{' '}
-                      ₫
                     </span>
                     {item.PromotionId && (
-                      <span className="old-price">{toMoney(item.Price)} ₫</span>
+                      <span className="old-price">{toMoney(item.Price)}</span>
                     )}
                   </div>
                 </div>

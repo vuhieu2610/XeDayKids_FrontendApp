@@ -466,7 +466,7 @@ function DetailPage({
               <p className="special-price-item">
                 <span className="price-label">Giá: </span>
                 <span className="span-price">
-                  {toMoney(item.data.PromotionPrice || item.data.Price)} ₫
+                  {toMoney(item.data.PromotionPrice || item.data.Price)}
                 </span>
               </p>
               {item.data.PromotionId && (
@@ -478,14 +478,14 @@ function DetailPage({
                       {percentDeal}%{' '}
                     </span>({' '}
                     <span className="span-saving-price">
-                      {toMoney(item.data.Price - item.data.PromotionPrice)} đ
+                      {toMoney(item.data.Price - item.data.PromotionPrice)}
                     </span>{' '}
                     )
                   </p>
                   <p className="old-price-item">
                     <span className="price-label">Giá thị trường:</span>
                     <span className="span-list-price">
-                      {toMoney(item.data.Price)} đ
+                      {toMoney(item.data.Price)}
                     </span>
                   </p>
 
@@ -610,7 +610,7 @@ function DetailPage({
                     <FlashSale
                       endDate={item.data.PromotionEndDate}
                       offsetTop={115}
-                      price={`${toMoney(item.data.PromotionPrice)} đ`}
+                      price={`${toMoney(item.data.PromotionPrice)}`}
                     />
                   )
                 ) : (
