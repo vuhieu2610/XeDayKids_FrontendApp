@@ -1,3 +1,4 @@
+import request from '../../utils/request';
 import { UPDATEED_CACHE_ITEM, UPDATE_CACHE_ITEM } from './constants';
 
 export const updateCacheItem = (items = []) => ({
@@ -9,3 +10,19 @@ export const updatedCacheItem = (newItems = []) => ({
   type: UPDATEED_CACHE_ITEM,
   payload: newItems,
 });
+
+export const makeRequestOrder = async item => {
+  const req = await request({
+    url: 'CartApi/Insert',
+    method: 'POST',
+    data: {
+      Name: item.name,
+      Phone: item.phone,
+      Email: item.email,
+      Total: item.total,
+      items: item.items,
+    },
+  });
+
+  return req.data;
+};

@@ -17,6 +17,7 @@ import {
   ADD_ITEM_TO_CACHE,
   SET_PROVINCE_DATA,
   SET_USER_LOCATION,
+  REMOVE_ITEM,
 } from './constants';
 import { cacheData, setCacheData } from '../../utils/string';
 import { UPDATEED_CACHE_ITEM } from '../CheckoutPage/constants';
@@ -28,6 +29,10 @@ export const initalState = (() => {
       province: null,
       district: null,
       address: '',
+      name: '',
+      phone: null,
+      emai: '',
+      note: '',
     },
     hotLine: '123456567',
     screenWidth: typeof window === 'object' ? window.innerWidth : null,
@@ -82,8 +87,7 @@ const appReducer = (state = initalState, action) =>
       case CHANGE_BREADCUMBS_STATE:
         draft.breadcrumbs = action.payload;
         break;
-      case ADD_TO_CART:
-        // draft.cartItems.push(action.payload);
+      case ADD_TO_CART: {
         const { ProductId, Quantity } = action.payload;
         const { items } = draft.cartData.totals;
         const { items: cacheItems } = cacheData.cartData.totals;
@@ -111,9 +115,55 @@ const appReducer = (state = initalState, action) =>
         cacheData.cartData.totals.items = cacheItems;
         setCacheData(cacheData);
         break;
-      case EXCLUDE_ITEM:
-        // _.remove(draft, item => _.eq(item.Id, action.payload.Id));
+      }
+      case EXCLUDE_ITEM: {
+        const { ProductId } = action.payload;
+        const { items } = draft.cartData.totals;
+        const { items: cacheItems } = cacheData.cartData.totals;
+
+        const findItemIndex = items.findIndex(i =>
+          _.eq(i.ProductId, ProductId),
+        );
+
+        const findCacheItemIndex = cacheItems.findIndex(i =>
+          _.eq(i.ProductId, ProductId),
+        );
+
+        if (findItemIndex > -1) {
+          items[findItemIndex].Quantity -= 1;
+        }
+
+        if (items[findItemIndex].Quantity < 1) {
+          items[findItemIndex].Quantity = 1;
+        }
+
+        if (findCacheItemIndex > -1) {
+          cacheItems[findItemIndex].Quantity -= 1;
+        }
+
+        if (cacheItems[findItemIndex].Quantity < 1) {
+          cacheItems[findItemIndex].Quantity = 1;
+        }
+
+        cacheData.cartData.totals.items = cacheItems;
+        setCacheData(cacheData);
+
         break;
+      }
+
+      case REMOVE_ITEM: {
+        const { ProductId } = action.payload;
+        const { items } = draft.cartData.totals;
+        const { items: cacheItems } = cacheData.cartData.totals;
+
+        _.remove(items, n => _.eq(n.ProductId, ProductId));
+        _.remove(cacheItems, n => _.eq(n.ProductId, ProductId));
+
+        cacheData.cartData.totals.items = cacheItems;
+        setCacheData(cacheData);
+        break;
+      }
+
       case SCREEN_RESIZE:
         draft.screenWidth = action.payload;
         break;
@@ -185,6 +235,7 @@ const appReducer = (state = initalState, action) =>
           const cacheItem = draft.cacheItems[item.ProductId];
           if (cacheItem) {
             item.ProductName = cacheItem.Name;
+            item.PromotionCode = cacheItem.PromotionCode;
             item.Images = cacheItem.Images;
             item.ProductPrice = cacheItem.Price;
             item.PromotionPrice = cacheItem.PromotionPrice;

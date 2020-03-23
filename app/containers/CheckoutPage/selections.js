@@ -6,10 +6,12 @@ export const CustomEmpty = styled(Empty)`
     text-align: center;
     & .ant-empty-image {
         width: 225px;
+        height: auto;
         margin: 0 auto;
         margin-bottom: 15px;
         & > img {
             width: 100%;
+            height: auto;
         }
     }
 `;

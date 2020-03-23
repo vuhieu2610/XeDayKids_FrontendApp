@@ -12,6 +12,7 @@ import {
   SET_PROVINCE_DATA,
   FETCH_PROVINCE_DATA,
   SET_USER_LOCATION,
+  REMOVE_ITEM,
 } from './constants';
 
 export function setBreadcrumbs(state) {
@@ -31,6 +32,13 @@ export function addToCart(item) {
 export function excludeItem(item) {
   return {
     type: EXCLUDE_ITEM,
+    payload: item,
+  };
+}
+
+export function removeItem(item) {
+  return {
+    type: REMOVE_ITEM,
     payload: item,
   };
 }

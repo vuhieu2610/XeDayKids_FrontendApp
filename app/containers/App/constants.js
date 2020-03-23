@@ -12,6 +12,7 @@
 export const CHANGE_BREADCUMBS_STATE = 'app/CHANGE_BREADCUMBS_STATE';
 export const ADD_TO_CART = 'app/ADD_TO_CART';
 export const EXCLUDE_ITEM = 'app/EXCLUDE_ITEM';
+export const REMOVE_ITEM = 'app/REMOVE_ITEM';
 export const SCREEN_RESIZE = 'app/SCREEN_RESIZE';
 export const CATEGORIES_FETCH = 'app/CATEGORIES_FETCH';
 export const CATEGORIES_FETCHED = 'app/CATEGORIES_FETCHED';

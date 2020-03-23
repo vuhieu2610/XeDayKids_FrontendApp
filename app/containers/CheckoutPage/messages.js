@@ -15,7 +15,7 @@ export default defineMessages({
   },
   empty: {
     id: `${scope}.empty`,
-    defaultMessage: 'Chưa có sản phẩm nào trong giỏ hàng.',
+    defaultMessage: 'Bạn chưa có sản phẩm nào trong giỏ hàng.',
   },
   title: {
     id: `${scope}.title`,
@@ -40,5 +40,9 @@ export default defineMessages({
   item: {
     id: `${scope}.item`,
     defaultMessage: 'sản phẩm',
+  },
+  warningMessage: {
+    id: `${scope}.warningMessage`,
+    defaultMessage: 'Bạn vui lòng chọn địa chỉ giao hàng.',
   },
 });

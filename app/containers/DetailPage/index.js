@@ -234,6 +234,7 @@ function DetailPage({
       ProductName: data.Name,
       ProductId: data.ProductId,
       PromotionPrice: data.PromotionPrice || data.Price,
+      PromotionCode: data.PromotionCode,
       ProductPrice: data.Price,
       Quantity: quantityItem || defaultQty,
       Code: data.PromotionCode,

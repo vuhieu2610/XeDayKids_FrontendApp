@@ -54,7 +54,11 @@ export const cacheData = (() => {
     location: {
       province: null,
       district: null,
+      name: '',
+      phone: null,
+      emai: '',
       address: '',
+      note: '',
     },
   };
   try {

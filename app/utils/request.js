@@ -9,7 +9,7 @@ export const baseURL = `http://xedaykidsrelax.com.vn`;
 
 const service = axios.create({
   // baseURL: `${baseURL}/data`,
-  baseURL: `http://9c493d83.ngrok.io/data`,
+  baseURL: `http://172.27.161.138/data`,
 });
 
 // request interceptor

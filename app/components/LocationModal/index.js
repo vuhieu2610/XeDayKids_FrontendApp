@@ -23,6 +23,10 @@ export default function LocationModal({
   const [selectedDistrict, setSelectedDistrict] = useState(
     userLocation.district,
   );
+  const [name, setName] = useState(userLocation.name);
+  const [email, setEmail] = useState(userLocation.email);
+  const [phone, setPhone] = useState(userLocation.phone);
+  const [note, setNote] = useState(userLocation.note);
 
   const [loadingDistrict, setLoadingDistrict] = useState(false);
 
@@ -65,13 +69,20 @@ export default function LocationModal({
           disabled={
             _.isNull(selectedProvince) ||
             _.isNull(selectedDistrict) ||
-            _.isEmpty(address)
+            _.isEmpty(address) ||
+            _.isEmpty(name) ||
+            _.isEmpty(phone) ||
+            _.isEmpty(email)
           }
           onClick={() => {
             setUserLocation({
               province: selectedProvince,
               district: selectedDistrict,
               address,
+              name,
+              phone,
+              email,
+              note,
             });
             setModalVisible();
           }}
@@ -85,7 +96,14 @@ export default function LocationModal({
           <CustomLabel htmlFor="name">Tên người nhận</CustomLabel>
         </CustomCol>
         <Col span={15}>
-          <CustomInput id="name" placeholder="Vui lòng nhập tên người nhận" />
+          <CustomInput
+            id="name"
+            placeholder="Vui lòng nhập tên người nhận"
+            value={name}
+            onInput={e => {
+              setName(e.target.value);
+            }}
+          />
         </Col>
       </CustomRow>
       <CustomRow>
@@ -93,7 +111,14 @@ export default function LocationModal({
           <CustomLabel htmlFor="phone">Số điện thoại</CustomLabel>
         </CustomCol>
         <Col span={15}>
-          <CustomInput id="phone" placeholder="Vui lòng nhập số điện thoại" />
+          <CustomInput
+            id="phone"
+            placeholder="Vui lòng nhập số điện thoại"
+            value={phone}
+            onInput={e => {
+              setPhone(e.target.value);
+            }}
+          />
         </Col>
       </CustomRow>
       <CustomRow>
@@ -101,7 +126,14 @@ export default function LocationModal({
           <CustomLabel htmlFor="email">Email</CustomLabel>
         </CustomCol>
         <Col span={15}>
-          <CustomInput id="email" placeholder="Vui lòng nhập địa chỉ email" />
+          <CustomInput
+            id="email"
+            placeholder="Vui lòng nhập địa chỉ email"
+            value={email}
+            onInput={e => {
+              setEmail(e.target.value);
+            }}
+          />
         </Col>
       </CustomRow>
       <CustomRow>
@@ -138,7 +170,7 @@ export default function LocationModal({
             placeholder="Vui lòng chọn quận/huyện"
             disabled={_.isNull(selectedProvince)}
             loading={loadingDistrict}
-            value={selectedDistrict.DistrictCode}
+            value={selectedDistrict && selectedDistrict.DistrictCode}
             onChange={value => {
               setSelectedDistrict(
                 district.find(d => _.eq(d.DistrictCode, value)),
@@ -179,6 +211,10 @@ export default function LocationModal({
             style={{ width: '100%', height: 150 }}
             id="note"
             placeholder="..."
+            value={note}
+            onInput={e => {
+              setNote(e.target.value);
+            }}
           />
         </Col>
       </CustomRow>
