@@ -1,6 +1,7 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-param-reassign */
 import { createSelector } from 'reselect';
+import _ from 'lodash';
 
 const selectRouter = state => state.router;
 
@@ -19,6 +20,26 @@ const makeSelectBreadcrumb = () =>
   );
 
 const makeSelectUserLocation = () =>
+  createSelector(
+    selectApp,
+    state => {
+      const { location } = state;
+      if (
+        !location ||
+        _.isEmpty(location.address) ||
+        _.isNull(location.province) ||
+        _.isNull(location.district)
+      ) {
+        return '';
+      }
+
+      return `${location.address} - ${location.district.DistrictName}, ${
+        location.province.ProvinceName
+      }`;
+    },
+  );
+
+const makeSelectUserLocationObject = () =>
   createSelector(
     selectApp,
     state => state.location,
@@ -111,6 +132,12 @@ const makeSelectCacheItems = () =>
     state => state.cacheItems,
   );
 
+const makeSelectProvinces = () =>
+  createSelector(
+    selectApp,
+    state => state.ProvinceData,
+  );
+
 export {
   makeSelectLocation,
   makeSelectBreadcrumb,
@@ -125,5 +152,7 @@ export {
   makeSelectSite,
   makeSelectCacheItems,
   makeSelectTotalPrice,
-  makeSelectCartItems
+  makeSelectCartItems,
+  makeSelectProvinces,
+  makeSelectUserLocationObject,
 };

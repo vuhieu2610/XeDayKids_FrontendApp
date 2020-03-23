@@ -35,7 +35,7 @@ export default defineMessages({
   },
   checkoutButton: {
     id: `${scope}.checkoutButton`,
-    defaultMessage: 'Tiến hành đặt hàng',
+    defaultMessage: 'Đặt mua',
   },
   item: {
     id: `${scope}.item`,

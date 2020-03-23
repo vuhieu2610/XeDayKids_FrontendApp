@@ -54,11 +54,11 @@ export const CartContainer = styled.div`
             & .data.table.totals {
                 width: 100%;
                 & th {
-                    width: 220px;
+                    width: 100px;
                     font-weight: 300;
                 }
                 & td {
-                    width: calc(100% - 220px);
+                    width: calc(100% - 100px);
                     text-align: right;
                     & span.price {
                         color: #ff464b;

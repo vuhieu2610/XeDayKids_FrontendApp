@@ -23,3 +23,6 @@ export const SET_SITE_CONFIGS = 'app/SET_SITE_CONFIGS';
 export const ADD_ITEM_TO_CACHE = 'app/ADD_ITEM_TO_CACHE';
 
 export const APP_CACHE_DATA_STORE_KEY = 'app/app-cache-data';
+export const SET_PROVINCE_DATA = 'app/SET_PROVINCE_DATA';
+export const FETCH_PROVINCE_DATA = 'app/FETCH_PROVINCE_DATA';
+export const SET_USER_LOCATION = 'app/SET_USER_LOCATION';

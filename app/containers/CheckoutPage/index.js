@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/no-unused-prop-types */
@@ -16,8 +17,13 @@ import { FormattedMessage } from 'react-intl';
 import { useInjectReducer } from 'utils/injectReducer';
 import { Helmet } from 'react-helmet';
 import { useInjectSaga } from 'utils/injectSaga';
-import { Table, Card, Button, Row, Col } from 'antd';
-import { EnvironmentFilled } from '@ant-design/icons';
+import { Table, Card, Button, Row, Col, Tooltip } from 'antd';
+import {
+  EnvironmentFilled,
+  DeleteOutlined,
+  PlusOutlined,
+  MinusOutlined,
+} from '@ant-design/icons';
 import { createStructuredSelector } from 'reselect';
 import _ from 'lodash';
 import saga from './saga';
@@ -88,7 +94,14 @@ function CheckoutPage({
               </div>
               <Row gutter={[10, 10]}>
                 <Col xs={24} sm={24} xl={16} className="left-side">
-                  <Table bordered pagination={false} dataSource={cartItems}>
+                  <Table
+                    bordered
+                    pagination={false}
+                    dataSource={cartItems.map((item, index) => ({
+                      ...item,
+                      key: index,
+                    }))}
+                  >
                     <Table.Column
                       title="Sản phẩm"
                       key="ProductName"
@@ -107,6 +120,23 @@ function CheckoutPage({
                       key="Quantity"
                       dataIndex="Quantity"
                       align="center"
+                      render={(text, record) => (
+                        <div>
+                          <Button icon={<PlusOutlined />} shape="circle" />
+                          <span
+                            style={{
+                              height: 36,
+                              width: 45,
+                              textAlign: 'center',
+                              lineHeight: 1.29,
+                              display: 'inline-block',
+                            }}
+                          >
+                            {text}
+                          </span>
+                          <Button icon={<MinusOutlined />} shape="circle" />
+                        </div>
+                      )}
                     />
                     <Table.Column
                       title="Thành tiền"
@@ -119,13 +149,32 @@ function CheckoutPage({
                         )
                       }
                     />
+                    <Table.Column
+                      title=""
+                      key="actions"
+                      align="center"
+                      render={row => (
+                        <Tooltip placement="bottom" title="Xoá khỏi giỏ hàng">
+                          <Button
+                            type="danger"
+                            shape="circle"
+                            icon={<DeleteOutlined />}
+                          />
+                        </Tooltip>
+                      )}
+                    />
                   </Table>
                 </Col>
                 <Col xs={24} sm={24} xl={8} className="right-side">
                   <Card title="Giao hàng tới">
                     <Button
                       type="link"
-                      style={{ cursor: 'pointer' }}
+                      style={{
+                        cursor: 'pointer',
+                        color: '#333',
+                        fontWeight: 'normal',
+                        padding: 0,
+                      }}
                       onClick={handlerSelectLocation}
                       icon={<EnvironmentFilled />}
                     >

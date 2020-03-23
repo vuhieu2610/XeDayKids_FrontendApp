@@ -41,6 +41,8 @@ import {
   makeSelectCartNumber,
   makeSelectLocationModalState,
   makeSelectSite,
+  makeSelectProvinces,
+  makeSelectUserLocationObject,
 } from './selectors';
 import { SCREEN_RESIZE } from './constants';
 import { getScreenSize } from '../../utils/responsive';
@@ -50,6 +52,8 @@ import {
   getCategories,
   toggleLocationModal,
   makeRequestGetHomeData,
+  getProvinceData,
+  setUserLocation as setUserLocationAction,
 } from './actions';
 import LocationModal from '../../components/LocationModal';
 
@@ -69,6 +73,10 @@ function App({
   breadcrumbs,
   site,
   dispatch,
+  provinces,
+  fetchProviceData,
+  setUserLocation,
+  userLocation,
 }) {
   useInjectSaga({ key: 'app', saga });
   useEffect(() => {
@@ -155,6 +163,11 @@ function App({
       <LocationModal
         isOpen={locationModalState}
         onCloseModal={handlerSelectLocation}
+        provinces={provinces}
+        fetchProviceData={fetchProviceData}
+        setUserLocation={setUserLocation}
+        userLocation={userLocation}
+        setModalVisible={() => handlerSelectLocation(false)}
       />
     </React.Fragment>
   );
@@ -180,6 +193,10 @@ App.propTypes = {
     data: propTypes.array,
     hasError: propTypes.bool,
   }),
+  provinces: propTypes.array,
+  fetchProviceData: propTypes.func,
+  setUserLocation: propTypes.func,
+  userLocation: propTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -194,6 +211,8 @@ const mapStateToProps = createStructuredSelector({
   categories: makeSelectCategories(),
   locationModalState: makeSelectLocationModalState(),
   site: makeSelectSite(),
+  provinces: makeSelectProvinces(),
+  userLocation: makeSelectUserLocationObject(),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -202,6 +221,8 @@ const mapDispatchToProps = dispatch => ({
   getCates: () => dispatch(getCategories()),
   handlerSelectLocation: state => dispatch(toggleLocationModal(state)),
   getSiteConfigs: () => dispatch(makeRequestGetHomeData()),
+  fetchProviceData: () => dispatch(getProvinceData()),
+  setUserLocation: location => dispatch(setUserLocationAction(location)),
 });
 
 export default connect(

@@ -12,7 +12,7 @@ import '@babel/polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import history from 'utils/history';
 
 // Import root app
@@ -41,9 +41,9 @@ const render = messages => {
   ReactDOM.render(
     <Provider store={store}>
       <LanguageProvider messages={messages}>
-        <BrowserRouter history={history}>
+        <Router history={history}>
           <App />
-        </BrowserRouter>
+        </Router>
       </LanguageProvider>
     </Provider>,
     MOUNT_NODE,

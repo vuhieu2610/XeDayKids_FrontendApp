@@ -15,6 +15,8 @@ import {
   SITE_CONFIG_FETCHED,
   SET_SITE_CONFIGS,
   ADD_ITEM_TO_CACHE,
+  SET_PROVINCE_DATA,
+  SET_USER_LOCATION,
 } from './constants';
 import { cacheData, setCacheData } from '../../utils/string';
 import { UPDATEED_CACHE_ITEM } from '../CheckoutPage/constants';
@@ -22,7 +24,11 @@ import { UPDATEED_CACHE_ITEM } from '../CheckoutPage/constants';
 export const initalState = (() => {
   const defaultState = {
     logo: 'https://bibomart.com.vn/media/logo/stores/1/logo-bbm.jpg',
-    location: '',
+    location: {
+      province: null,
+      district: null,
+      address: '',
+    },
     hotLine: '123456567',
     screenWidth: typeof window === 'object' ? window.innerWidth : null,
     searchPlaceholder: '',
@@ -43,6 +49,7 @@ export const initalState = (() => {
       items: [],
     },
     cacheItems: {},
+    ProvinceData: [],
     site: {
       siteConfigs: [],
       categories: [],
@@ -59,6 +66,8 @@ export const initalState = (() => {
     defaultState.site.siteConfigs = cacheData.siteData.siteConfigs;
     defaultState.site.categories = cacheData.siteData.categories;
   }
+
+  if (cacheData.location) defaultState.location = cacheData.location;
 
   if (cacheData.cacheItems) {
     defaultState.cacheItems = cacheData.cacheItems;
@@ -185,6 +194,26 @@ const appReducer = (state = initalState, action) =>
         setCacheData(cacheData);
         break;
       }
+
+      case SET_PROVINCE_DATA:
+        draft.ProvinceData = action.payload;
+        break;
+
+      case SET_USER_LOCATION:
+        draft.location = action.payload;
+
+        if (!cacheData.location) {
+          cacheData.location = {
+            province: null,
+            district: null,
+            address: '',
+          };
+        }
+        cacheData.location.province = action.payload.province;
+        cacheData.location.district = action.payload.district;
+        cacheData.location.address = action.payload.address;
+        setCacheData(cacheData);
+        break;
       default:
         break;
     }

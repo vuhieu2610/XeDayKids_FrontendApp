@@ -1,7 +1,11 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import request from '../../utils/request';
-import { CATEGORIES_FETCH, SITE_CONFIG_FETCH } from './constants';
-import { categoriesLoaded, homeDataFetched } from './actions';
+import {
+  CATEGORIES_FETCH,
+  SITE_CONFIG_FETCH,
+  FETCH_PROVINCE_DATA,
+} from './constants';
+import { categoriesLoaded, homeDataFetched, setProvinceData } from './actions';
 
 function reqCategories() {
   return request({
@@ -17,12 +21,33 @@ async function makeRequestGetHomeData() {
   })).data;
 }
 
+async function makeRequestGetProvinceData() {
+  return (await request({
+    url: '/Province/Get',
+    method: 'POST',
+  })).data;
+}
+
 export function* getHomeDataWatcher() {
   try {
     const req = yield call(makeRequestGetHomeData);
     yield put(homeDataFetched(req));
   } catch (err) {
     yield put(homeDataFetched({ HasError: true }));
+  }
+}
+
+export function* fetchProvinceDataWatcher() {
+  try {
+    const req = yield call(makeRequestGetProvinceData);
+    if (req.HasDataList) {
+      yield put(setProvinceData(req.DataList));
+    } else {
+      yield put(setProvinceData([]));
+    }
+  } catch (err) {
+    //
+    console.log(err);
   }
 }
 
@@ -38,4 +63,5 @@ export function* getCategoriesActionWatcher() {
 export default function* AppSaga() {
   yield takeLatest(CATEGORIES_FETCH, getCategoriesActionWatcher);
   yield takeLatest(SITE_CONFIG_FETCH, getHomeDataWatcher);
+  yield takeLatest(FETCH_PROVINCE_DATA, fetchProvinceDataWatcher);
 }

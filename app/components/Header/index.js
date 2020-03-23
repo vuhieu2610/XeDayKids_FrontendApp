@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Badge, Affix, Button } from 'antd';
+import { Row, Col, Badge, Affix, Button, Tooltip } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
 import propTypes from 'prop-types';
 import {
@@ -46,14 +46,16 @@ export default function Header({
           <Row>
             <Col lg={14} xs={24}>
               <LocaltionHeader>
-                <Button
-                  type="link"
-                  onClick={handlerSelectLocation}
-                  style={{ color: '#999', padding: 0 }}
-                  icon={<EnvironmentFilled style={{ color: '#ff464b' }} />}
-                >
-                  {location || 'Bạn muốn giao hàng tới đâu?'}
-                </Button>
+                <Tooltip placeholder="bottom" title="click để chọn địa chỉ giao hàng." >
+                  <Button
+                    type="link"
+                    onClick={handlerSelectLocation}
+                    style={{ color: '#999', padding: 0 }}
+                    icon={<EnvironmentFilled style={{ color: '#ff464b' }} />}
+                  >
+                    {location || 'Bạn muốn giao hàng tới đâu?'}
+                  </Button>
+                </Tooltip>
               </LocaltionHeader>
             </Col>
             <Col lg={10} xs={0} style={{ textAlign: 'right' }}>

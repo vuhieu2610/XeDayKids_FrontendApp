@@ -9,6 +9,9 @@ import {
   SITE_CONFIG_FETCH,
   SITE_CONFIG_FETCHED,
   SET_SITE_CONFIGS,
+  SET_PROVINCE_DATA,
+  FETCH_PROVINCE_DATA,
+  SET_USER_LOCATION,
 } from './constants';
 
 export function setBreadcrumbs(state) {
@@ -75,5 +78,25 @@ export function setSiteConfigs(siteConfigs) {
   return {
     type: SET_SITE_CONFIGS,
     payload: siteConfigs,
+  };
+}
+
+export function setProvinceData(provinces) {
+  return {
+    type: SET_PROVINCE_DATA,
+    payload: provinces,
+  };
+}
+
+export function getProvinceData() {
+  return {
+    type: FETCH_PROVINCE_DATA,
+  };
+}
+
+export function setUserLocation(location) {
+  return {
+    type: SET_USER_LOCATION,
+    payload: location,
   };
 }
