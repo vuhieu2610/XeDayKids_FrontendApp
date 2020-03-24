@@ -52,8 +52,7 @@ import { makeSelectScreenSize, makeSelectCacheItems } from '../App/selectors';
 import FlashSale from '../../components/FlashSale';
 import { getDetail, addItemToCache } from './actions';
 import { baseURL } from '../../utils/request';
-import { toMoney, getSlug } from '../../utils/string';
-import { getRouteUrl } from '../../route';
+import { toMoney, getSlug, getRouteUrl } from '../../utils/string';
 import RelateItems from '../../components/RelateItems';
 
 const defaultItem = {
@@ -363,14 +362,23 @@ function DetailPage({
   }, [item]);
 
   useEffect(() => {
-    const cacheItem = itemFromCache[productId];
-    if (cacheItem) {
-      setItem({
-        ...item,
-        data: cacheItem,
-      });
+    if (window.product) {
+      if (window.product.HasData) {
+        setItem({
+          ...item,
+          data: window.product.Data,
+        });
+      }
+    } else {
+      const cacheItem = itemFromCache[productId];
+      if (cacheItem) {
+        setItem({
+          ...item,
+          data: cacheItem,
+        });
+      }
+      fetchingItem();
     }
-    fetchingItem();
   }, [productId]);
 
   const isMobile = getScreenSize('xl') >= screenSize;

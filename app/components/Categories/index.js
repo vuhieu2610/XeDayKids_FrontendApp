@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import getSlug from 'speakingurl';
 import _ from 'lodash';
-import { getRouteUrl } from '../../route';
+import { getRouteUrl } from '../../utils/string';
 import { baseURL } from '../../utils/request';
 
 const defaultIconPath =

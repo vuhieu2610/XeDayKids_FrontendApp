@@ -14,9 +14,8 @@ import {
   CustomBar,
   CountDownWrapper,
 } from './selections';
-import { getSlug, toMoney } from '../../utils/string';
+import { getSlug, toMoney, getRouteUrl } from '../../utils/string';
 import { baseURL } from '../../utils/request';
-import { getRouteUrl } from '../../route';
 const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
 const defaultThumb = `https://img.icons8.com/ios/480/000000/product.png`;
 
@@ -140,8 +139,8 @@ export default function Item({ data, showPromotion = false }) {
                 currentDuration < 0
                   ? 'Đã kết thúc'
                   : data.PromotionBuyerCount
-                  ? `Đã bán ${data.PromotionBuyerCount}`
-                  : 'Vừa mở bán'
+                    ? `Đã bán ${data.PromotionBuyerCount}`
+                    : 'Vừa mở bán'
               }
             />
             <CountDownWrapper>

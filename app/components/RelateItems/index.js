@@ -6,10 +6,9 @@ import { Affix, Card } from 'antd';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import { getRouteUrl } from '../../route';
 import { getProductsByCategoryId } from '../../containers/ListPage/actions';
 import { baseURL } from '../../utils/request';
-import { getSlug, toMoney } from '../../utils/string';
+import { getSlug, toMoney, getRouteUrl } from '../../utils/string';
 
 const toJson = (string, defaultValue) => {
   try {
@@ -59,7 +58,6 @@ export default function RelateItems({
 
   const Parent = ({ children, ...res }) =>
     hasOffset ? <Affix {...res}>{children}</Affix> : <div>{children}</div>;
-  44;
 
   return (
     <Parent {...{ offsetTop }}>

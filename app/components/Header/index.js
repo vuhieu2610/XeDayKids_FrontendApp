@@ -19,7 +19,7 @@ import {
   MobileSearch,
 } from './selections';
 import { PageWrapper } from '../../containers/App/selections';
-import { getRouteUrl } from '../../route';
+import { getRouteUrl } from '../../utils/string';
 
 export default function Header({
   mobile,

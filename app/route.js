@@ -5,20 +5,7 @@ import DetailPage from './containers/DetailPage/Loadable';
 import CheckoutPage from './containers/CheckoutPage';
 import ListPage from './containers/ListPage';
 import SearchPage from './containers/SearchPage/Loadable';
-
-export const getRouteUrl = (name, params = {}) => {
-  const _route = {
-    HomePage: '/',
-    CheckoutPage: '/checkout/cart',
-    ListPage: `/category/${params.slug || ':slug'}.${params.id || ':id'}`,
-    PromotionPage: `/khuyen-mai`,
-    SearchPage: `/tim-kiem/${params.searchContent || ':searchContent'}`,
-    DetailPage: `/san-pham/${params.slug || ':slug'}.${params.productId ||
-      ':productId'}`,
-  };
-
-  return _route[name];
-};
+import { getRouteUrl } from './utils/string';
 
 const route = [
   {

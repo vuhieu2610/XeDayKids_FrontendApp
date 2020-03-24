@@ -20,7 +20,7 @@ import {
   REMOVE_ITEM,
 } from './constants';
 import { cacheData, setCacheData } from '../../utils/string';
-import { UPDATEED_CACHE_ITEM } from '../CheckoutPage/constants';
+import { UPDATEED_CACHE_ITEM, CLEAR_CART } from '../CheckoutPage/constants';
 
 export const initalState = (() => {
   const defaultState = {
@@ -258,13 +258,25 @@ const appReducer = (state = initalState, action) =>
             province: null,
             district: null,
             address: '',
+            name: '',
+            phone: null,
+            emai: '',
           };
         }
         cacheData.location.province = action.payload.province;
         cacheData.location.district = action.payload.district;
         cacheData.location.address = action.payload.address;
+        cacheData.location.name = action.payload.name;
+        cacheData.location.phone = action.payload.phone;
+        cacheData.location.email = action.payload.email;
         setCacheData(cacheData);
         break;
+      case CLEAR_CART: {
+        draft.cartData.totals.items = [];
+        cacheData.cartData.totals.items = [];
+        setCacheData(cacheData);
+        break;
+      }
       default:
         break;
     }

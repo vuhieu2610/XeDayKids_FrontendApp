@@ -30,7 +30,7 @@ async function makeRequestGetProvinceData() {
 
 export function* getHomeDataWatcher() {
   try {
-    const req = yield call(makeRequestGetHomeData);
+    const req = window.site ? window.site : yield call(makeRequestGetHomeData);
     yield put(homeDataFetched(req));
   } catch (err) {
     yield put(homeDataFetched({ HasError: true }));
@@ -47,7 +47,6 @@ export function* fetchProvinceDataWatcher() {
     }
   } catch (err) {
     //
-    console.log(err);
   }
 }
 

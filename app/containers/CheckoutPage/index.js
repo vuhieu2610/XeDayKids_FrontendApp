@@ -26,6 +26,7 @@ import {
   MinusOutlined,
 } from '@ant-design/icons';
 import { createStructuredSelector } from 'reselect';
+import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
 import saga from './saga';
 import { CustomEmpty, CartContainer } from './selections';
@@ -45,8 +46,12 @@ import {
   makeSelectUserLocationObject,
 } from '../App/selectors';
 import messages from './messages';
-import { toMoney } from '../../utils/string';
-import { updateCacheItem, makeRequestOrder } from './actions';
+import { toMoney, getRouteUrl } from '../../utils/string';
+import {
+  updateCacheItem,
+  makeRequestOrder,
+  clearCart as clearCartAction,
+} from './actions';
 
 function CheckoutPage({
   changeBreadcrumbs,
@@ -60,10 +65,16 @@ function CheckoutPage({
   includeItem,
   excludeItem,
   removeItem,
+  clearCart,
 }) {
   useInjectSaga({ key: 'checkoutPage', saga });
   useInjectReducer({ key: 'checkoutPage', reducer });
   const [loading, setLoading] = useState(false);
+  const history = useHistory();
+  const handleFinish = () => {
+    clearCart();
+    history.push(getRouteUrl('HomePage'));
+  };
 
   const postData = async () => {
     try {
@@ -73,7 +84,18 @@ function CheckoutPage({
         total: cartTotalPrice,
         items: cartItems,
       });
-      console.log(res);
+
+      if (res.Success) {
+        Modal.success({
+          content: <FormattedMessage {...messages.successMessage} />,
+          onOk: handleFinish,
+          onCancel: handleFinish,
+        });
+      } else {
+        Modal.error({
+          content: <FormattedMessage {...messages.errorMessage} />,
+        });
+      }
     } catch (err) {
       //
     } finally {
@@ -168,7 +190,7 @@ function CheckoutPage({
                       dataIndex="Quantity"
                       align="center"
                       render={(text, record) => (
-                        <div>
+                        <div className="cart-actions">
                           <Button
                             icon={<PlusOutlined />}
                             shape="circle"
@@ -186,17 +208,7 @@ function CheckoutPage({
                               });
                             }}
                           />
-                          <span
-                            style={{
-                              height: 36,
-                              width: 45,
-                              textAlign: 'center',
-                              lineHeight: 1.29,
-                              display: 'inline-block',
-                            }}
-                          >
-                            {text}
-                          </span>
+                          <span>{text}</span>
                           <Button
                             icon={<MinusOutlined />}
                             onClick={() => {
@@ -244,22 +256,62 @@ function CheckoutPage({
                   </Table>
                 </Col>
                 <Col xs={24} sm={24} xl={8} className="right-side">
-                  <Card title="Giao hàng tới" headStyle={{ padding: '0 16px' }}>
-                    <Button
-                      type="link"
-                      style={{
-                        cursor: 'pointer',
-                        color: '#333',
-                        fontWeight: 'normal',
-                        padding: 0,
-                      }}
-                      onClick={handlerSelectLocation}
-                      icon={<EnvironmentFilled />}
-                    >
-                      {location || (
+                  <Card
+                    title={
+                      <span>
+                        Giao hàng tới
+                        {location && (
+                          <Tooltip
+                            placement="bottom"
+                            title="Click để thay đổi địa điểm giao hàng"
+                          >
+                            <Button
+                              type="link"
+                              style={{
+                                padding: '0 3px',
+                                cursor: 'pointer',
+                                color: '#ccc',
+                                fontSize: '80%',
+                                fontWeight: 'normal',
+                              }}
+                              onClick={handlerSelectLocation}
+                            >
+                              ( Thay đổi )
+                            </Button>
+                          </Tooltip>
+                        )}
+                      </span>
+                    }
+                    headStyle={{ padding: '0 16px' }}
+                  >
+                    {!location && (
+                      <Button
+                        type="link"
+                        style={{
+                          cursor: 'pointer',
+                          color: '#333',
+                          fontWeight: 'normal',
+                          padding: 0,
+                        }}
+                        onClick={handlerSelectLocation}
+                        icon={<EnvironmentFilled />}
+                      >
                         <FormattedMessage {...messages.locationAsking} />
-                      )}
-                    </Button>
+                      </Button>
+                    )}
+
+                    {location && (
+                      <span>
+                        {locationObject.name} -{' '}
+                        {
+                          <a href={`tel:${locationObject.phone}`}>
+                            {locationObject.phone}
+                          </a>
+                        }{' '}
+                        <br />
+                        {location}
+                      </span>
+                    )}
                   </Card>
 
                   <Card
@@ -321,6 +373,7 @@ CheckoutPage.propTypes = {
   includeItem: PropTypes.func,
   excludeItem: PropTypes.func,
   removeItem: PropTypes.func,
+  clearCart: PropTypes.func,
 };
 
 function mapDispatchToProps(dispatch) {
@@ -332,6 +385,7 @@ function mapDispatchToProps(dispatch) {
     includeItem: item => dispatch(addToCart(item)),
     excludeItem: item => dispatch(excludeItemAction(item)),
     removeItem: item => dispatch(removeItemAction(item)),
+    clearCart: () => dispatch(clearCartAction()),
   };
 }
 

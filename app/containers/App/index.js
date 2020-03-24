@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  *
  * App.js
@@ -8,7 +9,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Switch, Route, Link, useLocation } from 'react-router-dom';
 import { Layout, Breadcrumb, Row, Col } from 'antd';
 
 import { useInjectSaga } from 'utils/injectSaga';
@@ -19,7 +20,7 @@ import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { createStructuredSelector } from 'reselect';
-import route, { getRouteUrl } from '../../route';
+import route from '../../route';
 import GlobalStyle from '../../global-styles';
 import {
   StyledContent,
@@ -56,6 +57,7 @@ import {
   setUserLocation as setUserLocationAction,
 } from './actions';
 import LocationModal from '../../components/LocationModal';
+import { getRouteUrl } from '../../utils/string';
 
 function App({
   location,
@@ -79,6 +81,12 @@ function App({
   userLocation,
 }) {
   useInjectSaga({ key: 'app', saga });
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   useEffect(() => {
     const changeScreenSize = () => {
       setScreenSize(window.innerWidth);

@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Button, Row, Col, Select, Input } from 'antd';
@@ -58,6 +59,11 @@ export default function LocationModal({
     }
   }, [selectedProvince]);
 
+  const isValidEmail = () =>
+    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/gi.test(email);
+
+  const isValidPhone = () => /((09|03|07|08|05)+([0-9]{8})\b)/g.test(phone);
+
   return (
     <Modal
       visible={isOpen}
@@ -75,6 +81,20 @@ export default function LocationModal({
             _.isEmpty(email)
           }
           onClick={() => {
+            if (!isValidEmail()) {
+              Modal.warning({
+                content: 'Địa chỉ Email không đúng định dạng.',
+              });
+              return;
+            }
+
+            if (!isValidPhone()) {
+              Modal.warning({
+                content: 'Số điện thoại không đúng định dạng.',
+              });
+              return;
+            }
+
             setUserLocation({
               province: selectedProvince,
               district: selectedDistrict,

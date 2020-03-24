@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-plusplus */
 import speakingurl from 'speakingurl';
 import _ from 'lodash';
@@ -72,3 +73,17 @@ export const cacheData = (() => {
     return defaultCacheData;
   }
 })();
+
+export const getRouteUrl = (name, params = {}) => {
+  const _route = {
+    HomePage: '/',
+    CheckoutPage: '/checkout/cart',
+    ListPage: `/category/${params.slug || ':slug'}.${params.id || ':id'}`,
+    PromotionPage: `/khuyen-mai`,
+    SearchPage: `/tim-kiem/${params.searchContent || ':searchContent'}`,
+    DetailPage: `/san-pham/${params.slug || ':slug'}.${params.productId ||
+      ':productId'}`,
+  };
+
+  return _route[name];
+};

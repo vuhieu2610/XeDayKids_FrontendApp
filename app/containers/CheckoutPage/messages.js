@@ -45,4 +45,13 @@ export default defineMessages({
     id: `${scope}.warningMessage`,
     defaultMessage: 'Bạn vui lòng chọn địa chỉ giao hàng.',
   },
+  errorMessage: {
+    id: `${scope}.errorMessage`,
+    defaultMessage: 'Có lỗi xảy ra, vui lòng thử lại sau.',
+  },
+  successMessage: {
+    id: `${scope}.successMessage`,
+    defaultMessage:
+      'Cảm ơn bạn đã đặt hàng. Nhằm giúp việc xử lý đơn hàng được nhanh hơn, Xedaykids sẽ gọi điện cho bạn để xác nhận đơn hàng.',
+  },
 });

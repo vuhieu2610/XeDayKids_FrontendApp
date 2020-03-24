@@ -5,11 +5,11 @@ import axios from 'axios';
 const signOut = () => {};
 
 // export const baseURL = `http://172.27.161.164`;
-export const baseURL = `http://xedaykidsrelax.com.vn`;
+export const baseURL = `https://xedaykidsrelax.com.vn`;
 
 const service = axios.create({
-  // baseURL: `${baseURL}/data`,
-  baseURL: `http://172.27.161.138/data`,
+  baseURL: `${baseURL}/data`,
+  // baseURL: `http://172.27.161.138/data`,
 });
 
 // request interceptor

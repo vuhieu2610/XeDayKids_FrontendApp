@@ -1,5 +1,9 @@
 import request from '../../utils/request';
-import { UPDATEED_CACHE_ITEM, UPDATE_CACHE_ITEM } from './constants';
+import {
+  UPDATEED_CACHE_ITEM,
+  UPDATE_CACHE_ITEM,
+  CLEAR_CART,
+} from './constants';
 
 export const updateCacheItem = (items = []) => ({
   type: UPDATE_CACHE_ITEM,
@@ -9,6 +13,10 @@ export const updateCacheItem = (items = []) => ({
 export const updatedCacheItem = (newItems = []) => ({
   type: UPDATEED_CACHE_ITEM,
   payload: newItems,
+});
+
+export const clearCart = () => ({
+  type: CLEAR_CART,
 });
 
 export const makeRequestOrder = async item => {

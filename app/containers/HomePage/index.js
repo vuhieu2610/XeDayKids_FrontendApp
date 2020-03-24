@@ -38,7 +38,7 @@ import {
 } from '../App/selectors';
 import { VerticleMenuItem } from '../../components/Categories';
 import { getSlug, getValueFromSiteConfigs } from '../../utils/string';
-import { getRouteUrl } from '../../route';
+import { getRouteUrl } from '../../utils/string';
 import { makeRequestGetProductByCategory } from './actions';
 
 import {
