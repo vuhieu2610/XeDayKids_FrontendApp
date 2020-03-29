@@ -347,7 +347,7 @@ function HomePage({
             </Col>
           )}
 
-          {siteState.categories.map(category => (
+          {siteState.categories && siteState.categories.map(category => (
             <Col span={24} key={_.uniqueId()}>
               <Items
                 href={getRouteUrl('ListPage', {
